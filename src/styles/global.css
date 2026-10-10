@@ -108,3 +108,9 @@ hr { border: 0; border-top: 1px solid var(--rule); margin: 2.5rem 0; }
 .section-head { display: flex; align-items: baseline; justify-content: space-between; gap: 1rem; margin: 3rem 0 0.75rem; }
 .section-head h2 { margin: 0; }
 .section-head a { font: 0.9rem var(--sans); }
+
+/* grid of small captioned images (e.g. the average-face post) */
+.face-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(140px, 1fr)); gap: 1rem; margin: 1.5rem 0; }
+.face-grid figure { margin: 0; text-align: center; }
+.face-grid img { margin: 0 auto 0.4rem; border-radius: 4px; }
+.face-grid figcaption { font: 0.8rem/1.35 var(--sans); color: var(--muted); }
