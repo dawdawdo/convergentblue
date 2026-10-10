@@ -1,0 +1,180 @@
+---
+import Base from '../layouts/Base.astro';
+const samples = ['000001', '000110', '000218', '001094', '001526', '001722', '002283'];
+---
+<Base title="Classify Your Face" description="A VGG16-based classifier trained on CelebA, running entirely in your browser.">
+  <article class="wrap">
+    <p class="eyebrow"><a href="/blog/classify-your-face-in-a-web-browser/">From the post: Classify Your Face</a></p>
+    <h1>Classify Your Face</h1>
+    <p class="lede">A neural network I trained in 2020 on 202,599 celebrity photos, running entirely in your browser. Your photo never leaves your device.</p>
+
+    <div class="cyf">
+      <div class="cyf-stage">
+        <canvas id="cyf-canvas" width="178" height="218" aria-label="Photo to classify"></canvas>
+        <video id="cyf-video" playsinline muted hidden></video>
+        <div class="cyf-guide" aria-hidden="true"></div>
+        <p class="cyf-empty" id="cyf-empty">Pick a photo, use your camera, or try a sample.</p>
+      </div>
+
+      <div class="cyf-controls">
+        <div class="cyf-row">
+          <label class="btn">Upload a photo<input id="cyf-file" type="file" accept="image/*" hidden /></label>
+          <button class="btn" id="cyf-cam" type="button">Use camera</button>
+          <button class="btn" id="cyf-snap" type="button" hidden>Take picture</button>
+        </div>
+        <label class="cyf-zoom" id="cyf-zoom-wrap" hidden>Zoom <input id="cyf-zoom" type="range" min="1" max="4" step="0.01" value="1" /></label>
+        <p class="cyf-hint">Line your face up with the oval: eyes about halfway down, chin near the bottom of the oval. Drag to move, use the slider to zoom. The model was trained on photos framed exactly this way.</p>
+        <div class="cyf-samples">
+          <span class="meta">Samples from CelebA:</span>
+          {samples.map((s) => <button type="button" class="cyf-sample" data-src={`/images/2020/05/${s}.jpg`}><img src={`/images/2020/05/${s}.jpg`} alt={`CelebA sample ${s}`} width="45" height="55" loading="lazy" /></button>)}
+        </div>
+        <button class="btn btn-primary" id="cyf-go" type="button" disabled>Classify</button>
+        <p class="meta" id="cyf-status">The first run downloads the model (about 72 MB).</p>
+        <div class="cyf-result" id="cyf-result" hidden>
+          <p class="cyf-verdict" id="cyf-verdict"></p>
+          <div class="cyf-bar"><div class="cyf-fill" id="cyf-fill"></div></div>
+          <div class="cyf-bar-labels"><span>Female</span><span>Male</span></div>
+        </div>
+      </div>
+    </div>
+
+    <p class="legacy-note">This model learned whatever the people who labeled CelebA decided "male" meant, and those labels are binary while gender isn't. It leans heavily on hair, so hats, short hair, long hair and kids all trip it up. Treat the answer as a curiosity, not a fact about anyone.</p>
+  </article>
+</Base>
+
+<style>
+  .cyf { display: grid; gap: 1.5rem; grid-template-columns: auto 1fr; align-items: start; margin: 2rem 0; }
+  @media (max-width: 640px) { .cyf { grid-template-columns: 1fr; justify-items: center; } }
+  .cyf-stage { position: relative; width: 267px; height: 327px; border-radius: 8px; overflow: hidden; background: var(--code-bg); border: 1px solid var(--rule); touch-action: none; cursor: grab; }
+  .cyf-stage canvas { width: 100%; height: 100%; display: block; }
+  .cyf-guide { position: absolute; left: 25%; top: 27%; width: 50%; height: 58%; border: 2px dashed rgba(255,255,255,.85); border-radius: 50%; box-shadow: 0 0 0 1px rgba(0,0,0,.35); pointer-events: none; }
+  .cyf-empty { position: absolute; inset: auto 0 0 0; margin: 0; padding: .6rem; font: .8rem/1.3 var(--sans); color: var(--muted); text-align: center; }
+  .cyf-controls { display: grid; gap: .9rem; font-family: var(--sans); }
+  .cyf-row { display: flex; flex-wrap: wrap; gap: .5rem; }
+  .btn { font: 500 .9rem/1 var(--sans); padding: .6rem .9rem; border-radius: 6px; border: 1px solid var(--ink); background: var(--surface); color: var(--ink); cursor: pointer; }
+  .btn:hover { background: var(--code-bg); }
+  .btn:disabled { opacity: .45; cursor: not-allowed; }
+  .btn-primary { background: var(--ink); color: var(--bg); justify-self: start; padding: .7rem 1.3rem; }
+  .btn-primary:hover:not(:disabled) { background: var(--accent); border-color: var(--accent); color: var(--accent-ink); }
+  .cyf-zoom { display: flex; gap: .6rem; align-items: center; font-size: .9rem; }
+  .cyf-zoom input { flex: 1; max-width: 220px; }
+  .cyf-hint { margin: 0; font-size: .85rem; color: var(--muted); line-height: 1.45; }
+  .cyf-samples { display: flex; flex-wrap: wrap; gap: .35rem; align-items: center; }
+  .cyf-sample { padding: 0; border: 2px solid transparent; border-radius: 4px; background: none; cursor: pointer; line-height: 0; }
+  .cyf-sample:hover, .cyf-sample:focus-visible { border-color: var(--ink); }
+  .cyf-sample img { border-radius: 2px; }
+  .cyf-result { border-top: 1px solid var(--rule); padding-top: .9rem; }
+  .cyf-verdict { margin: 0 0 .6rem; font: 600 1.15rem/1.3 var(--sans); }
+  .cyf-bar { position: relative; height: 12px; border-radius: 6px; background: var(--code-bg); border: 1px solid var(--rule); overflow: hidden; }
+  .cyf-fill { position: absolute; top: 0; bottom: 0; left: 0; width: 50%; background: var(--ink); transition: width .4s ease; }
+  .cyf-bar-labels { display: flex; justify-content: space-between; font-size: .8rem; color: var(--muted); margin-top: .3rem; }
+</style>
+
+<script>
+  import * as tf from '@tensorflow/tfjs';
+
+  const W = 178, H = 218, MODEL_URL = '/models/classify-your-face/model.json';
+  const $ = <T extends HTMLElement>(id: string) => document.getElementById(id) as T;
+  const canvas = $<HTMLCanvasElement>('cyf-canvas'), ctx = canvas.getContext('2d')!;
+  const video = $<HTMLVideoElement>('cyf-video'), stage = canvas.parentElement!;
+  const zoom = $<HTMLInputElement>('cyf-zoom'), zoomWrap = $('cyf-zoom-wrap');
+  const goBtn = $<HTMLButtonElement>('cyf-go'), camBtn = $<HTMLButtonElement>('cyf-cam'), snapBtn = $<HTMLButtonElement>('cyf-snap');
+  const status = $('cyf-status'), result = $('cyf-result'), verdict = $('cyf-verdict'), fill = $('cyf-fill'), empty = $('cyf-empty');
+
+  let src: CanvasImageSource | null = null, sw = 0, sh = 0;   // current still image
+  let base = 1, ox = 0, oy = 0;                              // cover-fit scale and offset (canvas px)
+  let stream: MediaStream | null = null, model: tf.LayersModel | null = null;
+
+  function draw() {
+    ctx.fillStyle = '#808080'; ctx.fillRect(0, 0, W, H);
+    if (!src) return;
+    const s = base * +zoom.value;
+    ctx.drawImage(src, ox, oy, sw * s, sh * s);
+  }
+  function setImage(img: CanvasImageSource, w: number, h: number) {
+    stopCamera();
+    src = img; sw = w; sh = h;
+    base = Math.max(W / w, H / h); zoom.value = '1';
+    ox = (W - w * base) / 2; oy = (H - h * base) / 2;
+    zoomWrap.hidden = false; empty.hidden = true; goBtn.disabled = false; result.hidden = true;
+    draw();
+  }
+
+  // zoom around the frame centre
+  let lastZoom = 1;
+  zoom.addEventListener('input', () => {
+    const z = +zoom.value, k = z / lastZoom;
+    ox = W / 2 - (W / 2 - ox) * k; oy = H / 2 - (H / 2 - oy) * k; lastZoom = z; draw();
+  });
+  zoom.addEventListener('change', () => (lastZoom = +zoom.value));
+
+  // drag to pan
+  let drag: { x: number; y: number } | null = null;
+  stage.addEventListener('pointerdown', (e) => { if (!src) return; drag = { x: e.clientX, y: e.clientY }; stage.setPointerCapture(e.pointerId); });
+  stage.addEventListener('pointermove', (e) => {
+    if (!drag) return;
+    const k = W / stage.clientWidth;
+    ox += (e.clientX - drag.x) * k; oy += (e.clientY - drag.y) * k; drag = { x: e.clientX, y: e.clientY }; draw();
+  });
+  stage.addEventListener('pointerup', () => (drag = null));
+
+  // upload
+  $<HTMLInputElement>('cyf-file').addEventListener('change', async (e) => {
+    const f = (e.target as HTMLInputElement).files?.[0]; if (!f) return;
+    const bmp = await createImageBitmap(f);
+    lastZoom = 1; setImage(bmp, bmp.width, bmp.height);
+  });
+
+  // samples
+  document.querySelectorAll<HTMLButtonElement>('.cyf-sample').forEach((b) => b.addEventListener('click', () => {
+    const img = new Image(); img.onload = () => { lastZoom = 1; setImage(img, img.naturalWidth, img.naturalHeight); }; img.src = b.dataset.src!;
+  }));
+
+  // camera
+  function stopCamera() {
+    stream?.getTracks().forEach((t) => t.stop()); stream = null; snapBtn.hidden = true; camBtn.hidden = false;
+  }
+  camBtn.addEventListener('click', async () => {
+    try {
+      stream = await navigator.mediaDevices.getUserMedia({ video: { facingMode: 'user', width: 640, height: 480 } });
+    } catch { status.textContent = 'Could not open the camera. Check your browser permissions.'; return; }
+    video.srcObject = stream; await video.play();
+    camBtn.hidden = true; snapBtn.hidden = false; empty.hidden = true; result.hidden = true; goBtn.disabled = true;
+    const live = () => {
+      if (!stream) return;
+      const s = Math.max(W / video.videoWidth, H / video.videoHeight);
+      ctx.save(); ctx.translate(W, 0); ctx.scale(-1, 1);   // mirror, like a selfie
+      ctx.drawImage(video, (W - video.videoWidth * s) / 2, (H - video.videoHeight * s) / 2, video.videoWidth * s, video.videoHeight * s);
+      ctx.restore(); requestAnimationFrame(live);
+    };
+    live();
+  });
+  snapBtn.addEventListener('click', () => {
+    const shot = document.createElement('canvas'); shot.width = video.videoWidth; shot.height = video.videoHeight;
+    const c = shot.getContext('2d')!; c.translate(shot.width, 0); c.scale(-1, 1); c.drawImage(video, 0, 0);
+    lastZoom = 1; setImage(shot, shot.width, shot.height);
+  });
+
+  // classify
+  goBtn.addEventListener('click', async () => {
+    goBtn.disabled = true;
+    try {
+      if (!model) {
+        status.textContent = 'Downloading model… 0%';
+        model = await tf.loadLayersModel(MODEL_URL, { onProgress: (p) => (status.textContent = `Downloading model… ${Math.round(p * 100)}%`) });
+      }
+      status.textContent = 'Thinking…';
+      await tf.nextFrame();
+      const p = tf.tidy(() => (model!.predict(tf.browser.fromPixels(canvas).toFloat().div(255).expandDims(0)) as tf.Tensor).dataSync()[0]);
+      const male = p >= 0.5, conf = Math.round((male ? p : 1 - p) * 100);
+      verdict.textContent = `${male ? 'Male' : 'Female'}, ${conf}% confident`;
+      fill.style.width = `${(p * 100).toFixed(1)}%`;
+      result.hidden = false; status.textContent = 'Done. Try another photo, or adjust the framing and run it again.';
+      (window as any).__cyfLast = p;
+    } catch (err) {
+      console.error(err); status.textContent = 'Something went wrong loading or running the model.';
+    } finally { goBtn.disabled = false; }
+  });
+
+  draw();
+</script>
