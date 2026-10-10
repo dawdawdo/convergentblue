@@ -15,7 +15,7 @@ In any event, let's find out how many rolls it takes to get there. Since Monopol
 
 There are 40 spaces on the board, so we start with a 40x40 matrix, where each roll gets us at least two spaces from our current position, but no more than twelve. For instance, row 26 represents the case where one's token rests on B&O Railroad. The corresponding row in the transition matrix is shown below.
 
-[![](/images/2012/07/Untitled.png "B&O Railroad transition row")](/images/2012/07/atlanticAve.png)
+![B&O Railroad transition row](/images/2012/07/Untitled.png)
 
 Of course, the critical reader will note that column 31 represents the "Go Directly To Jail" space, so we cannot actually land on it! Since a roll of five would actually land us in jail (space 11), we simply move the 1/9 in column 31 to column 11, and do the same for every roll which can land on space 31 with non-zero probability.
 
