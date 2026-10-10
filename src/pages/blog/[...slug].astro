@@ -1,0 +1,27 @@
+---
+import { render } from 'astro:content';
+import Base from '../../layouts/Base.astro';
+import Toc from '../../components/Toc.astro';
+import { getPosts, fmtDate } from '../../lib';
+
+export async function getStaticPaths() {
+  const posts = await getPosts();
+  return posts.map((post) => ({ params: { slug: post.id }, props: { post } }));
+}
+const { post } = Astro.props;
+const { Content, headings } = await render(post);
+const d = post.data;
+---
+<Base title={d.title} description={d.description}>
+  <article class="wrap">
+    <header class="post-header">
+      <span class="meta">{fmtDate(d.pubDate)}{d.updatedDate && ` · updated ${fmtDate(d.updatedDate)}`}</span>
+      {d.draft && <span class="badge">Draft</span>}
+      <h1>{d.title}</h1>
+      <ul class="tags">{d.tags.map((t) => <li><a href={`/tags/${t}/`}>{t}</a></li>)}</ul>
+    </header>
+    {d.legacy && <p class="legacy-note">Originally published on divergentblue.com in {d.pubDate.getUTCFullYear()}, restored from backup. Some links to other sites may no longer work.</p>}
+    <Toc headings={headings} />
+    <div class="prose"><Content /></div>
+  </article>
+</Base>

@@ -1,0 +1,13 @@
+---
+import Base from '../../layouts/Base.astro';
+import ProjectCards from '../../components/ProjectCards.astro';
+import { getProjects } from '../../lib';
+const projects = await getProjects();
+---
+<Base title="Projects" description="Things I've built.">
+  <div class="wrap">
+    <h1>Projects</h1>
+    <p class="lede">Things I've built, published, or am still tinkering with.</p>
+    <div style="margin-top:2rem"><ProjectCards projects={projects} /></div>
+  </div>
+</Base>
