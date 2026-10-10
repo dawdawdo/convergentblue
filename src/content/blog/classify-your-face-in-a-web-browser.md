@@ -3,12 +3,11 @@ title: "Classify Your Face – in a Web Browser!"
 description: "A VGG16-based network that guesses gender from a photo with about 95% accuracy, now running in your browser. Plus what its mistakes reveal about the labels."
 pubDate: 2020-05-11
 tags: [machine-learning, computer-vision, deep-learning, project]
-draft: true
+draft: false
 legacy: true
 ---
 
-<!-- DRAFT: reconstructed in 2026 from your CECS 590 final report (Apr 2020), the notebook, and the TensorFlow.js model files.
-     Most of the prose below is lifted from the report; the framing, headings and demo section are new. Edit freely, then remove `draft: true`. -->
+Note: This post was rescconstructed in 2026 from notes, logs, and artifacts from a prior entry on divergentblue.com, with some help from my buddy Claude.
 
 <p><a class="try-it" href="/classify-your-face/">Try it: classify your own face →</a></p>
 
