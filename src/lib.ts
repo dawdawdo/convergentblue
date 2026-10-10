@@ -1,7 +1,8 @@
 import { getCollection } from 'astro:content';
 
-// Drafts show up in `npm run dev` (with a badge) but never in the built site.
-const visible = ({ data }: { data: { draft: boolean } }) => !import.meta.env.PROD || !data.draft;
+// Drafts are hidden everywhere. To preview them locally, run:  $env:SHOW_DRAFTS="true"; npm run dev
+const showDrafts = !import.meta.env.PROD && process.env.SHOW_DRAFTS === 'true';
+const visible = ({ data }: { data: { draft: boolean } }) => showDrafts || !data.draft;
 
 export async function getPosts() {
   return (await getCollection('blog', visible)).sort(

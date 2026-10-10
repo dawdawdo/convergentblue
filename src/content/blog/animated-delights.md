@@ -26,8 +26,8 @@ If the name hasn't already magnetized your mouse cursor, skip ahead. This is a 1
 
 ---
 
- [Smash Brizzle](http://divergentblue.com/?item_id=1&cat_id=3&subcat_id=1) - Stephen Abrams
-This remix of video taken from [Super Smash Brothers](http://divergentblue.com/?item_id=1&cat_id=3&subcat_id=1) Melee is not quite on par with the other toons here, but [I](/) never [miss](/) a [self-plugging](/) opportunity. Music: Da Pipes by the esteemed [Franz Keller](http://www.franzkeller.com/) 
+ Smash Brizzle - Stephen Abrams
+This remix of video taken from Super Smash Brothers Melee is not quite on par with the other toons here, but [I](/) never [miss](/) a [self-plugging](/) opportunity. Music: Da Pipes by the esteemed [Franz Keller](http://www.franzkeller.com/) 
 
 ---
 

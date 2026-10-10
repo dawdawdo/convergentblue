@@ -43,7 +43,7 @@ img { max-width: 100%; height: auto; }
 .site-header { border-bottom: 1px solid var(--rule); padding: 1.1rem 0; }
 .site-header .wide { display: flex; align-items: center; justify-content: space-between; gap: 1rem; flex-wrap: wrap; }
 .brand { display: flex; align-items: center; gap: 0.6rem; color: var(--ink); text-decoration: none; font: 600 1.05rem/1 var(--sans); letter-spacing: 0.01em; }
-.brand svg { flex: none; }
+.brand picture, .brand img { flex: none; display: block; }
 .site-header nav { display: flex; gap: 1.25rem; font: 500 0.95rem/1 var(--sans); }
 .site-header nav a { color: var(--muted); text-decoration: none; padding: 0.3rem 0; border-bottom: 2px solid transparent; }
 .site-header nav a:hover, .site-header nav a[aria-current='page'] { color: var(--ink); border-bottom-color: var(--ink); }

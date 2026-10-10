@@ -21,7 +21,7 @@ const { posts, projects } = Astro.props;
 ---
 <Base title={`Topic: ${tag}`}>
   <div class="wrap">
-    <p class="eyebrow"><a href="/tags/">Topics</a></p>
+    <p class="eyebrow">Tag</p>
     <h1>{tag}</h1>
     {posts.length > 0 && <><h2>Writing</h2><PostList posts={posts} /></>}
     {projects.length > 0 && <><h2>Projects</h2><ProjectCards projects={projects} /></>}

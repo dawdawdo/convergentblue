@@ -1,7 +1,6 @@
 ---
 import '../styles/global.css';
 import 'katex/dist/katex.min.css';
-import Mark from '../components/Mark.astro';
 import { SITE_TITLE, SITE_DESCRIPTION, AUTHOR } from '../consts';
 
 interface Props { title?: string; description?: string; }
@@ -12,7 +11,6 @@ const path = Astro.url.pathname;
 const nav = [
   { href: '/blog/', label: 'Writing' },
   { href: '/projects/', label: 'Projects' },
-  { href: '/tags/', label: 'Topics' },
   { href: '/about/', label: 'About' },
 ];
 ---
@@ -24,7 +22,8 @@ const nav = [
     <title>{fullTitle}</title>
     <meta name="description" content={description} />
     <link rel="canonical" href={canonical} />
-    <link rel="icon" href="/favicon.svg" type="image/svg+xml" />
+    <link rel="icon" href="/favicon.png" type="image/png" />
+    <link rel="apple-touch-icon" href="/apple-touch-icon.png" />
     <link rel="alternate" type="application/rss+xml" title={SITE_TITLE} href="/rss.xml" />
     <link rel="sitemap" href="/sitemap-index.xml" />
     <meta property="og:title" content={fullTitle} />
@@ -37,7 +36,7 @@ const nav = [
   <body>
     <header class="site-header">
       <div class="wide">
-        <a class="brand" href="/"><Mark /> {SITE_TITLE}</a>
+        <a class="brand" href="/"><picture><source srcset="/images/branding/spiral-96-dark.png" media="(prefers-color-scheme: dark)" /><img src="/images/branding/spiral-96.png" width="34" height="34" alt="" /></picture> {SITE_TITLE}</a>
         <nav>
           {nav.map((n) => <a href={n.href} aria-current={path.startsWith(n.href) ? 'page' : undefined}>{n.label}</a>)}
         </nav>

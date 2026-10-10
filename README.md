@@ -6,7 +6,13 @@ Source for [convergentblue.com](https://convergentblue.com), built with [Astro](
 
 ```
 npm install      # first time only
-npm run dev      # http://localhost:4321 (drafts are visible here)
+npm run dev      # http://localhost:4321
+```
+
+Drafts are hidden by default. To preview them locally (PowerShell):
+
+```
+$env:SHOW_DRAFTS="true"; npm run dev
 ```
 
 ## Write a post
@@ -31,7 +37,7 @@ $$\sum_{n=1}^\infty \frac{1}{2^n} = 1$$
 
 - Images go in `public/images/...` and are referenced from `/images/...`.
 - `##` headings become the post's table of contents (when there are 3 or more).
-- Tags create pages under `/tags/` automatically. The blog index, RSS feed, and sitemap update themselves.
+- Each tag gets its own page at `/tags/<tag>/`. The blog index, RSS feed, and sitemap update themselves.
 
 ## Add a project
 
