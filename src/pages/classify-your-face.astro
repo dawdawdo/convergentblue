@@ -20,6 +20,7 @@ const samples = ['000001', '000110', '000218', '001094', '001526', '001722', '00
         <div class="cyf-row">
           <label class="btn">Upload a photo<input id="cyf-file" type="file" accept="image/*" hidden /></label>
           <button class="btn" id="cyf-cam" type="button">Use camera</button>
+          <input id="cyf-capture" type="file" accept="image/*" capture="user" hidden />
           <button class="btn btn-primary" id="cyf-snap" type="button" hidden>Take picture</button>
           <button class="btn" id="cyf-flip" type="button" hidden>Switch camera</button>
           <button class="btn" id="cyf-cancel" type="button" hidden>Cancel</button>
@@ -123,8 +124,8 @@ const samples = ['000001', '000110', '000218', '001094', '001526', '001722', '00
   stage.addEventListener('pointerup', () => (drag = null));
 
   // upload (createImageBitmap first; fall back to <img> for formats it can't decode)
-  $<HTMLInputElement>('cyf-file').addEventListener('change', async (e) => {
-    const input = e.target as HTMLInputElement, f = input.files?.[0]; if (!f) return;
+  async function loadFile(input: HTMLInputElement) {
+    const f = input.files?.[0]; if (!f) return;
     try {
       const bmp = await createImageBitmap(f, { imageOrientation: 'from-image' } as ImageBitmapOptions);
       lastZoom = 1; setImage(bmp, bmp.width, bmp.height);
@@ -134,8 +135,11 @@ const samples = ['000001', '000110', '000218', '001094', '001526', '001722', '00
       img.onerror = () => { status.textContent = "Couldn't read that image. Try a JPEG or PNG."; URL.revokeObjectURL(url); };
       img.src = url;
     }
+    status.textContent = 'Drag and zoom to fit your face in the oval, then hit Classify.';
     input.value = '';   // allow picking the same file again
-  });
+  }
+  $<HTMLInputElement>('cyf-file').addEventListener('change', (e) => loadFile(e.target as HTMLInputElement));
+  $<HTMLInputElement>('cyf-capture').addEventListener('change', (e) => loadFile(e.target as HTMLInputElement));
 
   // samples
   document.querySelectorAll<HTMLButtonElement>('.cyf-sample').forEach((b) => b.addEventListener('click', () => {
@@ -197,7 +201,11 @@ const samples = ['000001', '000110', '000218', '001094', '001526', '001722', '00
     };
     live();
   }
-  camBtn.addEventListener('click', () => { facing = 'user'; startCamera(); });
+  const isTouch = matchMedia('(pointer: coarse)').matches;
+  camBtn.addEventListener('click', () => {
+    if (isTouch) { $<HTMLInputElement>('cyf-capture').click(); return; }
+    facing = 'user'; startCamera();
+  });
   flipBtn.addEventListener('click', () => { facing = facing === 'user' ? 'environment' : 'user'; startCamera(); });
   cancelBtn.addEventListener('click', () => {
     stopCamera(); status.textContent = ''; empty.hidden = !!src; draw();
