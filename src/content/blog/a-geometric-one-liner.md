@@ -3,12 +3,12 @@ title: "A Geometric One-Liner"
 description: "Which boxes have a volume equal to their surface area? One line of Python finds them all, and a week of brute force can't find any more."
 pubDate: 2019-12-14
 tags: [math, geometry, riddler, python]
-draft: true
+draft: false
 legacy: true
 ---
 
-<!-- DRAFT: reconstructed in 2026 from the code, logs, images and videos in Drive (538_Contests/rectangular_prism).
-     The original text was lost. Edit freely, then remove `draft: true`. -->
+Note: The following text is a reconstruction of a 2019 entry on divergentblue.com based on the remaining artifacts (code, logs, images, and videos) and some help from my buddy Claude.
+
 
 ## The Appetizer
 
@@ -33,7 +33,7 @@ from itertools import combinations_with_replacement as c
 [print((L,W,H)) for (L,W,H) in c(range(1, 100), 3) if L*W*H == 2*(L*W+W*H+H*L)]
 ```
 
-Fine, two lines if you count the import. I don't.
+It's technically two lines if you count the import.. but I don't.
 
 ## The Results
 
@@ -62,18 +62,18 @@ Swap the plain list for a 3D scatter plot, and here's what they look like:
 
 Ten seemed suspiciously tidy, so I raised the limit to 1,000, then 10,000, then 100,000, and logged progress along the way. The last run ground away for a week and checked more than 650 billion boxes. It never found an eleventh.
 
-<!-- Suggested addition (Claude): the short proof of why it never will. Keep, cut or reword. -->
-There's a reason. Divide both sides of the equation by $LWH$ and it becomes
+Here's why: Divide both sides of the equation by $LWH$ and it becomes
 
 $$
 \frac{1}{L} + \frac{1}{W} + \frac{1}{H} = \frac{1}{2}
 $$
 
-If $L$ is the shortest side, then $\frac{3}{L} \ge \frac{1}{2}$, so $L \le 6$. And $L$ has to be at least 3, or $\frac{1}{L}$ alone would already be $\frac{1}{2}$ or more. With only four possible shortest sides, there are only finitely many boxes to check, and the one-liner already found all of them. A week of brute force, settled by one line of algebra. Sounds about right.
+If $L$ is the shortest side, then $\frac{3}{L} \ge \frac{1}{2}$, so $L \le 6$. And $L$ has to be at least 3, or $\frac{1}{L}$ alone would already be $\frac{1}{2}$ or more. With only four possible shortest sides, there are only finitely many boxes to check, and the one-liner already found all of them. The brute force was unnecessary and inconclusive, so we did kind of need the algebra in the end.
 
 ## Seeing the Surface
 
-The one-liner finds the points, but I wanted to see the whole surface where volume equals surface area, not just the whole-number spots on it. Plotting it in 3D and dragging it around turned up a nice symmetry:
+
+I also wanted to see the whole surface where volume equals surface area, not just the whole-number spots on it. Plotting it in 3D and dragging it around turned up a nice symmetry:
 
 <video controls muted playsinline preload="metadata" poster="/videos/2019/12/surface-volume-visualization.jpg" src="/videos/2019/12/surface-volume-visualization.mp4"></video>
 
