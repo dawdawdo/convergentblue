@@ -1,6 +1,6 @@
 ---
 import Base from '../../layouts/Base.astro';
-import PostList from '../../components/PostList.astro';
+import PostGrid from '../../components/PostGrid.astro';
 import { getPosts } from '../../lib';
 
 export async function getStaticPaths() {
@@ -17,9 +17,9 @@ const { tag } = Astro.params;
 const { posts } = Astro.props;
 ---
 <Base title={`Topic: ${tag}`}>
-  <div class="wrap">
+  <div class="wide">
     <p class="eyebrow">Tag</p>
     <h1>{tag}</h1>
-    <PostList posts={posts} />
+    <PostGrid posts={posts} />
   </div>
 </Base>

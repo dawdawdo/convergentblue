@@ -1,18 +1,36 @@
 ---
 import Base from '../layouts/Base.astro';
-import PostList from '../components/PostList.astro';
+import PostGrid from '../components/PostGrid.astro';
+import PostCard from '../components/PostCard.astro';
+import Spiral from '../components/Spiral.astro';
 import { getPosts } from '../lib';
-const posts = (await getPosts()).slice(0, 5);
+const posts = await getPosts();
+const featured = posts.find((p) => p.data.demo);
+const recent = posts.filter((p) => p !== featured).slice(0, 6);
 ---
 <Base>
-  <div class="wrap">
-    <p class="eyebrow">Stephen Abrams</p>
-    <h1>Things I build.</h1>
-    <p class="lede">It's all coming together.</p>
+  <section class="hero">
+    <div class="wide hero-inner">
+      <div class="hero-text">
+        <p class="eyebrow">Stephen Abrams</p>
+        <h1>Things I build.</h1>
+        <p class="lede">It's all coming together.</p>
+        <p class="hero-links"><a href="/blog/">Read the archive →</a></p>
+      </div>
+      <Spiral class="hero-spiral" size="100%" animate />
+    </div>
+  </section>
 
-    <div class="section-head"><h2>Recent writing</h2><a href="/blog/">All posts →</a></div>
-    <PostList posts={posts} />
-
-    <p style="margin-top:1.5rem"><a href="/tags/project/">Things I've built →</a></p>
+  <div class="wide">
+    {featured && (
+      <section class="home-section">
+        <div class="section-head"><h2>Try it</h2></div>
+        <PostCard post={featured} feature />
+      </section>
+    )}
+    <section class="home-section">
+      <div class="section-head"><h2>Recent writing</h2><a href="/blog/">All posts →</a></div>
+      <PostGrid posts={recent} />
+    </section>
   </div>
 </Base>

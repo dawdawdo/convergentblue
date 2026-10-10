@@ -5,6 +5,7 @@ pubDate: 2012-07-27
 tags: [probability, geometry]
 draft: false
 legacy: true
+cover: "/images/2012/07/BadCutsGraph.png"
 ---
 
 ## A Decade Long Problem

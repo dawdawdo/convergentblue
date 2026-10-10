@@ -1,0 +1,23 @@
+---
+import type { CollectionEntry } from 'astro:content';
+import Spiral from './Spiral.astro';
+import { fmtDate, coverOf } from '../lib';
+interface Props { post: CollectionEntry<'blog'>; feature?: boolean; }
+const { post, feature = false } = Astro.props;
+const d = post.data;
+const cover = coverOf(post);
+---
+<article class:list={['card', { 'card-feature': feature }]}>
+  <a class="card-link" href={`/blog/${post.id}/`} aria-label={d.title}></a>
+  <div class:list={['card-media', { contain: d.coverFit === 'contain' }]}>
+    {cover
+      ? <img src={cover} alt="" loading="lazy" decoding="async" />
+      : <div class="card-fallback"><Spiral size="70%" strokeWidth={5} /></div>}
+    {d.demo && <span class="card-badge">Live demo</span>}
+  </div>
+  <div class="card-body">
+    <span class="meta">{fmtDate(d.pubDate)}{d.draft && ' · draft'}</span>
+    <h3>{d.title}</h3>
+    {d.description && <p>{d.description}</p>}
+  </div>
+</article>

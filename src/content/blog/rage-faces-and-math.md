@@ -5,6 +5,8 @@ pubDate: 2012-08-18
 tags: [math, humor]
 draft: false
 legacy: true
+cover: "/images/2012/08/bf_gf_math.jpg"
+coverFit: contain
 ---
 
 A co-worker of mine recently emailed me a link to a [rage face comic](http://www.videobash.com/photo_show/Boyfriend-And-Girlfriend-Discussing-Math-41541) with the following:

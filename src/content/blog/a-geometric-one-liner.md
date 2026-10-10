@@ -5,6 +5,7 @@ pubDate: 2019-12-14
 tags: [math, geometry, riddler, python, project]
 draft: false
 legacy: true
+cover: "/videos/2019/12/surface-volume-curve-with-points.jpg"
 ---
 
 Note: The following text is a reconstruction of a 2019 entry on divergentblue.com based on the remaining artifacts (code, logs, images, and videos) and some help from my buddy Claude.

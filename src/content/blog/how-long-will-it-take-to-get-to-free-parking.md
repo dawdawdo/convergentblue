@@ -5,6 +5,7 @@ pubDate: 2012-07-10
 tags: [probability, games, simulation, project]
 draft: false
 legacy: true
+cover: "/images/2012/07/Monopoly-Wallpaper-board-games-1087811_1024_768.jpg"
 ---
 
 According to the [official rules](http://richard_wilding.tripod.com/monorules.htm#freeparking) of Monopoly, landing on the Free Parking space results in no action, however, many house rules include some sort of financial reward for landing on this space. For instance, I have always collected everything paid to "The Bank" through Chance/Community Chest cards, the Luxury Tax space, and Income Tax space to give to the lucky one who hits Free Parking.

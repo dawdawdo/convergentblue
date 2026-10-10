@@ -5,6 +5,7 @@ pubDate: 2012-07-19
 tags: [games, ai, strategy, project]
 draft: false
 legacy: true
+cover: "/images/2012/07/mancalaSampleBoard.png"
 ---
 
 Because I love genetic algorithms and video games, I always wanted to create some artificial intelligence that learns to play a game. My first attempt is the subject of this entry.

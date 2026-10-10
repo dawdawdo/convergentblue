@@ -4,6 +4,8 @@ description: "In a round-robin league, how many wins does it take to guarantee a
 pubDate: 2015-06-17
 tags: [probability, combinatorics, sports]
 legacy: true
+cover: "/images/2015/06/Competitors.gif"
+coverFit: contain
 ---
 
 ## Each Contestant Meets All Other Contestants In Turn

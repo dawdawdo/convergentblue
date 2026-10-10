@@ -1,18 +1,20 @@
 ---
 import Base from '../../layouts/Base.astro';
-import PostList from '../../components/PostList.astro';
+import PostGrid from '../../components/PostGrid.astro';
 import { getPosts } from '../../lib';
 const posts = await getPosts();
 const byYear = Object.entries(Object.groupBy(posts, (p) => String(p.data.pubDate.getUTCFullYear()))).sort((a, b) => +b[0] - +a[0]);
 ---
 <Base title="Writing" description="Everything I've written, newest first.">
-  <div class="wrap">
-    <h1>Writing</h1>
-    <p class="lede">{posts.length} posts. Older ones were rescued from divergentblue.com (2006–2020).</p>    
+  <div class="wide">
+    <header class="page-head">
+      <h1>Writing</h1>
+      <p class="lede">{posts.length} posts. Older ones were rescued from divergentblue.com (2006–2020).</p>
+    </header>
     {byYear.map(([year, list]) => (
-      <section>
-        <h2>{year}</h2>
-        <PostList posts={list!} />
+      <section class="year">
+        <h2 class="year-label">{year}</h2>
+        <PostGrid posts={list!} />
       </section>
     ))}
   </div>

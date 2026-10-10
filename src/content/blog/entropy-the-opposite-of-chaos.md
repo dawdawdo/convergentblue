@@ -5,6 +5,7 @@ pubDate: 2013-05-19
 tags: [information-theory, math]
 draft: false
 legacy: true
+cover: "/images/2013/05/low_entropy.png"
 ---
 
 ## What disorder looks like

@@ -10,7 +10,10 @@ const blog = defineCollection({
     updatedDate: z.coerce.date().optional(),
     tags: z.array(z.string()).default([]),
     draft: z.boolean().default(false),
-    legacy: z.boolean().default(false), // imported from the old divergentblue.com blog
+    legacy: z.boolean().default(false),
+    cover: z.string().optional(),            // thumbnail; defaults to the first image in the post
+    coverFit: z.enum(['cover', 'contain']).default('cover'),  // 'contain' for charts that shouldn't be cropped
+    demo: z.string().optional(),             // link to an interactive demo; shows a 'Live demo' badge // imported from the old divergentblue.com blog
   }),
 });
 

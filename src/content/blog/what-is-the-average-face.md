@@ -5,6 +5,7 @@ pubDate: 2019-12-15
 tags: [machine-learning, computer-vision, python, sql, project]
 draft: false
 legacy: true
+cover: "/images/2019/12/faces/avg_face.png"
 ---
 
 Note: This post was reconstructed with the help of my buddy Claude from notes, logs, emails, and other artifacts generated for this projet. The original published text is lost.

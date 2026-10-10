@@ -5,6 +5,7 @@ pubDate: 2012-07-15
 tags: [probability, simulation, excel, project]
 draft: false
 legacy: true
+cover: "/images/2012/07/TwoDiceTenThousandRolls.png"
 ---
 
 Probability distributions have a way of yielding unexpected and counter-intuitive results, so I thought it might be fun and instructive to build a "practical" example to illustrate some of the most often protested facts about them. Since speed and visual feedback are important, I decided to try to build a [dice-rolling simulation in Excel](/images/2012/07/dice_roller.xls).

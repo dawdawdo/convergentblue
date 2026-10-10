@@ -4,6 +4,7 @@ description: "Twenty-five years of wanting to make a video game, finally done in
 pubDate: 2015-09-04
 tags: [games, game-dev, project]
 legacy: true
+cover: "/images/2015/08/ignorance_demo.jpg"
 ---
 
 ## A New Medium

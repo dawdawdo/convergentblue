@@ -5,6 +5,8 @@ pubDate: 2020-05-11
 tags: [machine-learning, computer-vision, deep-learning, project]
 draft: false
 legacy: true
+cover: "/images/2020/05/classify-cover.jpg"
+demo: /classify-your-face/
 ---
 
 Note: This post was rescconstructed in 2026 from notes, logs, and artifacts from a prior entry on divergentblue.com, with some help from my buddy Claude.

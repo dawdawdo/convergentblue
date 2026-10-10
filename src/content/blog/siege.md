@@ -4,6 +4,8 @@ description: "Using a genetic algorithm to pick a troop allocation for FiveThirt
 pubDate: 2017-05-30
 tags: [games, strategy, ai, simulation, project]
 legacy: true
+cover: "/images/2017/05/arith_overflow.png"
+coverFit: contain
 ---
 
 ## Storming the Castles

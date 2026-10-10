@@ -5,6 +5,8 @@ pubDate: 2012-10-22
 tags: [probability, combinatorics]
 draft: false
 legacy: true
+cover: "/images/2012/10/hats.jpg"
+coverFit: contain
 ---
 
 ## Men Without Hats
