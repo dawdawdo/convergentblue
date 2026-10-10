@@ -3,7 +3,7 @@ title: "What's the Average Face?"
 description: "Averaging 202,599 celebrity photos pixel by pixel, and then the average man, woman, hat-wearer and more."
 pubDate: 2019-12-15
 tags: [machine-learning, computer-vision, python, sql, project]
-draft: true
+draft: false
 legacy: true
 ---
 
