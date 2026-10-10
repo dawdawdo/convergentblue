@@ -8,7 +8,7 @@ const byYear = Object.entries(Object.groupBy(posts, (p) => String(p.data.pubDate
 <Base title="Writing" description="Everything I've written, newest first.">
   <div class="wrap">
     <h1>Writing</h1>
-    <p class="lede">{posts.length} posts. Older ones came back from a 2013 backup.</p>
+    <p class="lede">{posts.length} posts. Older ones were rescued from divergentblue.com (2006–2020).</p>    
     {byYear.map(([year, list]) => (
       <section>
         <h2>{year}</h2>
