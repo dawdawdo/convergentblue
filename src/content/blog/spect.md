@@ -5,17 +5,17 @@ pubDate: 2026-10-10
 tags: [r, statistics, machine-learning, survival-analysis, project]
 cover: "/images/2026/10/spect/prediction-threshold.png"
 coverFit: contain
-draft: true
+draft: false
 ---
 
-<!-- DRAFT written in 2026 from your dissertation worklog (Dec 2022 – Sep 2025), the package DESCRIPTION,
-     and the JSS submission. Voice is my best guess. Check the TODOs, then remove `draft: true`. -->
 
-From late 2022 until 2025, my dissertation research went into one question: can ordinary machine learning classifiers predict not just *whether* something happens, but *when*? The answer turned into an R package, [spect](https://cran.r-project.org/package=spect) (Survival Prediction Ensemble Classification Tool), which has been on CRAN since April 2025. The accompanying paper never made it into a journal, so this post is its home.
+From late 2022 until 2025, my dissertation research focused on one question: can ordinary machine learning classifiers predict not just *whether* something happens, but *when*? The answer turned into an R package, [spect](https://cran.r-project.org/package=spect) (Survival Prediction Ensemble Classification Tool), which has been on CRAN since April 2025. The accompanying paper never made it into a journal, so this post is its home.
 
 ```r
 install.packages("spect")
 ```
+
+One important note before presenting my work - as I write this post in October 2026, I estimate that the years of work I did to build and deploy this package is something that a reasonably sharp graduate student with *no prior experience* in either machine learning or time-to-event anlysis could probably build with the help of Claude in about 4 weeks (Claude thinks it would take a little longer, but agrees with me that the quality of the code would be better). One the one hand, it definitely makes the work feel like a bit of a waste. On the other hand, what an amazing opportunity we have to advance the state of computer science, bioengineering, and medicine. Think about what years of work condensed into weeks could really mean. Of course, the opportunity extends far beyond those fields, but I'll avoid commenting outside of my own scope of practice.
 
 ## The Problem
 
@@ -61,7 +61,7 @@ From there, a handful of helpers cover the rest of the workflow: Kaplan-Meier co
 
 ![The spect workflow: optional synthetic data, then spect_train on survival data and parameters, then plotting and evaluation functions, then spect_predict on new data](/images/2026/10/spect/workflow.png)
 
-## What Comes Out
+## So, What Do We Get?
 
 Each individual gets a predicted survival curve. Pick a threshold (say, 50%) and the interval where the curve crosses it becomes the predicted time of the event:
 
@@ -75,13 +75,12 @@ On the Mayo Clinic primary biliary cirrhosis (pbc) dataset that ships with R, I 
 
 - **Accuracy is a terrible metric here.** With 10 intervals, guessing "no event" for every row is already about 90% accurate. AUC and Kaplan-Meier agreement tell you far more.
 - **Brute force is underrated.** Before the package existed, I ran about 2,500 randomly configured models on synthetic data (time to cancel a streaming subscription, based on income and viewing time) to see what mattered. The radial SVM was the best on average, but *every* algorithm found at least one configuration that worked well. That's what convinced me the stacking approach was worth packaging.
-- **Naming is hard.** The original name was *detect*. That package already existed. *spect* it is.
+- **Naming is hard.** The original name was *detect*, but that package already existed, : ).
 - **CRAN is a gauntlet.** The package passed every check on my machine and still went through several rounds of rejection. Highlights: my test data was too large, `predict()` quietly changed its behavior in R 4.4.2, and I learned more about `R CMD check` than I ever wanted to. It was finally accepted in April 2025.
 - **Save often.** I lost an entire notebook in 2023 and had to rebuild it from scratch. (It went faster the second time.)
 
-<!-- TODO: acknowledgments. Your advisors and lab mates did a lot of the review and feedback in the worklog;
-     name them here if you'd like, e.g. "Thanks to ... at the University of Louisville". -->
+Thanks to Drs. Herman Frieboes, Dylan Goodin, and Hunter Miller at the University of Louisville for sharing their deep expertise and for their patience with my progress on this project.
 
 ## Try It
 
-spect is on [CRAN](https://cran.r-project.org/package=spect), and the code is on [GitHub](https://github.com/dawdawdo/spect). The package includes vignettes for generating synthetic survival data and training models on it, so you can kick the tires without any data of your own.
+spect is on [CRAN](https://cran.r-project.org/package=spect), and the code is on [GitHub](https://github.com/dawdawdo/spect). The package includes vignettes (because CRAN demands that, too) for generating synthetic survival data and training models on it, so you can kick the tires without any data of your own.
