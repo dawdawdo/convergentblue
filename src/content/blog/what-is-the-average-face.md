@@ -1,7 +1,7 @@
 ---
-title: "What is the Average Face?"
+title: "What's the Average Face?"
 description: ""
-pubDate: 2016-01-01   # TODO: original publish date
+pubDate: 2019-12-15
 tags: [machine-learning, computer-vision]
 draft: true
 legacy: true

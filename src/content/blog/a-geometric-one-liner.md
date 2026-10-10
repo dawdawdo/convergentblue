@@ -1,7 +1,7 @@
 ---
 title: "A Geometric One-Liner"
 description: ""
-pubDate: 2016-01-01   # TODO: original publish date
+pubDate: 2019-12-14
 tags: [math, geometry]
 draft: true
 legacy: true

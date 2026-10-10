@@ -1,7 +1,7 @@
 ---
 title: "Classify Your Face – in a Web Browser!"
 description: ""
-pubDate: 2016-01-01   # TODO: original publish date
+pubDate: 2020-05-11
 tags: [machine-learning, computer-vision]
 draft: true
 legacy: true
