@@ -10,7 +10,7 @@ legacy: true
 
 A few years ago, a co-worker participated in a local cricket league. Each team played all of the others in the league twice, and the top few qualified for a playoff. He wanted to know how many games his team needed to win in order to guarantee an appearance in the playoffs. This type of scheduling goes by the name "round-robin".
 
-![Round-robin schedule](https://web.archive.org/web/2019im_/http://www.divergentblue.com/wp-content/uploads/2015/06/roundrobin.png)
+![Round-robin schedule](/images/2015/06/roundrobin.png)
 
 I was interested in the following questions:
 
@@ -38,7 +38,7 @@ The worst case is actually the question I was asked, and it represents the night
 
 Well, I don't have any cool artwork for this one, so I thought it might be fun to at least see what these functions look like on a 3D graph. With old friend Maple 8 (yes, the one from 2002), it's pretty easy to generate a 3D plot with both functions in Q and C. In the image below, the worst case is represented by the "top" of the structure, and the best (luckiest) case is represented by the strange-looking shaded region.
 
-![Required wins by competitors and qualifiers](https://web.archive.org/web/2019im_/http://www.divergentblue.com/wp-content/uploads/2015/06/Competitors.gif)
+![Required wins by competitors and qualifiers](/images/2015/06/Competitors.gif)
 
 You can see that as the number of qualifiers shrinks relative to the number of competitors, the required win total really skyrockets. For example, if just two out of five teams qualify, six wins would not be enough to guarantee a playoff spot.
 

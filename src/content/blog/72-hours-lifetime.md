@@ -16,7 +16,7 @@ A number of friends had expressed interest at some time in my life in helping me
 
 ## Extending My Reach
 
-![Approaching the community](https://web.archive.org/web/2019im_/http://www.divergentblue.com/wp-content/uploads/2015/08/community_approaching.png)
+![Approaching the community](/images/2015/08/community_approaching.png)
 
 I decided that I needed to reach outside of my base of friends and family. Fortunately, I [wasn't the first](http://gamedevlou.org/) in my town to have this thought. Again, however, I spent a fair amount of time learning new tools, toying with mechanics, thinking, discussing, and now, networking. All of these things were useful, but I still hadn't quite reached the milestone of having made my own. Then, my scope tightened.
 
@@ -24,7 +24,7 @@ I decided that I needed to reach outside of my base of friends and family. Fortu
 
 There is a game development competition. It's called [Ludum Dare](http://ludumdare.com/compo/). The premise is to build a game in two to three days. That's it. The prevention of scope creep is baked right in to the rules. I participated in Ludum Dare 33, and did in seventy-two hours what I had previously failed to do in twenty-five plus years. Was it great? Absolutely not. Was it good? No! Was it terrible? Almost certainly. [Take a look](https://web.archive.org/web/2019/http://www.divergentblue.com/web_games/ignorance/ignorance_web.html) for yourself. I asked my wife to draw some artwork on a white sheet of paper, scan it, and send it to me. I borrowed some generic assets for a background. I neglected to add music or sound.
 
-![Ignorance demo](https://web.archive.org/web/2019im_/http://www.divergentblue.com/wp-content/uploads/2015/08/ignorance_demo.jpg)
+![Ignorance demo](/images/2015/08/ignorance_demo.jpg)
 
 Then I asked my five-year-old son to show it off to a small crowd of people collected to celebrate what had been built that weekend. And the amateurish mechanics, unpolished images, and childish puzzles are still magic. I built an unambiguously complete game and learned a breadth of things that would have otherwise taken months.
 

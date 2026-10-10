@@ -18,7 +18,7 @@ So, each submission will battle against all the others and whichever wins the mo
 
 Since we don't actually know what this round of submissions will look like, I started by seeing what it would take to just play every possible submission against every other one, however, there are a little over 6 million (!) partitions of the number 100 (the number of available troops), and since each castle counts differently, there are 10 factorial ~ 3.6 million permutations, totaling over 22 million possible solutions. I would have to play 22 million factorial games to exhaust all the possibilities and since I don't have access to a [quantum computer](http://rigetti.com/) yet, I need a different method.
 
-![Arithmetic overflow](https://web.archive.org/web/2023im_/https://www.divergentblue.com/wp-content/uploads/2017/05/arith_overflow-e1496118188534.png)
+![Arithmetic overflow](/images/2017/05/arith_overflow.png)
 
 ## Genetics – Again!
 
@@ -35,11 +35,11 @@ That's it. Since this is a static environment (not like, say, a rainforest), eve
 
 What does it mean to be "strong" here? I began by playing each candidate in my pool against all of the others, and allowing the ones which won the most to survive, however, after a day of processing, the algorithm had made a clear choice. Just out of curiosity, I ran this candidate against the February results and found out that it was, well, less good than I'd hoped – placing around 200th of about 1300 submissions. From the graphic below, you can see that it casts a pretty wide net for the mid-range castles, but really goes for number 10 hard, devoting fully one third of its available troops to that castle.
 
-![Troop allocation evolved against a random pool](https://web.archive.org/web/2023im_/https://www.divergentblue.com/wp-content/uploads/2017/05/self_battling_pool.png)
+![Troop allocation evolved against a random pool](/images/2017/05/self_battling_pool.png)
 
 But, apparently, humans aren't all that random – ¯\\\_(ツ)\_/¯ – so, I changed my strength measurement to score against the human entries instead of against the random pool. The algorithm very quickly settled on a set of candidates which all won enough matches to easily coast past the previous first place entry by more than 100 matches. They almost all looked something like the one below, which, I think, was my actual submission:
 
-![Troop allocation evolved against human entries](https://web.archive.org/web/2023im_/https://www.divergentblue.com/wp-content/uploads/2017/05/human_entry_pool.png)
+![Troop allocation evolved against human entries](/images/2017/05/human_entry_pool.png)
 
 This result tells me that the humans tended to over-allocate troops to castles 1-4, 8, and 10. My submission happily grants them almost all of those points, focusing instead on the following group of castles: [5, 6, 7, 9], the sum of which is almost enough to claim victory, per se. This strategy, interestingly, didn't even find the token allocation of a single troop to defend castles 1 or 3 worth removing just one troop from the heavily fortified castle 9. Again, one third of the troops go to just one castle, essentially guaranteeing a win there. For the fatally curious, I've [posted all of the Python + SQL code](https://github.com/dawdawdo/riddler_battle) which generates the results above.
 
