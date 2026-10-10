@@ -7,13 +7,11 @@ draft: true
 legacy: true
 ---
 
-<!-- DRAFT: reconstructed in 2026 from average_face.py, the SQL setup script, the output images in Drive
-     (School/UL/Independent_Study_AI_ML/Celeb_Photos_20191114) and a Nov 2019 email to Dr. Chang.
-     The original text was lost. Edit freely, then remove `draft: true`. -->
+Note: This post was reconstructed with the help of my buddy Claude from notes, logs, emails, and other artifacts generated for this projet. The original published text is lost.
 
 ## A Face in the Crowd
 
-During an independent study, Dr. Chang showed me [CelebA](http://mmlab.ie.cuhk.edu.hk/projects/CelebA.html), a public dataset of 202,599 photos of celebrities. Every photo is cropped and aligned to the same 178×218 frame, so the eyes, nose and mouth land in roughly the same place each time. It also comes with 40 yes/no labels per photo: smiling, wearing a hat, bald, and so on.
+During an independent study at the University of Louisville, Dr. Chang showed me [CelebA](http://mmlab.ie.cuhk.edu.hk/projects/CelebA.html), a public dataset of 202,599 photos of celebrities. Every photo is cropped and aligned to the same 178×218 frame, so the eyes, nose and mouth land in roughly the same place each time. It also comes with 40 yes/no labels per photo: smiling, wearing a hat, bald, and so on.
 
 Aligned faces made me wonder: what happens if you just average them?
 
@@ -63,5 +61,3 @@ A few things jump out:
 - **Beards do too,** and the bearded average is visibly darker around the jaw than the general male average.
 - **Necklaces mostly mean women.** The necklace average looks almost identical to the female average, because nearly everyone labeled with a necklace is also labeled female.
 - **"Attractive" is a loaded label.** The attractive average looks almost exactly like the female average, while the unattractive average looks male. That says less about faces than about how the labels were assigned. It's a good reminder that a model trained on these labels would learn the labelers' biases right along with everything else.
-
-<!-- TODO: anything you remember concluding at the time, or a teaser for the "Classify Your Face" follow-up (May 2020). -->
