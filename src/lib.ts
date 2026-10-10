@@ -10,11 +10,6 @@ export async function getPosts() {
   );
 }
 
-export async function getProjects() {
-  return (await getCollection('projects', visible)).sort(
-    (a, b) => b.data.date.valueOf() - a.data.date.valueOf(),
-  );
-}
 
 export const fmtDate = (d: Date) =>
   d.toLocaleDateString('en-US', { year: 'numeric', month: 'short', day: 'numeric', timeZone: 'UTC' });

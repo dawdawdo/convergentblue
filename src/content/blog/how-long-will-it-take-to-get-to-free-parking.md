@@ -2,7 +2,7 @@
 title: "How long will it take to get to Free Parking?"
 description: "According to the official rules of Monopoly, landing on the Free Parking space results in no action, however, many house rules include some sort of…"
 pubDate: 2012-07-10
-tags: [probability, games, simulation]
+tags: [probability, games, simulation, project]
 draft: false
 legacy: true
 ---

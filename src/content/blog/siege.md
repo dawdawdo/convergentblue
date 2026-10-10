@@ -2,7 +2,7 @@
 title: "Siege!"
 description: "Using a genetic algorithm to pick a troop allocation for FiveThirtyEight's Riddler castle-war puzzle."
 pubDate: 2017-05-30
-tags: [games, strategy, ai, simulation]
+tags: [games, strategy, ai, simulation, project]
 legacy: true
 ---
 

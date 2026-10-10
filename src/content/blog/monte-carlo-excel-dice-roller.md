@@ -2,7 +2,7 @@
 title: "Excel Dice Rolling Simulator"
 description: "Probability distributions have a way of yielding unexpected and counter-intuitive results, so I thought it might be fun and instructive to build a…"
 pubDate: 2012-07-15
-tags: [probability, simulation, excel]
+tags: [probability, simulation, excel, project]
 draft: false
 legacy: true
 ---

@@ -2,7 +2,7 @@
 title: "A Geometric One-Liner"
 description: "Which boxes have a volume equal to their surface area? One line of Python finds them all, and a week of brute force can't find any more."
 pubDate: 2019-12-14
-tags: [math, geometry, riddler, python]
+tags: [math, geometry, riddler, python, project]
 draft: false
 legacy: true
 ---

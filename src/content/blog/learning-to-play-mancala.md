@@ -2,7 +2,7 @@
 title: "Learning to play Mancala"
 description: "Because I love genetic algorithms and video games, I always wanted to create some artificial intelligence that learns to play a game. My first attempt is…"
 pubDate: 2012-07-19
-tags: [games, ai, strategy]
+tags: [games, ai, strategy, project]
 draft: false
 legacy: true
 ---

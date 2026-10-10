@@ -1,10 +1,8 @@
 ---
 import Base from '../layouts/Base.astro';
 import PostList from '../components/PostList.astro';
-import ProjectCards from '../components/ProjectCards.astro';
-import { getPosts, getProjects } from '../lib';
+import { getPosts } from '../lib';
 const posts = (await getPosts()).slice(0, 5);
-const projects = (await getProjects()).slice(0, 4);
 ---
 <Base>
   <div class="wrap">
@@ -15,7 +13,6 @@ const projects = (await getProjects()).slice(0, 4);
     <div class="section-head"><h2>Recent writing</h2><a href="/blog/">All posts →</a></div>
     <PostList posts={posts} />
 
-    <div class="section-head"><h2>Projects</h2><a href="/projects/">All projects →</a></div>
-    <ProjectCards projects={projects} />
+    <p style="margin-top:1.5rem"><a href="/tags/project/">Things I've built →</a></p>
   </div>
 </Base>

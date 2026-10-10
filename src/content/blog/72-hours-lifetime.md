@@ -2,7 +2,7 @@
 title: "72 Hours > Lifetime"
 description: "Twenty-five years of wanting to make a video game, finally done in one Ludum Dare weekend."
 pubDate: 2015-09-04
-tags: [games, game-dev]
+tags: [games, game-dev, project]
 legacy: true
 ---
 
