@@ -99,6 +99,8 @@ hr { border: 0; border-top: 1px solid var(--rule); margin: 2.5rem 0; }
 .toc a:hover { color: var(--ink); text-decoration: underline; }
 .prose video { display: block; width: 100%; max-width: 720px; margin: 1.5rem auto; border-radius: 4px; background: #000; }
 .prose img { display: block; margin: 1.5rem auto; border-radius: 4px; background: #fff; }
+/* theme-aware figures (<picture> with a dark-mode <source>) are transparent on purpose */
+.prose picture img { background: none; }
 .prose a:has(> img) { display: block; }
 .prose .katex-display { overflow-x: auto; overflow-y: hidden; padding: 0.25rem 0; }
 .prose table { border-collapse: collapse; width: 100%; font-size: 0.95rem; }

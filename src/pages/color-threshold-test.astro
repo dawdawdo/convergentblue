@@ -1,0 +1,357 @@
+---
+import Base from '../layouts/Base.astro';
+---
+<Base title="Color Threshold Test" description="Four patches, one is different. A browser version of the odd-one-out test I used to map my own color vision, with a map of your own color smear zones at the end.">
+  <article class="wrap">
+    <p class="eyebrow"><a href="/blog/mapping-my-own-color-vision/">From the post: Mapping My Own Color Vision</a></p>
+    <h1>Color Threshold Test</h1>
+    <p class="lede">Four patches, one is different. Pick the odd one out. The test homes in on the smallest color difference you can see in each direction, then maps your own color smear zones.</p>
+    <div id="ctt-app" class="ctt"></div>
+  </article>
+
+  <!-- Trials run full-screen on a fixed neutral L*=60 gray: the surround changes how colors look,
+       so it has to be the same for everyone and can't follow the site's light/dark theme. -->
+  <div id="ctt-stage" class="ctt-stage" hidden></div>
+</Base>
+
+<style is:global>
+  .ctt { font-family: var(--sans); margin: 2rem 0; }
+  .ctt-panel { background: var(--surface); border: 1px solid var(--rule); border-radius: 10px; padding: 1.4rem 1.5rem; }
+  .ctt-panel h2 { margin: 0 0 .5rem; }
+  .ctt-panel p, .ctt-panel li { font-size: .95rem; line-height: 1.55; color: var(--muted); }
+  .ctt-panel strong { color: var(--ink); }
+  .ctt label.ctt-lab { display: block; margin: 1rem 0 .35rem; font: 600 .72rem/1 var(--sans); letter-spacing: .1em; text-transform: uppercase; color: var(--muted); }
+  .ctt input[type=text], .ctt select { width: 100%; min-height: 44px; font: 16px/1.3 var(--sans); color: var(--ink); background: var(--bg); border: 1px solid var(--rule); border-radius: 6px; padding: .5rem .7rem; }
+  .ctt-row { display: flex; gap: .6rem; flex-wrap: wrap; margin-top: 1.2rem; align-items: center; }
+  .ctt-two { display: flex; gap: .6rem; } .ctt-two > :first-child { flex: 2; } .ctt-two > :last-child { flex: 1; }
+  .ctt .btn { font: 500 .95rem/1 var(--sans); padding: .75rem 1.1rem; min-height: 44px; border-radius: 6px; border: 1px solid var(--ink); background: var(--surface); color: var(--ink); cursor: pointer; }
+  .ctt .btn:hover { background: var(--code-bg); }
+  .ctt .btn-primary { background: var(--ink); color: var(--bg); }
+  .ctt .btn-primary:hover:not(:disabled) { background: var(--accent); border-color: var(--accent); color: var(--accent-ink); }
+  .ctt .btn:disabled { opacity: .45; cursor: not-allowed; }
+  .ctt-warn { color: #b4532a !important; }
+  @media (prefers-color-scheme: dark) { .ctt-warn { color: #ffb08a !important; } }
+  .ctt table { border-collapse: collapse; width: 100%; font-size: .85rem; margin-top: .6rem; }
+  .ctt th, .ctt td { text-align: left; padding: .35rem .5rem; border-bottom: 1px solid var(--rule); }
+  .ctt th { font-size: .7rem; letter-spacing: .08em; text-transform: uppercase; color: var(--muted); }
+  .ctt details { margin-top: 1rem; } .ctt summary { cursor: pointer; font-weight: 600; font-size: .9rem; }
+  .ctt-map { display: block; width: 100%; max-width: 560px; height: auto; margin: 1rem auto 0; border-radius: 8px; border: 1px solid var(--rule); }
+  .ctt-stat { font: 600 1.15rem/1.4 var(--sans); color: var(--ink) !important; margin: .4rem 0 0; }
+  .ctt-msg { color: var(--accent) !important; min-height: 1.2em; }
+  .ctt-section { margin-top: 1.5rem; padding-top: 1.2rem; border-top: 1px solid var(--rule); }
+
+  .ctt-stage { position: fixed; inset: 0; z-index: 1000; background: #949494; color: #222; font: 15px/1.5 var(--sans);
+    display: flex; align-items: center; justify-content: center; overflow: auto;
+    padding: calc(12px + env(safe-area-inset-top, 0px)) 14px calc(12px + env(safe-area-inset-bottom, 0px));
+    touch-action: manipulation; -webkit-user-select: none; user-select: none; }
+  .ctt-stage[hidden] { display: none; }
+  .ctt-grid { display: grid; grid-template-columns: 1fr 1fr; gap: min(26px, 4.5vw); width: min(660px, 88vw, 62dvh); margin: 0 auto; }
+  .ctt-patch { aspect-ratio: 1 / 1; border-radius: 10px; cursor: pointer; -webkit-tap-highlight-color: transparent; }
+  .ctt-bar { height: 4px; background: #00000026; border-radius: 2px; margin-top: 26px; overflow: hidden; }
+  .ctt-barfill { height: 100%; background: #111; width: 0; }
+  .ctt-status { text-align: center; color: #3c3c3c; font-size: 12px; margin-top: 10px; letter-spacing: .07em; text-transform: uppercase; }
+  .ctt-flash { text-align: center; height: 20px; font-size: 13px; color: #2a2a2a; margin-top: 4px; }
+  .ctt-pause { display: block; margin: 18px auto 0; background: #00000022; color: #2c2c2c; border: 0; border-radius: 9px; padding: 11px 22px; font: 600 14px var(--sans); cursor: pointer; min-height: 44px; }
+
+  /* shared opt-in send panel */
+  .cv-send-title { font-weight: 600; color: var(--ink) !important; margin: 0 0 .3rem; }
+  .cv-check { display: flex; gap: .5rem; align-items: center; font-size: .95rem; cursor: pointer; margin: .6rem 0; }
+  .cv-check input { width: 1.1rem; height: 1.1rem; }
+  .cv-send-fields { display: grid; gap: .5rem; max-width: 30rem; }
+  .cv-send-fields[hidden] { display: none; }
+  .cv-send-fields .btn { justify-self: start; }
+  .cv-hp { position: absolute; left: -9999px; width: 1px; height: 1px; opacity: 0; }
+  .cv-send-status { color: var(--accent) !important; min-height: 1.2em; }
+</style>
+
+<script>
+  import { labToRGB, inGamut, typicalRadius } from '../scripts/color-vision/lab';
+  import { drawSmearMap, mergeResults, type Cond } from '../scripts/color-vision/smear';
+  import { mountSend, saveFile } from '../scripts/color-vision/send';
+
+  /* ====================== conditions / experiment plan =================== */
+  // Every anchor sits at L*=60. Chromatic anchors sit at C*=32 around the hue circle.
+  // "dir" is the direction in the a*b* plane the difference is applied along, in degrees
+  // (0 = +a* = toward red, 90 = +b* = toward yellow). dir = 'L' means lightness instead.
+  type C = { name: string; L: number; a: number; b: number; dir: number | 'L' };
+  function makeConditions(preset: string): C[] {
+    const L0 = 60, R = 32, out: C[] = [];
+    const add = (name: string, L: number, a: number, b: number, dir: number | 'L') => out.push({ name, L, a, b, dir });
+    const at = (h: number) => [R * Math.cos((h * Math.PI) / 180), R * Math.sin((h * Math.PI) / 180)];
+    if (preset === 'green') {
+      const [ga, gb] = at(180), [ya, yb] = at(120);
+      [0, 45, 90, 135].forEach((d) => add(`C*32 h180° @ ${d}°`, L0, ga, gb, d));
+      [45, 135].forEach((d) => add(`C*32 h120° @ ${d}°`, L0, ya, yb, d));
+      add('lightness @ a0 b0', L0, 0, 0, 'L');
+      return out;
+    }
+    if (preset === 'complete') {
+      // only the diagonals at the Standard anchors; merged with a Standard run it gives the full map.
+      // The trailing three repeat Standard conditions as a bridge between the two sessions.
+      [45, 135].forEach((d) => add(`neutral @ ${d}°`, L0, 0, 0, d));
+      [0, 60, 120, 180, 240, 300].forEach((h) => { const [a, b] = at(h); [45, 135].forEach((d) => add(`C*32 h${h}° @ ${d}°`, L0, a, b, d)); });
+      add('neutral @ 0°', L0, 0, 0, 0);
+      add('C*32 h180° @ 0°', L0, ...(at(180) as [number, number]), 0);
+      add('lightness @ a0 b0', L0, 0, 0, 'L');
+      return out;
+    }
+    const hues = preset === 'quick' ? [0, 120, 240] : [0, 60, 120, 180, 240, 300];
+    const dirs = preset === 'full' ? [0, 45, 90, 135] : [0, 90];
+    dirs.forEach((d) => add(`neutral @ ${d}°`, L0, 0, 0, d));
+    hues.forEach((h) => { const [a, b] = at(h); dirs.forEach((d) => add(`C*32 h${h}° @ ${d}°`, L0, a, b, d)); });
+    const lA = preset === 'quick' ? [[0, 0]] : preset === 'full' ? [[0, 0], [R, 0], [-R, 0], [0, -R]] : [[0, 0], [R, 0], [0, -R]];
+    lA.forEach(([a, b]) => add(`lightness @ a${a} b${b}`, L0, a, b, 'L'));
+    return out;
+  }
+  const TRIALS: Record<string, number> = { quick: 60, standard: 70, full: 80, complete: 50, green: 40 };
+  const PRESETS: [string, string, string][] = [
+    ['quick', 'Quick', 'a first look: gray plus three colors, two directions each'],
+    ['standard', 'Standard', 'gray plus six colors, two directions each'],
+    ['full', 'Full ellipse fit', 'four directions everywhere: the real shape of every zone'],
+    ['complete', 'Complete the map', 'only the diagonals; combine with a Standard run for the full map'],
+    ['green', 'Green check', 'a close look at green, where my own results broke pattern'],
+  ];
+
+  /* ============================ QUEST-style ============================= */
+  // Bayesian grid over threshold, fixed slope. 4-way odd-one-out: chance = 25%.
+  const GRID: number[] = []; for (let v = 0.4; v <= 42; v += 0.2) GRID.push(v);
+  const SLOPE = 0.28, LAPSE = 0.02, GUESS = 0.25;
+  const pCorrect = (x: number, T: number) => GUESS + (1 - GUESS - LAPSE) / (1 + Math.exp(-SLOPE * (x - T)));
+  class Quest {
+    lp = GRID.map(() => 0);
+    post() { const m = Math.max(...this.lp), e = this.lp.map((v) => Math.exp(v - m)), s = e.reduce((a, b) => a + b, 0); return e.map((v) => v / s); }
+    next() { const p = this.post(); let c = 0; for (let i = 0; i < GRID.length; i++) { c += p[i]; if (c >= 0.5) return GRID[i]; } return GRID[GRID.length - 1]; }
+    update(x: number, ok: boolean) { for (let i = 0; i < GRID.length; i++) { const pr = pCorrect(x, GRID[i]); this.lp[i] += Math.log(ok ? pr : 1 - pr); } }
+    mean() { const p = this.post(); return GRID.reduce((s, g, i) => s + g * p[i], 0); }
+    sd() { const p = this.post(), m = this.mean(); return Math.sqrt(GRID.reduce((s, g, i) => s + p[i] * (g - m) ** 2, 0)); }
+  }
+
+  /* ============================ environment ============================= */
+  function envInfo() {
+    const mm = (q: string) => { try { return matchMedia(q).matches; } catch { return false; } };
+    const gam = mm('(color-gamut: rec2020)') ? 'rec2020' : mm('(color-gamut: p3)') ? 'p3' : mm('(color-gamut: srgb)') ? 'srgb' : 'unknown';
+    return { colorGamut: gam, dynamicRange: mm('(dynamic-range: high)') ? 'high' : 'standard', colorDepth: screen.colorDepth,
+      pixelRatio: devicePixelRatio, screen: `${screen.width}x${screen.height}`, viewport: `${innerWidth}x${innerHeight}`,
+      touch: (navigator.maxTouchPoints || 0) > 0, mobile: /Android|iPhone|iPad|iPod/i.test(navigator.userAgent),
+      ua: navigator.userAgent, tz: Intl.DateTimeFormat().resolvedOptions().timeZone,
+      darkMode: mm('(prefers-color-scheme: dark)') };
+  }
+
+  /* =============================== state ================================ */
+  const KEY = 'cb_color_threshold_v1';
+  type Trial = { cond: number; name: string; L: number; a: number; b: number; dir: number | 'L'; delta: number; correct: boolean; rt: number; afterBlank: boolean };
+  let S: any = null, SUBJ = '', AGE = '', LIGHT = 'normal', CVD = 'no';
+  let extraRuns: Cond[][] = [];          // earlier runs the visitor loaded to combine with this one
+  const store = {
+    save() { try { localStorage.setItem(KEY, JSON.stringify({ preset: S.preset, trialsPer: S.trialsPer, conds: S.conds, viewMs: S.viewMs,
+      subj: SUBJ, age: AGE, light: LIGHT, cvd: CVD, lp: S.quests.map((q: Quest) => q.lp), done: S.done, log: S.log, started: S.started })); } catch { /* private mode */ } },
+    load() { try { return JSON.parse(localStorage.getItem(KEY) || 'null'); } catch { return null; } },
+    clear() { try { localStorage.removeItem(KEY); } catch { /* ignore */ } },
+  };
+
+  let wake: any = null;
+  async function keepAwake() { try { if ('wakeLock' in navigator && !wake) { wake = await (navigator as any).wakeLock.request('screen'); wake.addEventListener('release', () => (wake = null)); } } catch { /* optional */ } }
+  document.addEventListener('visibilitychange', () => { if (document.visibilityState === 'visible' && S && !stage.hidden) keepAwake(); });
+
+  const app = document.getElementById('ctt-app')!, stage = document.getElementById('ctt-stage')!;
+  const esc = (s: string) => s.replace(/[&<>"]/g, (c) => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;' })[c]!);
+  const total = (p: string) => makeConditions(p).length * TRIALS[p];
+
+  /* =============================== screens ============================== */
+  function screenIntro() {
+    stage.hidden = true; document.body.style.overflow = '';
+    const prev = store.load();
+    const mobile = /Android|iPhone|iPad|iPod/i.test(navigator.userAgent);
+    app.innerHTML = `<div class="ctt-panel">
+      <h2>Before you start</h2>
+      <p>Four patches appear. One is a slightly different color. <strong>Tap the odd one out.</strong>
+        If you really can't tell, guess. That's expected, and the math accounts for it.</p>
+      ${mobile ? `<p class="ctt-warn"><strong>On a phone:</strong> turn off auto-brightness, Night Shift and True Tone first. They change the colors mid-test. Hold the phone at a steady distance.</p>` : ''}
+      <p>Set screen brightness to your normal level and leave it there. No night/warm-light mode.
+        Absolute numbers depend on your screen; the <em>shape</em> of your zones and the ratio to typical mostly don't.
+        This is a curiosity, not a medical test.</p>
+
+      <label class="ctt-lab" for="ctt-subj">Name or initials, and age (optional, stays on your device)</label>
+      <div class="ctt-two"><input type="text" id="ctt-subj" placeholder="name or initials" autocomplete="off">
+        <input type="text" id="ctt-age" placeholder="age" inputmode="numeric" autocomplete="off"></div>
+      <label class="ctt-lab" for="ctt-light">Room lighting right now</label>
+      <select id="ctt-light"><option value="normal" selected>Normal indoor light</option><option value="dim">Dim / evening</option><option value="bright">Bright: daylight on the screen</option></select>
+      <label class="ctt-lab" for="ctt-cvd">Ever been told you have a color vision issue?</label>
+      <select id="ctt-cvd"><option value="no" selected>No</option><option value="yes">Yes</option><option value="unsure">Not sure</option></select>
+      <label class="ctt-lab" for="ctt-preset">Session size</label>
+      <select id="ctt-preset">${PRESETS.map(([k, n, d]) =>
+        `<option value="${k}">${n} (~${Math.round((total(k) * 3) / 60)} min): ${d}</option>`).join('')}</select>
+      <label class="ctt-lab" for="ctt-view">Viewing time per trial</label>
+      <select id="ctt-view"><option value="6000" selected>6 seconds (recommended)</option><option value="8000">8 seconds (unhurried)</option><option value="4000">4 seconds</option><option value="0">Untimed</option></select>
+      <details><summary>Why a time limit?</summary>
+        <p>Use a steady, considered pace. The cap stops indefinite staring, where you start spotting the odd patch by screen
+        unevenness instead of color. After time runs out the patches gray out and you still answer. If more than about
+        1 trial in 10 runs out of time, restart with a longer setting.</p></details>
+      <p>The test runs full screen on a neutral gray. You can pause any time with the button under the patches (or the <kbd>S</kbd> key); progress is saved on this device.</p>
+      <div class="ctt-row">
+        <button class="btn btn-primary" id="ctt-go">${prev ? 'Start over' : 'Begin'}</button>
+        ${prev ? `<button class="btn" id="ctt-resume">Resume (${prev.done} trials done)</button><button class="btn" id="ctt-seeprev">See results so far</button>` : ''}
+      </div></div>`;
+    const v = (id: string) => (document.getElementById(id) as HTMLInputElement).value;
+    document.getElementById('ctt-go')!.onclick = () => {
+      SUBJ = (v('ctt-subj') || 'unnamed').trim(); AGE = v('ctt-age').trim(); LIGHT = v('ctt-light'); CVD = v('ctt-cvd');
+      extraRuns = [];
+      begin(v('ctt-preset'), null, false, +v('ctt-view'));
+    };
+    if (prev) {
+      document.getElementById('ctt-resume')!.onclick = () => begin(prev.preset, prev);
+      document.getElementById('ctt-seeprev')!.onclick = () => { begin(prev.preset, prev, true); screenDone(true); };
+    }
+  }
+
+  function begin(preset: string, prev: any, silent = false, viewMs?: number) {
+    if (prev && prev.subj) { SUBJ = prev.subj; AGE = prev.age || ''; LIGHT = prev.light || 'normal'; CVD = prev.cvd || 'no'; }
+    const conds: C[] = prev ? prev.conds : makeConditions(preset);
+    S = { preset, trialsPer: prev ? prev.trialsPer : TRIALS[preset], conds,
+      viewMs: viewMs !== undefined ? viewMs : prev && prev.viewMs !== undefined ? prev.viewMs : 6000,
+      quests: conds.map((_, i) => { const q = new Quest(); if (prev?.lp?.[i]) q.lp = prev.lp[i]; return q; }),
+      counts: conds.map(() => 0), done: prev ? prev.done : 0, log: (prev ? prev.log : []) as Trial[],
+      started: prev ? prev.started : new Date().toISOString() };
+    S.log.forEach((r: Trial) => S.counts[r.cond]++);
+    if (!silent) { stage.hidden = false; document.body.style.overflow = 'hidden'; keepAwake(); nextTrial(); }
+  }
+
+  function nextTrial() {
+    const open = S.conds.map((_: C, i: number) => i).filter((i: number) => S.counts[i] < S.trialsPer);
+    if (!open.length) { store.save(); return screenDone(false); }
+    const ci = open[Math.floor(Math.random() * open.length)], cond: C = S.conds[ci], q: Quest = S.quests[ci];
+    const delta = q.next();
+    const base = [cond.L, cond.a, cond.b] as [number, number, number];
+    const shift = (sgn: number): [number, number, number] => {
+      if (cond.dir === 'L') return [cond.L + sgn * delta, cond.a, cond.b];
+      const r = (cond.dir * Math.PI) / 180;
+      return [cond.L, cond.a + sgn * delta * Math.cos(r), cond.b + sgn * delta * Math.sin(r)];
+    };
+    let odd = shift(1); if (!inGamut(...odd)) odd = shift(-1);     // out of gamut: push the other way
+    const oddIdx = Math.floor(Math.random() * 4);
+    const cols = [0, 1, 2, 3].map((i) => labToRGB(...(i === oddIdx ? odd : base)));
+    // jitter the grid so a fixed screen non-uniformity can't become a non-color cue
+    const jx = Math.round((Math.random() - 0.5) * 90), jy = Math.round((Math.random() - 0.5) * 60);
+    const all = S.conds.length * S.trialsPer, pct = Math.round((100 * S.done) / all);
+    stage.innerHTML = `<div>
+      <div class="ctt-grid" style="transform:translate(${jx}px,${jy}px)">${cols.map((c, i) =>
+        `<div class="ctt-patch" role="button" aria-label="patch ${i + 1}" data-i="${i}" style="background:${c}"></div>`).join('')}</div>
+      <div class="ctt-bar"><div class="ctt-barfill" style="width:${pct}%"></div></div>
+      <div class="ctt-status">${S.done} of ${all}</div><div class="ctt-flash" id="ctt-flash"></div>
+      <button class="ctt-pause" id="ctt-pause">Pause &amp; save</button></div>`;
+    document.getElementById('ctt-pause')!.onclick = () => { clearTimeout(timer); screenDone(true); };
+    const patches = [...stage.querySelectorAll<HTMLElement>('.ctt-patch')];
+    let blanked = false, timer: any = null;
+    if (S.viewMs > 0) timer = setTimeout(() => {
+      blanked = true; patches.forEach((p) => (p.style.background = '#949494'));
+      document.getElementById('ctt-flash')!.textContent = 'time: pick the one you saw';
+    }, S.viewMs);
+    const t0 = performance.now();
+    patches.forEach((el) => (el.onclick = () => {
+      clearTimeout(timer);
+      const ok = +el.dataset.i! === oddIdx;
+      q.update(delta, ok); S.counts[ci]++; S.done++;
+      S.log.push({ cond: ci, name: cond.name, L: cond.L, a: cond.a, b: cond.b, dir: cond.dir, delta: +delta.toFixed(3), correct: ok,
+        rt: Math.round(performance.now() - t0), afterBlank: blanked });
+      store.save(); nextTrial();
+    }));
+  }
+  document.addEventListener('keydown', (e) => { if (S && !stage.hidden && (e.key === 's' || e.key === 'S')) screenDone(true); });
+
+  function results(): Cond[] {
+    return S.conds.map((c: C, i: number) => ({ condition: c.name, L: c.L, a: +c.a.toFixed(2), b: +c.b.toFixed(2), direction: c.dir,
+      trials: S.counts[i], threshold: +S.quests[i].mean().toFixed(2), sd: +S.quests[i].sd().toFixed(2) }));
+  }
+  const combined = () => mergeResults(...extraRuns, results());
+  function payload() {
+    return { meta: { subject: SUBJ, age: AGE, roomLight: LIGHT, priorCVD: CVD, environment: envInfo(), task: '4AFC odd-one-out',
+      space: 'CIELAB, D65, sRGB display', preset: S.preset, trialsPerCondition: S.trialsPer, viewingTimeMs: S.viewMs,
+      started: S.started, finished: new Date().toISOString(), source: location.href,
+      note: 'threshold = QUEST posterior mean, in Lab units along `direction`' },
+      results: results(), trials: S.log };
+  }
+  const fileName = () => `thresholds-${SUBJ.replace(/[^A-Za-z0-9]+/g, '_') || 'unnamed'}-${new Date().toISOString().slice(0, 10)}.json`;
+
+  function screenDone(partial: boolean) {
+    stage.hidden = true; stage.innerHTML = ''; document.body.style.overflow = '';
+    if (wake) { try { wake.release(); } catch { /* ignore */ } wake = null; }
+    const r = results(), late = S.log.filter((t: Trial) => t.afterBlank).length;
+    const latePct = S.log.length ? (100 * late) / S.log.length : 0;
+    const typ = (c: Cond) => c.direction === 'L' ? 0.69 : typicalRadius(c.L, c.a, c.b, c.direction as number);
+    app.innerHTML = `<div class="ctt-panel">
+      <h2>${partial ? 'Paused' : 'Done'}: ${S.done} trials</h2>
+      ${latePct > 10 ? `<p class="ctt-warn"><strong>${latePct.toFixed(0)}% of trials ran out of time.</strong> Late answers carry little information and inflate the numbers. Consider re-running with a longer viewing time.</p>`
+        : S.log.length ? `<p>${latePct.toFixed(1)}% of trials ran out of time, low enough to ignore.</p>` : ''}
+
+      <div id="ctt-mapwrap">
+        <canvas id="ctt-map" class="ctt-map" aria-label="Map of your color smear zones"></canvas>
+        <p class="ctt-stat" id="ctt-stat"></p>
+        <p id="ctt-statnote"></p>
+        <div class="ctt-row">
+          <label class="cv-check" style="margin:0"><input type="checkbox" id="ctt-zoom"> Magnify zones ×3</label>
+          <button class="btn" id="ctt-savepng">Save map as image</button>
+          <label class="btn" style="display:inline-flex;align-items:center">Combine with an earlier run…<input type="file" id="ctt-merge" accept="application/json,.json" hidden></label>
+        </div>
+        <p class="ctt-msg" id="ctt-mergemsg"></p>
+      </div>
+
+      <details><summary>All the numbers</summary>
+        <p>Threshold is the smallest difference you could reliably see, in Lab units along each direction. ± is the uncertainty: under about 2.5 means that condition has settled.</p>
+        <table><tr><th>Condition</th><th>Trials</th><th>Threshold</th><th>±</th><th>Typical</th></tr>
+        ${r.map((x) => `<tr><td>${esc(String(x.condition))}</td><td>${x.trials}</td><td>${x.trials ? x.threshold : '—'}</td>
+          <td>${x.trials ? x.sd : '—'}</td><td>${typ(x).toFixed(2)}</td></tr>`).join('')}</table></details>
+
+      <div class="ctt-section">
+        <p class="cv-send-title">Keep your results</p>
+        <div class="ctt-row" style="margin-top:.4rem"><button class="btn" id="ctt-save">Save results file (JSON)</button>
+          ${partial ? '<button class="btn btn-primary" id="ctt-cont">Keep going</button>' : ''}
+          <button class="btn" id="ctt-home">Back to start</button></div>
+        <p class="ctt-msg" id="ctt-savemsg"></p>
+      </div>
+      <div class="ctt-section" id="ctt-send"></div>
+    </div>`;
+
+    const canvas = document.getElementById('ctt-map') as HTMLCanvasElement, zoom = document.getElementById('ctt-zoom') as HTMLInputElement;
+    let summary: ReturnType<typeof drawSmearMap>;
+    const redraw = () => {
+      summary = drawSmearMap(canvas, combined(), zoom.checked ? 3 : 1);
+      const stat = document.getElementById('ctt-stat')!, note = document.getElementById('ctt-statnote')!;
+      if (!summary.anchors) { stat.textContent = 'Answer a few trials to see your map.'; note.textContent = ''; return; }
+      stat.textContent = `Your color smear zones are about ${summary.multiple!.toFixed(1)}× typical size.`;
+      note.innerHTML = `Colors inside a shape look the same to you. Thick outlines are yours, thin ones are a typical eye's
+        (the CIEDE2000 standard observer, which matched my nine volunteers well).
+        ${summary.lightness ? `Your lightness threshold is ${summary.lightness.toFixed(1)}× typical.` : ''}
+        ${summary.fourDir ? '' : 'Your run measured two directions per color, so the shapes are rough; the Full preset measures four.'}
+        For comparison, mine are about 4.3× typical with normal lightness.
+        ${S.done < S.conds.length * 20 ? '<br><strong>Early days:</strong> with this few trials the shapes are still noisy.' : ''}`;
+    };
+    redraw();
+    zoom.onchange = redraw;
+    document.getElementById('ctt-savepng')!.onclick = () => canvas.toBlob((b) => {
+      if (!b) return; const a = document.createElement('a'); a.href = URL.createObjectURL(b);
+      a.download = `my-color-smears-${new Date().toISOString().slice(0, 10)}.png`; a.click(); setTimeout(() => URL.revokeObjectURL(a.href), 1500);
+    });
+    document.getElementById('ctt-merge')!.onchange = async (e) => {
+      const f = (e.target as HTMLInputElement).files?.[0], msg = document.getElementById('ctt-mergemsg')!;
+      if (!f) return;
+      try {
+        const data = JSON.parse(await f.text());
+        if (!Array.isArray(data.results)) throw new Error('no results in that file');
+        extraRuns.push(data.results); redraw();
+        msg.textContent = `Combined with ${f.name} (${data.results.length} conditions).`;
+      } catch (err) { msg.textContent = `Couldn't read that file: ${(err as Error).message}`; }
+    };
+    document.getElementById('ctt-save')!.onclick = () => saveFile(JSON.stringify(payload(), null, 2), fileName(), (m) => (document.getElementById('ctt-savemsg')!.textContent = m));
+    document.getElementById('ctt-home')!.onclick = screenIntro;
+    if (partial) document.getElementById('ctt-cont')!.onclick = () => { stage.hidden = false; document.body.style.overflow = 'hidden'; keepAwake(); nextTrial(); };
+    mountSend(document.getElementById('ctt-send')!, 'threshold', () => ({
+      name: SUBJ, results: { ...payload(), combinedWith: extraRuns.length },
+      summary: [`Preset: ${S.preset}, ${S.done} trials${partial ? ' (paused)' : ''}`,
+        summary?.multiple ? `Chroma zones: ${summary.multiple.toFixed(2)}x typical` : '',
+        summary?.lightness ? `Lightness: ${summary.lightness.toFixed(2)}x typical` : '',
+        `Timeouts: ${latePct.toFixed(1)}%`, `Age: ${AGE || '?'}, light: ${LIGHT}, prior CVD: ${CVD}`].filter(Boolean),
+    }));
+  }
+
+  screenIntro();
+</script>

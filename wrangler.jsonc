@@ -1,12 +1,22 @@
 // Cloudflare Workers config: serve the built Astro site as static files.
+// The Worker script (worker/index.js) only handles /api/*; everything else is
+// served straight from ./dist without running any code.
 {
   "name": "convergentblue",            // must match the Worker name in the Cloudflare dashboard
+  "main": "worker/index.js",
   "compatibility_date": "2026-10-01",
   "workers_dev": false,                // no duplicate copy at *.workers.dev (SEO)
   "preview_urls": false,
   "assets": {
     "directory": "./dist",
+    "binding": "ASSETS",
+    "run_worker_first": ["/api/*"],
     "not_found_handling": "404-page",  // serve dist/404.html for unknown URLs
     "html_handling": "auto-trailing-slash"
-  }
+  },
+  // Opt-in color-test results get emailed to Stephen. The recipient is the
+  // secret RESULTS_TO (set in the dashboard, not here) and must be a verified
+  // Email Routing destination address.
+  "send_email": [{ "name": "RESULTS_EMAIL" }],
+  "vars": { "RESULTS_FROM": "color-tests@convergentblue.com" }
 }
