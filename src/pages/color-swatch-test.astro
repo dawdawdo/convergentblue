@@ -1,0 +1,313 @@
+---
+import Base from '../layouts/Base.astro';
+---
+<Base title="Color Swatch Test" description="Same or different? The hue, saturation, value and color-channel swatch test I ran on myself before building a better one.">
+  <article class="wrap">
+    <p class="eyebrow"><a href="/blog/mapping-my-own-color-vision/">From the post: Mapping My Own Color Vision</a></p>
+    <h1>Color Swatch Test</h1>
+    <p class="lede">Two swatches: same color or different? This is the first test I built for myself, one color property at a time. It's rougher than the <a href="/color-threshold-test/">threshold test</a>, but easy to grasp.</p>
+  </article>
+  <div class="wide"><div id="cst" class="cst"></div></div>
+</Base>
+
+<style is:global>
+  /* The test keeps its own fixed dark-gray look in both site themes: the surround changes how colors look. */
+  .cst { --bg: #3a3a3a; --panel: #4a4a4a; --text: #eaeaea; --muted: #b0b0b0; --accent: #6fb3d2; --good: #7fbf7f; --bad: #e08080; --border: #5c5c5c;
+    background: var(--bg); color: var(--text); font: 1rem/1.5 var(--sans); border-radius: 12px; padding: 1.5rem 1.25rem 2rem; margin: 2rem auto 0; max-width: 820px; }
+  .cst-in { max-width: 760px; margin: 0 auto; }
+  .cst-nav { display: flex; gap: 6px; flex-wrap: wrap; margin-bottom: 18px; }
+  .cst-nav button { background: var(--panel); color: var(--text); border: 1px solid var(--border); padding: 6px 10px; border-radius: 5px; font: .78rem var(--sans); cursor: pointer; }
+  .cst-nav button.active { border-color: var(--accent); color: var(--accent); }
+  .cst-card { background: var(--panel); border: 1px solid var(--border); border-radius: 8px; padding: 22px; margin-bottom: 18px; }
+  .cst-card p { margin: 0 0 .8rem; }
+  .cst-muted { color: var(--muted); font-size: .9rem; }
+  .cst-swatches { display: flex; gap: 14px; justify-content: center; margin: 22px 0; }
+  .cst-swatch { width: min(200px, 38vw); aspect-ratio: 1; border-radius: 6px; border: 1px solid rgba(255,255,255,.15); }
+  .cst-single { width: min(220px, 60vw); aspect-ratio: 1; margin: 0 auto 18px; border-radius: 6px; border: 1px solid rgba(255,255,255,.15); }
+  .cst-btns { display: flex; gap: 10px; justify-content: center; margin-top: 16px; flex-wrap: wrap; }
+  .cst button.cst-choice { background: #2f2f2f; color: var(--text); border: 1px solid var(--border); padding: 11px 22px; min-height: 44px; border-radius: 6px; font: .95rem var(--sans); cursor: pointer; }
+  .cst button.cst-choice:hover { border-color: var(--accent); }
+  .cst button.cst-primary { background: var(--accent); color: #12303d; border: none; font-weight: 600; }
+  .cst button:disabled { opacity: .5; cursor: not-allowed; }
+  .cst input[type=text] { width: 100%; padding: 9px; min-height: 44px; border-radius: 5px; border: 1px solid var(--border); background: #2f2f2f; color: var(--text); font: 16px var(--sans); }
+  .cst label { font-size: .85rem; color: var(--muted); display: block; margin-bottom: 4px; }
+  .cst-field { margin-bottom: 14px; }
+  .cst-progress { font-size: .78rem; color: var(--muted); margin-bottom: 8px; }
+  .cst table { width: 100%; border-collapse: collapse; font-size: .85rem; margin: 8px 0 14px; }
+  .cst th, .cst td { text-align: left; padding: 5px 8px; border-bottom: 1px solid var(--border); }
+  .cst th { color: var(--muted); font-weight: 500; }
+  .cst-chip { width: 24px; height: 16px; border-radius: 3px; display: inline-block; vertical-align: middle; border: 1px solid rgba(255,255,255,.15); }
+  .cst-good { color: var(--good); } .cst-bad { color: var(--bad); }
+  .cst-center { text-align: center; }
+  .cst-msg { color: var(--accent); min-height: 1.2em; font-size: .9rem; }
+  .cst a { color: var(--accent); }
+  /* opt-in send panel, restyled for the dark box */
+  .cst .cv-send-title { font-weight: 600; margin: 0 0 .3rem; }
+  .cst .cv-send-text { color: var(--muted); font-size: .9rem; }
+  .cst .cv-check { display: flex; gap: .5rem; align-items: center; cursor: pointer; margin: .6rem 0; color: var(--text); font-size: .95rem; }
+  .cst .cv-send-fields { display: grid; gap: .5rem; max-width: 30rem; }
+  .cst .cv-send-fields[hidden] { display: none; }
+  .cst .cv-send-fields .btn { justify-self: start; background: var(--accent); color: #12303d; border: 0; border-radius: 6px; padding: 11px 22px; font: 600 .95rem var(--sans); cursor: pointer; }
+  .cst .cv-hp { position: absolute; left: -9999px; width: 1px; height: 1px; opacity: 0; }
+  .cst .cv-send-status { color: var(--accent); min-height: 1.2em; font-size: .9rem; }
+</style>
+
+<script>
+  import { labToRGB } from '../scripts/color-vision/lab';
+  import { mountSend, saveFile } from '../scripts/color-vision/send';
+
+  // ---------- color math ----------
+  function hsv2rgb(h: number, s: number, v: number) {
+    h = ((h % 360) + 360) % 360; s /= 100; v /= 100;
+    const c = v * s, x = c * (1 - Math.abs(((h / 60) % 2) - 1)), m = v - c;
+    const [r, g, b] = h < 60 ? [c, x, 0] : h < 120 ? [x, c, 0] : h < 180 ? [0, c, x] : h < 240 ? [0, x, c] : h < 300 ? [x, 0, c] : [c, 0, x];
+    return `rgb(${Math.round((r + m) * 255)},${Math.round((g + m) * 255)},${Math.round((b + m) * 255)})`;
+  }
+  const rand = (a: number, b: number) => Math.random() * (b - a) + a;
+  const shuffle = <T,>(arr: T[]) => { for (let i = arr.length - 1; i > 0; i--) { const j = Math.floor(Math.random() * (i + 1)); [arr[i], arr[j]] = [arr[j], arr[i]]; } return arr; };
+  const esc = (s: string) => String(s).replace(/[&<>"]/g, (c) => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;' })[c]!);
+
+  // ---------- state ----------
+  const sessionDate = new Date().toISOString().slice(0, 10);
+  let sessionLabel = '', subject = '';
+  type R = Record<string, any>;
+  const results: Record<string, R[]> = { hue: [], sat: [], val: [], channel: [], boundary: [] };
+  let previousSession: Record<string, R[]> | null = null;
+  const phases = ['intro', 'hue', 'sat', 'val', 'channel', 'boundary', 'summary'];
+  const labels: Record<string, string> = { intro: 'Start', hue: 'Hue', sat: 'Saturation', val: 'Value', channel: 'Channel', boundary: 'Color names', summary: 'Summary' };
+  const blurbs: Record<string, string> = {
+    hue: 'Hue: same brightness and vividness, slightly different hue. Half the pairs are bright, half are dark.',
+    sat: 'Saturation: same hue and brightness, one more vivid than the other.',
+    val: 'Value: same hue and vividness, one brighter. A quick sanity check.',
+    channel: 'Channel: matched lightness, differing only red-to-green, only blue-to-yellow, or (as a control) only in lightness.',
+  };
+  let current = 'intro', queue: R[] = [], idx = 0, trial: R | null = null;
+
+  const HUE_DELTAS = [3, 6, 9, 12, 15, 18, 24, 32], SAT_DELTAS = [3, 6, 9, 12, 15, 18, 24, 32];
+  const VAL_DELTAS = [5, 10, 20, 40], LAB_DELTAS = [2, 4, 6, 9, 12, 16, 20, 26, 32];
+  const BOUNDARY_HUES = [15, 45, 75, 150, 195, 260, 290, 330];   // red/orange … magenta/red
+  const BOUNDARY_SATS = [90, 50, 25];
+  const FAMILY = ['Red', 'Orange', 'Yellow', 'Green', 'Teal/Cyan', 'Blue', 'Purple', 'Pink/Magenta', 'Gray/Brown'];
+
+  // Each delta gets 5 trials (4 for value/channel); the first is a catch trial (identical colors).
+  function buildHue() {
+    const q: R[] = [];
+    [{ v: 70, label: 'bright (V=70)' }, { v: 25, label: 'dark (V=25)' }].forEach((c) => HUE_DELTAS.forEach((d) => { for (let rep = 0; rep < 5; rep++) {
+      const base = rand(0, 360), sign = Math.random() < 0.5 ? 1 : -1, ct = rep === 0;
+      q.push({ type: 'hue', cond: c.label, delta: ct ? 0 : d, base, other: ct ? base : base + sign * d, s: 65, v: c.v });
+    } }));
+    return shuffle(q);
+  }
+  function buildSat() {
+    const q: R[] = [];
+    [{ v: 70, label: 'bright (V=70)' }, { v: 25, label: 'dark (V=25)' }].forEach((c) => SAT_DELTAS.forEach((d) => { for (let rep = 0; rep < 5; rep++) {
+      const base = rand(20, 70), sign = Math.random() < 0.5 ? 1 : -1, ct = rep === 0;
+      const other = Math.min(95, Math.max(5, ct ? base : base + sign * d));
+      q.push({ type: 'sat', cond: c.label, delta: Math.abs(other - base), base, other, h: rand(0, 360), v: c.v });
+    } }));
+    return shuffle(q);
+  }
+  function buildVal() {
+    const q: R[] = [];
+    [{ s: 70, label: 'saturated (S=70)' }, { s: 25, label: 'muted (S=25)' }].forEach((c) => VAL_DELTAS.forEach((d) => { for (let rep = 0; rep < 4; rep++) {
+      const base = rand(20, 70), sign = Math.random() < 0.5 ? 1 : -1, ct = rep === 0;
+      const other = Math.min(95, Math.max(5, ct ? base : base + sign * d));
+      q.push({ type: 'val', cond: c.label, delta: Math.abs(other - base), base, other, h: rand(0, 360), s: c.s });
+    } }));
+    return shuffle(q);
+  }
+  function buildChannel() {
+    const q: R[] = [];
+    [{ axis: 'a', label: 'Red–Green (a*)' }, { axis: 'b', label: 'Blue–Yellow (b*)' }, { axis: 'L', label: 'Lightness only (control)' }].forEach((ax) =>
+      LAB_DELTAS.forEach((d) => { for (let rep = 0; rep < 4; rep++) {
+        const sign = Math.random() < 0.5 ? 1 : -1, ct = rep === 0, L0 = rand(35, 65);
+        let [L, A, B] = [L0, 0, 0];
+        if (!ct) { if (ax.axis === 'a') A = sign * d; if (ax.axis === 'b') B = sign * d; if (ax.axis === 'L') L = L0 + sign * d; }
+        q.push({ type: 'channel', cond: ax.label, axis: ax.axis, delta: ct ? 0 : d, lab1: [L0, 0, 0], lab2: [L, A, B] });
+      } }));
+    return shuffle(q);
+  }
+  function buildBoundary() {
+    const q: R[] = [];
+    BOUNDARY_HUES.forEach((h) => BOUNDARY_SATS.forEach((s) => q.push({ type: 'boundary', h: h + rand(-4, 4), s, v: 70 })));
+    return shuffle(q);
+  }
+  const builders: Record<string, () => R[]> = { hue: buildHue, sat: buildSat, val: buildVal, channel: buildChannel, boundary: buildBoundary };
+
+  const root = document.getElementById('cst')!;
+  root.innerHTML = '<div class="cst-in"><div class="cst-nav" id="cst-nav"></div><div id="cst-content"></div></div>';
+  const nav = document.getElementById('cst-nav')!, content = document.getElementById('cst-content')!;
+
+  function renderNav() {
+    nav.innerHTML = phases.map((p) => `<button data-phase="${p}" class="${p === current ? 'active' : ''}">${labels[p]}</button>`).join('');
+  }
+  nav.addEventListener('click', (e) => { const p = (e.target as HTMLElement).dataset.phase; if (p) goPhase(p); });
+  function goPhase(p: string) {
+    current = p; idx = 0;
+    if (builders[p]) queue = builders[p]();
+    renderNav(); render();
+    root.scrollIntoView({ block: 'start', behavior: 'smooth' });
+  }
+  const nextPhase = (p: string) => { const o = ['hue', 'sat', 'val', 'channel', 'boundary']; const i = o.indexOf(p); return i >= 0 && i < o.length - 1 ? o[i + 1] : 'summary'; };
+  function render() {
+    if (current === 'intro') return renderIntro();
+    if (current === 'summary') return renderSummary();
+    if (current === 'boundary') return renderBoundary();
+    return renderTrial();
+  }
+
+  function renderIntro() {
+    content.innerHTML = `<div class="cst-card">
+      <p>Each trial shows two swatches. Answer <b>Same</b> or <b>Different</b>. Some pairs really are identical. It runs in five parts
+        (hue, saturation, value, color channel, then naming colors), about 320 trials and 20–25 minutes. You can jump between
+        parts with the buttons above and see your results at any point.</p>
+      <p class="cst-muted">Use your normal screen brightness, no night/warm-light mode. Results stay on this device unless you choose to send them at the end.</p>
+      <div class="cst-field"><label for="cst-name">Name or initials (optional)</label><input type="text" id="cst-name" autocomplete="off"></div>
+      <div class="cst-field"><label for="cst-label">Session note (optional, e.g. "morning, phone")</label><input type="text" id="cst-label" autocomplete="off"></div>
+      <div class="cst-field"><label for="cst-prev">Compare with an earlier session? Load its results file (optional)</label>
+        <input type="file" id="cst-prev" accept="application/json,.json"><div class="cst-muted" id="cst-prevstatus"></div></div>
+      <div class="cst-center"><button class="cst-choice cst-primary" id="cst-start">Start with hue →</button></div></div>`;
+    document.getElementById('cst-prev')!.addEventListener('change', async (e) => {
+      const f = (e.target as HTMLInputElement).files?.[0], st = document.getElementById('cst-prevstatus')!;
+      if (!f) return;
+      try { previousSession = JSON.parse(await f.text()); st.textContent = 'Loaded. Your summary will show both sessions.'; }
+      catch { st.textContent = "Couldn't read that file; continuing without a comparison."; }
+    });
+    document.getElementById('cst-start')!.onclick = () => {
+      subject = (document.getElementById('cst-name') as HTMLInputElement).value.trim();
+      sessionLabel = (document.getElementById('cst-label') as HTMLInputElement).value.trim();
+      goPhase('hue');
+    };
+  }
+
+  function phaseDone(phase: string, nextLabel: string, next: string) {
+    content.innerHTML = `<div class="cst-card cst-center">
+      <p>${labels[phase]} part complete (${queue.length} trials).</p>
+      <div class="cst-btns"><button class="cst-choice" id="cst-see">See results</button>
+        <button class="cst-choice cst-primary" id="cst-next">${nextLabel} →</button></div>
+      <div id="cst-inline" style="text-align:left"></div></div>`;
+    document.getElementById('cst-see')!.onclick = () => phaseResults(phase, document.getElementById('cst-inline')!);
+    document.getElementById('cst-next')!.onclick = () => goPhase(next);
+  }
+
+  function renderTrial() {
+    if (idx >= queue.length) return phaseDone(current, nextPhase(current) === 'summary' ? 'Summary' : labels[nextPhase(current)], nextPhase(current));
+    trial = queue[idx];
+    const t = trial;
+    let c1: string, c2: string;
+    if (t.type === 'hue') { c1 = hsv2rgb(t.base, t.s, t.v); c2 = hsv2rgb(t.other, t.s, t.v); }
+    else if (t.type === 'sat') { c1 = hsv2rgb(t.h, t.base, t.v); c2 = hsv2rgb(t.h, t.other, t.v); }
+    else if (t.type === 'val') { c1 = hsv2rgb(t.h, t.s, t.base); c2 = hsv2rgb(t.h, t.s, t.other); }
+    else { c1 = labToRGB(t.lab1[0], t.lab1[1], t.lab1[2]); c2 = labToRGB(t.lab2[0], t.lab2[1], t.lab2[2]); }
+    const [l, r] = Math.random() < 0.5 ? [c2, c1] : [c1, c2];
+    content.innerHTML = `<div class="cst-card">
+      ${idx === 0 ? `<p class="cst-muted">${blurbs[t.type]}</p>` : ''}
+      <div class="cst-progress">${labels[t.type]}: ${esc(t.cond)} · trial ${idx + 1} / ${queue.length}</div>
+      <div class="cst-swatches"><div class="cst-swatch" style="background:${l}"></div><div class="cst-swatch" style="background:${r}"></div></div>
+      <div class="cst-btns"><button class="cst-choice" data-ans="same">Same</button><button class="cst-choice" data-ans="different">Different</button></div></div>`;
+  }
+  content.addEventListener('click', (e) => {
+    const el = (e.target as HTMLElement).closest('button') as HTMLButtonElement | null;
+    if (!el || !trial) return;
+    if (el.dataset.ans) {
+      const expected = trial.delta === 0 ? 'same' : 'different';
+      results[trial.type].push({ ...trial, answer: el.dataset.ans, expected, correct: el.dataset.ans === expected });
+      trial = null; idx++; renderTrial();
+    } else if (el.dataset.fam) {
+      results.boundary.push({ ...trial, name: el.dataset.fam });
+      trial = null; idx++; renderBoundary();
+    }
+  });
+
+  function renderBoundary() {
+    if (idx >= queue.length) return phaseDone('boundary', 'Summary', 'summary');
+    trial = queue[idx];
+    content.innerHTML = `<div class="cst-card">
+      <div class="cst-progress">Color names · ${idx + 1} / ${queue.length}</div>
+      <p class="cst-muted">Which color family is this? Many of these sit right on a boundary, so go with your first impression.</p>
+      <div class="cst-single" style="background:${hsv2rgb(trial.h, trial.s, trial.v)}"></div>
+      <div class="cst-btns">${FAMILY.map((n) => `<button class="cst-choice" data-fam="${n}">${n}</button>`).join('')}</div></div>`;
+  }
+
+  // ---------- analysis ----------
+  function byDelta(list: R[]) {
+    const o: Record<number, { correct: number; total: number }> = {};
+    list.forEach((r) => { (o[r.delta] ??= { correct: 0, total: 0 }).total++; if (r.correct) o[r.delta].correct++; });
+    return o;
+  }
+  // linear interpolation to the 75%-correct point between bracketing deltas (chance assumed at delta 0)
+  function threshold(bd: ReturnType<typeof byDelta>) {
+    const ds = Object.keys(bd).map(Number).sort((a, b) => a - b).filter((d) => d > 0);
+    let pd = 0, pa = 0.5;
+    for (const d of ds) {
+      const acc = bd[d].correct / bd[d].total;
+      if (acc >= 0.75) return acc === pa ? d : Math.round((pd + ((0.75 - pa) / (acc - pa)) * (d - pd)) * 10) / 10;
+      pd = d; pa = acc;
+    }
+    return null;
+  }
+  const unit = (p: string) => (p === 'hue' ? '°' : p === 'channel' ? ' Lab units' : ' pts');
+  const prevThreshold = (p: string, c: string) => {
+    const sub = previousSession?.[p]?.filter((r) => r.cond === c);
+    return sub && sub.length ? threshold(byDelta(sub)) : null;
+  };
+
+  function phaseResults(phase: string, div: HTMLElement) {
+    if (phase === 'boundary') {
+      div.innerHTML = `<table><tr><th></th><th>Hue</th><th>Saturation</th><th>Your answer</th></tr>${results.boundary.map((r) =>
+        `<tr><td><span class="cst-chip" style="background:${hsv2rgb(r.h, r.s, r.v)}"></span></td><td>${Math.round(r.h)}°</td><td>${r.s}%</td><td>${r.name}</td></tr>`).join('')}</table>`;
+      return;
+    }
+    div.innerHTML = [...new Set(results[phase].map((r) => r.cond))].map((c) => {
+      const bd = byDelta(results[phase].filter((r) => r.cond === c)), t = threshold(bd);
+      const maxD = Math.max(...Object.keys(bd).map(Number));
+      return `<p><b>${esc(c)}</b>: threshold <span class="${t !== null ? 'cst-good' : 'cst-bad'}">${t !== null ? t + unit(phase) : `not reached (>${maxD}${unit(phase)})`}</span></p>
+        <table><tr><th>Difference</th><th>Correct</th></tr>${Object.keys(bd).map(Number).sort((a, b) => a - b).map((d) =>
+          `<tr><td>${d === 0 ? 'identical' : Math.round(d * 10) / 10 + unit(phase)}</td><td>${bd[d].correct}/${bd[d].total} (${Math.round((100 * bd[d].correct) / bd[d].total)}%)</td></tr>`).join('')}</table>`;
+    }).join('');
+  }
+
+  function summaryLines() {
+    const out: string[] = [];
+    ['hue', 'sat', 'val', 'channel'].forEach((p) => [...new Set(results[p].map((r) => r.cond))].forEach((c) => {
+      const t = threshold(byDelta(results[p].filter((r) => r.cond === c)));
+      out.push(`${labels[p]} ${c}: ${t !== null ? t + unit(p) : 'not reached'}`);
+    }));
+    out.push(`Color-name trials: ${results.boundary.length}`);
+    return out;
+  }
+
+  function renderSummary() {
+    let html = `<div class="cst-card"><p>Thresholds: the difference you could tell apart 75% of the time. Lower = sharper.</p>`;
+    ['hue', 'sat', 'val', 'channel'].forEach((p) => {
+      const conds = [...new Set(results[p].map((r) => r.cond))];
+      if (!conds.length) { html += `<p class="cst-muted">${labels[p]}: not tested yet.</p>`; return; }
+      html += `<p><b>${labels[p]}</b></p><table><tr><th>Condition</th><th>This session</th>${previousSession ? '<th>Earlier</th>' : ''}<th>Trials</th></tr>`;
+      conds.forEach((c) => {
+        const sub = results[p].filter((r) => r.cond === c), t = threshold(byDelta(sub)), pv = prevThreshold(p, c);
+        html += `<tr><td>${esc(c)}</td><td class="${t !== null ? 'cst-good' : 'cst-bad'}">${t !== null ? t + unit(p) : 'beyond range'}</td>
+          ${previousSession ? `<td>${pv !== null ? pv + unit(p) : '—'}</td>` : ''}<td>${sub.length}</td></tr>`;
+      });
+      html += '</table>';
+    });
+    const fams = [...new Set(results.boundary.map((r) => r.name))];
+    html += `<p class="cst-muted">Color-name trials: ${results.boundary.length}${fams.length ? `. Families you used: ${fams.join(', ')}.` : '.'}
+      ${results.boundary.length ? '<button class="cst-choice" id="cst-seenames" style="padding:4px 10px;margin-left:6px">Show answers</button>' : ''}</p>
+      <div id="cst-names"></div>
+      <p class="cst-muted">Everyone does worse on the dark rows, because dark colors really are closer together.
+        Mine fell off much further than that, which is what started all this. HSV isn't perceptually even,
+        so treat these numbers as a rough guide; the <a href="/color-threshold-test/">threshold test</a> is the careful version.</p>
+      <div class="cst-btns" style="justify-content:flex-start"><button class="cst-choice cst-primary" id="cst-save">Save results file (JSON)</button></div>
+      <p class="cst-msg" id="cst-savemsg"></p>
+      <div id="cst-send" style="border-top:1px solid var(--border);padding-top:14px;margin-top:10px"></div></div>`;
+    content.innerHTML = html;
+    document.getElementById('cst-seenames')?.addEventListener('click', () => phaseResults('boundary', document.getElementById('cst-names')!));
+    const payload = () => ({ ...results, meta: { date: sessionDate, label: sessionLabel, subject, source: location.href, userAgent: navigator.userAgent,
+      screen: `${screen.width}x${screen.height}`, pixelRatio: devicePixelRatio } });
+    document.getElementById('cst-save')!.onclick = () => saveFile(JSON.stringify(payload(), null, 2), `color-swatch-results-${sessionDate}.json`,
+      (m) => (document.getElementById('cst-savemsg')!.textContent = m));
+    mountSend(document.getElementById('cst-send')!, 'swatch', () => ({ name: subject, results: payload(), summary: summaryLines() }));
+  }
+
+  renderNav(); render();
+</script>
