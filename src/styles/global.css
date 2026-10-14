@@ -103,6 +103,14 @@ hr { border: 0; border-top: 1px solid var(--rule); margin: 2.5rem 0; }
 .prose picture img { background: none; }
 .prose a:has(> img) { display: block; }
 .prose .katex-display { overflow-x: auto; overflow-y: hidden; padding: 0.25rem 0; }
+.prose .katex { font-size: 1em; }  /* KaTeX defaults to 1.21em, which reads oversized next to body text */
+.prose figure { margin: 1.5rem 0; }
+.prose figure img { margin: 0 auto 0.5rem; }
+.prose figcaption { font: 0.85rem/1.45 var(--sans); color: var(--muted); text-align: center; }
+/* side-by-side figures; stack on narrow screens */
+.prose .pair { display: grid; grid-template-columns: repeat(auto-fit, minmax(260px, 1fr)); gap: 1rem; margin: 1.5rem 0; }
+.prose .pair figure { margin: 0; }
+.prose .pair img { background: none; width: 100%; height: auto; }
 .prose table { border-collapse: collapse; width: 100%; font-size: 0.95rem; }
 .prose th, .prose td { border: 1px solid var(--rule); padding: 0.4rem 0.6rem; }
 
