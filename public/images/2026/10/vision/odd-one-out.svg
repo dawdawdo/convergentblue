@@ -1,0 +1,6 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 132 132" width="264" height="264" role="img" aria-label="Four colored squares; one is slightly different from the other three">
+  <rect x="0" y="0" width="60" height="60" rx="6" fill="#829774"/>
+  <rect x="72" y="0" width="60" height="60" rx="6" fill="#90946a"/>
+  <rect x="0" y="72" width="60" height="60" rx="6" fill="#829774"/>
+  <rect x="72" y="72" width="60" height="60" rx="6" fill="#829774"/>
+</svg>
