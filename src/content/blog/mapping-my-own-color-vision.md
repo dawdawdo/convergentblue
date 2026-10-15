@@ -66,14 +66,19 @@ With that background, I generated an early, simple test: show two swatches, chan
 
 - **Value (brightness):** I could see about a 5% shift.
 - **Saturation (vividness):** I needed about an 18% shift.
-- **Hue (color family):** still close to a coin flip at a 32° shift, the largest the test tried.
+<!-- CLAUDE (#5): gave the 32° a gut-level reference point so the reader feels how big it is. -->
+- **Hue (color family):** still close to a coin flip at a 32° shift - roughly the gap between red and orange on the color wheel - and that was the largest shift the test tried.
 
 <figure>
   <img src="/images/2026/10/vision/hsv_swatch_test_mock.png" alt="The early swatch test: two dark olive squares and Same / Different buttons">
   <figcaption>Can you tell these apart? They differ by about 6° of hue. I answered "same."</figcaption>
 </figure>
 
-This was a huge revelation. The frustration of 30+ years of clinical uncertainty lifted in an instant. It was like suddenly having the strength to carry a boulder that was previously immovable - almost like magic - and the feeling hit very hard. I now had a way to describe what was "wrong" with me and I spent the next ten minutes in tears of relief.
+<!-- CLAUDE (#5): NEW. States the insight in plain words before the emotion, so the reader knows what the tears are about. -->
+That lopsided pattern was the revelation. My eyes weren't bad at seeing in general - brightness was fine. It was color itself, *which* color and *how vivid*, that didn't work.
+
+<!-- CLAUDE (#5): kept your "30+ years" and "what was 'wrong' with me" and the tears. Cut the boulder, "almost like magic," and "hit very hard." Gave it its own paragraph so it lands. -->
+After 30+ years of "red-green colorblind, I guess," I finally had a way to describe what was "wrong" with me - and I spent the next ten minutes in tears of relief.
 
 ## New info, new idea
 
