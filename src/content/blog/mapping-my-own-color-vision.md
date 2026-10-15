@@ -88,16 +88,17 @@ So, I took the only sane and rational next step: I built a controlled study[^stu
 
 It was also time to replace that tape measure. HSV is convenient for designers, but equal steps in HSV don't *look* equal to the eye, so a "5% shift" means something different depending on where you are on the wheel. Instead, I switched to a color space called CIELAB, which is built so that one unit is roughly the smallest difference a normal eye can see, anywhere. That makes it possible to say things like "my threshold is 4× normal" and have it mean something.
 
-All told, I did about 5,600 trials on myself. Not all of them counted: the early HSV runs were exploratory, and one big run had a bug (a 3-second time limit that turned slow answers into wrong ones), so I threw it out. The map below is built on the roughly 2,000 clean trials that were left. My 9 volunteers, all with normal color vision, did a shorter version - only 540 trials each.
-
-[^study]: **Color space:** CIELAB, where a distance of 1 (one ΔE) is roughly one just-noticeable difference for a normal observer. Lightness was held fixed so only color changed. **Task:** four patches, three identical, pick the odd one out. **Coverage:** six anchor colors around the wheel plus neutral gray, four directions at each.
-
+<!-- CLAUDE (#6): moved "what a trial looks like" (and its figure) ahead of the trial counts, so the reader knows what a trial is before hearing how many there were. No wording changes. -->
 Here's what the trials look like. It's a standard testing mechanism - it starts from an anchor color and then tests how far it can move away from that anchor before you can tell the difference. The test itself shows four color blocks, three of which are always the same, and you have to pick which one is different. If you can't tell, you have to guess. The test assumes and requires that you guess - the math already bakes that in. It also self-adjusts over time so it can really find the boundary precisely.
 
 <figure>
   <img src="/images/2026/10/vision/odd-one-out.svg" alt="Four squares: three identical, one slightly different" width="264" height="264">
   <figcaption>Which one is different? (It's the top-right square.)</figcaption>
 </figure>
+
+All told, I did about 5,600 trials on myself. Not all of them counted: the early HSV runs were exploratory, and one big run had a bug (a 3-second time limit that turned slow answers into wrong ones), so I threw it out. The map below is built on the roughly 2,000 clean trials that were left. My 9 volunteers, all with normal color vision, did a shorter version - only 540 trials each.
+
+[^study]: **Color space:** CIELAB, where a distance of 1 (one ΔE) is roughly one just-noticeable difference for a normal observer. Lightness was held fixed so only color changed. **Task:** four patches, three identical, pick the odd one out. **Coverage:** six anchor colors around the wheel plus neutral gray, four directions at each.
 
 ## What the map shows
 
