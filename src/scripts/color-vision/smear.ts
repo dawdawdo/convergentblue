@@ -7,33 +7,53 @@ export interface Cond { condition?: string; L: number; a: number; b: number; dir
 const RANGE = 46;                 // a*, b* shown from -RANGE to +RANGE
 const key = (c: Cond) => `${Math.round(c.a)},${Math.round(c.b)}`;
 
-/** Smooth closed zone through radii measured along a few directions.
- *  log r(θ) = c0 + c1·cos 2θ + s1·sin 2θ (an ellipse-like, 180°-symmetric shape that
- *  can never blow up). A weak round-shape prior fills in what the measured directions
- *  don't pin down: 0°/90° only -> axis-aligned; diagonals only -> tilt only. */
-function fit(points: { deg: number; r: number }[]): (deg: number) => number {
-  const A = [[0, 0, 0], [0, 0, 0], [0, 0, 0]], y = [0, 0, 0];
-  const add = (row: number[], v: number, w = 1) => {
-    for (let i = 0; i < 3; i++) { y[i] += w * row[i] * v; for (let j = 0; j < 3; j++) A[i][j] += w * row[i] * row[j]; }
-  };
-  for (const { deg, r } of points) {
-    const t = (2 * deg * Math.PI) / 180;
-    add([1, Math.cos(t), Math.sin(t)], Math.log(r));
+/** Radius of a centred ellipse (log long axis, log short axis, axis angle in radians) along `deg`. */
+const rOf = (la: number, lb: number, phi: number, deg: number) => {
+  const t = (deg * Math.PI) / 180 - phi;
+  return 1 / Math.sqrt((Math.cos(t) / Math.exp(la)) ** 2 + (Math.sin(t) / Math.exp(lb)) ** 2);
+};
+
+/** Small Nelder-Mead minimiser (enough for three parameters and a handful of points). */
+function nelderMead(f: (x: number[]) => number, x0: number[], step = 0.3, iters = 600) {
+  const n = x0.length, mk = (x: number[]) => ({ x, v: f(x) });
+  let pts = [x0, ...x0.map((_, i) => x0.map((v, j) => (i === j ? v + step : v)))].map(mk);
+  for (let k = 0; k < iters; k++) {
+    pts.sort((p, q) => p.v - q.v);
+    const best = pts[0], worst = pts[n], second = pts[n - 1];
+    if (worst.v - best.v < 1e-10) break;
+    const c = x0.map((_, j) => pts.slice(0, n).reduce((s, p) => s + p.x[j], 0) / n);
+    const toward = (t: number) => mk(c.map((cj, j) => cj + t * (worst.x[j] - cj)));
+    const r = toward(-1);
+    if (r.v < best.v) { const e = toward(-2); pts[n] = e.v < r.v ? e : r; continue; }
+    if (r.v < second.v) { pts[n] = r; continue; }
+    const ct = toward(r.v < worst.v ? -0.5 : 0.5);
+    if (ct.v < Math.min(r.v, worst.v)) { pts[n] = ct; continue; }
+    pts = pts.map((p, i) => (i === 0 ? p : mk(p.x.map((v, j) => best.x[j] + 0.5 * (v - best.x[j])))));
   }
-  add([0, 1, 0], 0, 1e-3); add([0, 0, 1], 0, 1e-3);
-  const det = (m: number[][]) => m[0][0] * (m[1][1] * m[2][2] - m[1][2] * m[2][1]) - m[0][1] * (m[1][0] * m[2][2] - m[1][2] * m[2][0]) + m[0][2] * (m[1][0] * m[2][1] - m[1][1] * m[2][0]);
-  const D = det(A);
-  const col = (k: number) => det(A.map((row, i) => row.map((v, j) => (j === k ? y[i] : v))));
-  const [c0, c1, s1] = [col(0) / D, col(1) / D, col(2) / D];
-  // The log-Fourier curve pinches into a figure-8 once it's more than ~1.6:1, so use it
-  // only for the orientation and the long/short radii, then draw a true ellipse.
-  const amp = Math.hypot(c1, s1), phi = 0.5 * Math.atan2(s1, c1);
-  const RA = Math.exp(c0 + amp), RB = Math.exp(c0 - amp);
-  return (deg) => {
-    const t = (deg * Math.PI) / 180 - phi;
-    return 1 / Math.sqrt((Math.cos(t) / RA) ** 2 + (Math.sin(t) / RB) ** 2);
-  };
+  pts.sort((p, q) => p.v - q.v);
+  return pts[0];
 }
+
+/** Smear zone as a true ellipse, fitted directly to the measured thresholds - the same method as
+ *  the analysis behind the blog maps (ellipse_fit.py): least squares in r, each threshold weighted
+ *  by its own posterior SD, parameterised as (long, short, angle) so the result is always an
+ *  ellipse. A very weak round-shape prior settles what the directions can't pin down
+ *  (0°/90° only -> axis-aligned; diagonals only -> tilted 45°). */
+export function fitEllipse(points: { deg: number; r: number; sd?: number }[]): { long: number; short: number; axis: number; at: (deg: number) => number } {
+  const rs = points.map((p) => p.r);
+  const cost = ([la, lb, phi]: number[]) =>
+    points.reduce((s, { deg, r, sd }) => s + ((rOf(la, lb, phi, deg) - r) / Math.max(sd ?? 0.15 * r, 0.02)) ** 2, 0) + 1e-3 * (la - lb) ** 2;
+  let best = { x: [0, 0, 0], v: Infinity };
+  for (let p0 = 0; p0 < 180; p0 += 15) {
+    const s = nelderMead(cost, [Math.log(Math.max(...rs)), Math.log(Math.min(...rs)), (p0 * Math.PI) / 180]);
+    if (s.v < best.v) best = s;
+  }
+  let [la, lb, phi] = best.x;
+  if (lb > la) { [la, lb] = [lb, la]; phi += Math.PI / 2; }
+  const axis = (((phi * 180) / Math.PI) % 180 + 180) % 180;
+  return { long: Math.exp(la), short: Math.exp(lb), axis, at: (deg) => rOf(la, lb, phi, deg) };
+}
+const fit = (points: { deg: number; r: number; sd?: number }[]) => fitEllipse(points).at;
 
 /** Combine runs: for the same anchor + direction, weight by 1/sd² (newer data wins ties). */
 export function mergeResults(...runs: Cond[][]): Cond[] {
@@ -51,13 +71,13 @@ export function mergeResults(...runs: Cond[][]): Cond[] {
 export interface Summary { multiple: number | null; lightness: number | null; anchors: number; fourDir: boolean; }
 
 export function analyze(results: Cond[]) {
-  const groups = new Map<string, { a: number; b: number; pts: { deg: number; r: number }[] }>();
+  const groups = new Map<string, { a: number; b: number; pts: { deg: number; r: number; sd?: number }[] }>();
   let lightness: number | null = null;
   for (const c of results) {
     if (!c.trials || !(c.threshold > 0)) continue;
     if (c.direction === 'L') { if (Math.abs(c.a) < 1 && Math.abs(c.b) < 1) lightness = c.threshold; continue; }
     const g = groups.get(key(c)) ?? { a: c.a, b: c.b, pts: [] };
-    g.pts.push({ deg: Number(c.direction), r: c.threshold });
+    g.pts.push({ deg: Number(c.direction), r: c.threshold, sd: c.sd });
     groups.set(key(c), g);
   }
   const logs: number[] = [];

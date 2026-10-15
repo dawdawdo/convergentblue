@@ -78,6 +78,14 @@ import Base from '../layouts/Base.astro';
     const L0 = 60, R = 32, out: C[] = [];
     const add = (name: string, L: number, a: number, b: number, dir: number | 'L') => out.push({ name, L, a, b, dir });
     const at = (h: number) => [R * Math.cos((h * Math.PI) / 180), R * Math.sin((h * Math.PI) / 180)];
+    if (preset === 'magenta') {
+      // pins down the h300 smear: four 45°-spaced directions can't bound its long axis, so this adds
+      // 112.5° and 125° near it, plus repeats of the original four as a bridge to earlier runs.
+      const [ma, mb] = at(300);
+      [0, 45, 90, 112.5, 125, 135].forEach((d) => add(`C*32 h300° @ ${d}°`, L0, ma, mb, d));
+      add('lightness @ a0 b0', L0, 0, 0, 'L');
+      return out;
+    }
     if (preset === 'green') {
       const [ga, gb] = at(180), [ya, yb] = at(120);
       [0, 45, 90, 135].forEach((d) => add(`C*32 h180° @ ${d}°`, L0, ga, gb, d));
@@ -103,13 +111,14 @@ import Base from '../layouts/Base.astro';
     lA.forEach(([a, b]) => add(`lightness @ a${a} b${b}`, L0, a, b, 'L'));
     return out;
   }
-  const TRIALS: Record<string, number> = { quick: 60, standard: 70, full: 80, complete: 50, green: 40 };
+  const TRIALS: Record<string, number> = { quick: 60, standard: 70, full: 80, complete: 50, green: 40, magenta: 40 };
   const PRESETS: [string, string, string][] = [
     ['quick', 'Quick', 'a first look: gray plus three colors, two directions each'],
     ['standard', 'Standard', 'gray plus six colors, two directions each'],
     ['full', 'Full ellipse fit', 'four directions everywhere: the real shape of every zone'],
     ['complete', 'Complete the map', 'only the diagonals; combine with a Standard run for the full map'],
     ['green', 'Green check', 'a close look at green, where my own results broke pattern'],
+    ['magenta', 'Magenta check', "a close look at magenta, where one of my early readings didn't replicate"],
   ];
 
   /* ============================ QUEST-style ============================= */
