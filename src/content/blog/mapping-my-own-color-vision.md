@@ -20,7 +20,8 @@ Except it never quite fit. Lots of colors are hard for me to tell apart, and yes
 
 ## It all started with keycaps
 
-Earlier this year, I started a project to build custom keycaps (more on that in its own post once the set is done). Dye-sublimated keycaps live or die on contrast: a texture or icon that looks fine on screen can vanish once it's printed on the actual plastic. To predict which designs would survive printing, I had to get really intimate with color and design theory - hex, RGB, HSV, ink weight, and ink distribution measures, among others. Eventually, I stumbled onto the well-established concept of luminance[^lum], which is a measure of the way the human eye sees brightness. It turns out this was really useful for the keycaps - if the luminance gap between two colors was big enough, then the print would "work" in the sense that the legends and textures on the caps could be easily seen against the background. For instance, in the example below, the design reads fine on screen, but the luminance gap was too small to survive printing.
+Earlier this year, I started a project to build custom keycaps (more on that in its own post once the set is done). Dye-sublimated keycaps live or die on contrast: a texture or icon that looks fine on screen can vanish once it's printed on the actual plastic. <!-- CLAUDE (#4): trimmed the jargon list in the next sentence. The reader only needs to know you went deep, not the names of the tools. -->
+To predict which designs would survive printing, I had to get far more intimate with color theory than I ever expected. Eventually, I stumbled onto the well-established concept of luminance[^lum], which is a measure of the way the human eye sees brightness. It turns out this was really useful for the keycaps - if the luminance gap between two colors was big enough, then the print would "work" in the sense that the legends and textures on the caps could be easily seen against the background. For instance, in the example below, the design reads fine on screen, but the luminance gap was too small to survive printing.
 
 <picture>
   <source srcset="/images/2026/10/vision/flame_render_vs_print_lighttext.png" media="(prefers-color-scheme: dark)">
@@ -33,11 +34,14 @@ And this got me thinking - now that I could comfortably discuss hue, saturation,
 
 ## Self-testing
 
-First, a little terminology. I need to define HSV - hue, saturation, and value. These are three numbers which can easily be calculated from RGB, but they each have a physical interpretation that's a little more natural than RGB channels.
+<!-- CLAUDE (#4): plain-English rewrite of the HSV intro and bullets. The last sentence foreshadows the switch to CIELAB, so dropping HSV later reads as the plan rather than wasted effort. Math footnotes kept as-is (they're opt-in). -->
+Designers describe every color with three numbers, called HSV:
 
-- **Hue**: This really just means the color family. It's an angle on the color wheel and answers questions like "is this more like a blue or a purple?"[^hue]
-- **Saturation**: This represents the degree of vividness. Low saturation looks muted and gray, while high saturation looks really vivid. It's a percentage - 0% is the middle of the color wheel, 100% is the edge.[^sat]
-- **Value**: This is a measure of brightness, also on a scale of 0%-100%.[^val]
+- **Hue**: which color it is - red, blue, purple. It's an angle around the color wheel.[^hue]
+- **Saturation**: how vivid it is. 0% is gray, at the middle of the wheel; 100% is full-strength color, at the edge.[^sat]
+- **Value**: how bright it is, from 0% (black) to 100%.[^val]
+
+It's the designer's standard ruler, and it was good enough for a first look - though, as I found out later, it's a slightly crooked one.
 
 [^hue]: Mathematically, hue splits the wheel into three $120^\circ$ sections, centered on the primary colors red, green, and blue. The function looks strange because it's piecewise. Given $M = \max(R,G,B)$, $m = \min(R,G,B)$ and $C = M - m$:
 
@@ -79,7 +83,10 @@ And it gave me a new idea - what if I built a "Stephen's vision on a card" state
 1. It was hard to explain to other people in a way that was engaging and understandable.
 2. I still didn't quite understand it well enough myself. For instance, when I showed an early card to a Reddit design group, someone reasonably said "that's just red-green colorblindness" which was fair because that's what the card showed, but I didn't know how to clarify.
 
-So, I took the only sane and rational next step: I built a controlled study[^study] and recruited volunteers through a Facebook post. You know - things that normal people do on a Saturday. In any case, HSV turned out to be the wrong ruler for this. It's convenient for designers, but equal steps in HSV don't *look* equal to the eye, so a "5% shift" means something different depending on where you are on the wheel. Instead, I switched to a color space called CIELAB, which is built so that one unit is roughly the smallest difference a normal eye can see, anywhere. That makes it possible to say things like "my threshold is 4× normal" and have it mean something.
+So, I took the only sane and rational next step: I built a controlled study[^study] and recruited volunteers through a Facebook post. You know - things that normal people do on a Saturday.
+
+<!-- CLAUDE (#4): pays off the "crooked ruler" foreshadowing. Also split this paragraph from the Facebook joke (that was part of #6). -->
+It was also time to replace that crooked ruler. HSV is convenient for designers, but equal steps in HSV don't *look* equal to the eye, so a "5% shift" means something different depending on where you are on the wheel. Instead, I switched to a color space called CIELAB, which is built so that one unit is roughly the smallest difference a normal eye can see, anywhere. That makes it possible to say things like "my threshold is 4× normal" and have it mean something.
 
 All told, I did about 5,600 trials on myself. Not all of them counted: the early HSV runs were exploratory, and one big run had a bug (a 3-second time limit that turned slow answers into wrong ones), so I threw it out. The map below is built on the roughly 2,000 clean trials that were left. My 9 volunteers, all with normal color vision, did a shorter version - only 540 trials each.
 
