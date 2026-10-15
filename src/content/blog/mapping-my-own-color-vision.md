@@ -105,7 +105,11 @@ The short version: **my brightness discrimination is normal; color discriminatio
 
 Start with brightness, because it explains a lot. My lightness threshold is dead normal - essentially identical to my volunteers. Most of what we use color for in daily life actually leans on brightness: reading text, judging shadows and edges, or tracking a basketball across a gym (I actually play about once a week, and can shoot just fine). So for a lot of everyday cases, nothing seems obviously wrong for me. It also explains the keycaps: when I learned to design by luminance, I was unknowingly designing around the one channel that works perfectly for me.
 
-The word I settled on for the region of colors that look identical to me is a **smear**. Everyone has them, but mine are much, much bigger. The maps below show all seven anchor points, each with a shape drawn around it. Every color inside a shape looks the same - that's why each one is filled with a single flat color. Also, mine all lean in the same direction - see how they point along the yellow-green ↔ magenta axis? There is one weird anomaly - my green smear is nearly round, and points toward the center like a normal one instead of along my diagonal, although it is still much bigger than everyone else's. I did extra testing here just to make sure and the pattern really holds up - I just have no idea why yet.
+The word I settled on for the region of colors that look identical to me is a **smear**. Everyone has them, but mine are much, much bigger. The maps below show all seven anchor points, each with a shape drawn around it. Every color inside a shape looks the same - that's why each one is filled with a single flat color. Also, mine all lean in the same direction - see how they point along the yellow-green ↔ magenta axis? The one exception is green: still huge, but rounder than the others and stretched toward the center like a normal smear, instead of along my diagonal. I re-tested it, and I still don't know why.
+
+<!-- CLAUDE (#9): shortened the green aside to two sentences and fixed "nearly round, and points" (round things don't point). Same wording fix in the results footnote and the chart caption. -->
+
+<!-- CLAUDE (#8, PEANUTS): confirmed this is a drawing artifact. Your own smear.ts says the log-Fourier curve "pinches into a figure-8 once it's more than ~1.6:1," which is why the live test now draws true ellipses. MAP_normal, MAP_final, card-back, and card-inset were drawn before that fix, so all four need redrawing as ellipses before this post goes live. Recheck the card-inset caption ("covers almost the entire red-green band") after the redraw. -->
 
 <div class="pair">
   <figure>
@@ -118,7 +122,7 @@ The word I settled on for the region of colors that look identical to me is a **
   </figure>
 </div>
 
-[^results]: **Lightness:** my threshold is 0.70 ΔE. The volunteers averaged 0.69. Dead normal. **Color overall:** ~3.7× worse than my volunteers, ~4.3× worse than the standard normal-observer model. **Near gray:** 5–9× worse. Normal eyes are *most* sensitive near gray. Mine aren't, which is exactly why muted colors are my problem. **Direction:** at six of seven anchors, my smear stretches along the same diagonal, about 142° in CIELAB - roughly yellow-green ↔ magenta. The odds of that much alignment happening by chance are about 1 in 250. **The exception is green**, where my smear is nearly round, and points toward the center like a normal one - just about 4.6× bigger. I re-tested that on two screens; it's real, and I don't know why yet. I also used CIEDE2000 - a color-difference formula fitted to thousands of normal-observer judgments - as a "global control." It agrees with my 9 volunteers (r = 0.86) and with my results: about 4× normal.
+[^results]: **Lightness:** my threshold is 0.70 ΔE. The volunteers averaged 0.69. Dead normal. **Color overall:** ~3.7× worse than my volunteers, ~4.3× worse than the standard normal-observer model. **Near gray:** 5–9× worse. Normal eyes are *most* sensitive near gray. Mine aren't, which is exactly why muted colors are my problem. **Direction:** at six of seven anchors, my smear stretches along the same diagonal, about 142° in CIELAB - roughly yellow-green ↔ magenta. The odds of that much alignment happening by chance are about 1 in 250. **The exception is green**, where my smear is rounder and stretched toward the center like a normal one - just about 4.6× bigger. I re-tested that on two screens; it's real, and I don't know why yet. I also used CIEDE2000 - a color-difference formula fitted to thousands of normal-observer judgments - as a "global control." It agrees with my 9 volunteers (r = 0.86) and with my results: about 4× normal.
 
 ## So what kind of colorblindness is it anyway?
 
@@ -130,7 +134,7 @@ Mine don't. None of the known types line up. Blue-yellow comes closest, and even
 
 <figure>
   <img src="/images/2026/10/vision/axis-comparison.png" alt="My measured lean at each anchor compared with the protan, deutan, and tritan confusion directions">
-  <figcaption>White is my lean at each anchor. If I were red-green colorblind, the white line would sit on top of the red or orange one. It almost never does. The one exception is green (far left), where my smear is nearly round and points toward the center like a normal one - which at green happens to be the protan direction.</figcaption>
+  <figcaption>White is my lean at each anchor. If I were red-green colorblind, the white line would sit on top of the red or orange one. It almost never does. The one exception is green (far left), where my smear stretches toward the center like a normal one - which at green happens to be the protan direction.</figcaption>
 </figure>
 
 So why do I fail Ishihara? The plates are built from fairly muted colors, and muted colors sit near the gray center of the wheel. That's exactly where my smears are worst - 5 to 9 times bigger than normal. So the plates' red-green differences fall *inside* my smears anyway.
@@ -157,7 +161,8 @@ Here's where it landed. Before you read on: **how many columns of stripes do you
 
 ![Card front: a purple-to-green panel in three columns, labeled with what I see: smooth, smooth, stripes](/images/2026/10/vision/card-front.png)
 
-**Front:** columns of stripes. Most people see stripes in the middle column; I see a smooth block, because those steps are well within normal vision but inside my smear.
+<!-- CLAUDE (#8): states the answer outright, and adds a heads-up that the stripes are subtle (the middle column's steps are only ~3-5 RGB levels apart). -->
+**Front:** Most people count two columns of stripes: the middle and the right. I count one. The middle column looks like a smooth block to me, because its steps are well within normal vision but inside my smear. (Those steps are subtle, so a dim or low-quality screen can hide them even from normal eyes. If you don't see them either, the test below will tell you more than this card can.)
 
 ![Card back: my smears drawn on a color wheel, a magnified inset of the gray center comparing a typical smear, mine, and a red-green colorblind band, and a stepped brightness strip](/images/2026/10/vision/card-back.png)
 
@@ -173,7 +178,8 @@ Taken together - normal lightness, a broad loss of color sensitivity, a lean tha
 
 The goal isn't a cure. It's a real diagnosis, or at least a documented one. In the meantime, I finally have a better answer than "I can't tell you what I am, but it's not red-green colorblind." Here it is:
 
-> My brightness vision is normal. My color vision isn't - every color is surrounded by a smear about four times bigger than yours, where everything inside looks the same.
+<!-- CLAUDE (#7 follow-up): added the lean, so the answer also covers "not exactly colorblind," not just "bad at color." -->
+> My brightness vision is normal. My color vision isn't - every color is surrounded by a smear about four times bigger than yours, where everything inside looks the same. And mine lean in a direction no known type of colorblindness does.
 
 ## Try it yourself
 
