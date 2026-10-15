@@ -105,11 +105,7 @@ The short version: **my brightness discrimination is normal; color discriminatio
 
 Start with brightness, because it explains a lot. My lightness threshold is dead normal - essentially identical to my volunteers. Most of what we use color for in daily life actually leans on brightness: reading text, judging shadows and edges, or tracking a basketball across a gym (I actually play about once a week, and can shoot just fine). So for a lot of everyday cases, nothing seems obviously wrong for me. It also explains the keycaps: when I learned to design by luminance, I was unknowingly designing around the one channel that works perfectly for me.
 
-The word I settled on for the region of colors that look identical to me is a **smear**. Everyone has them, but mine are much, much bigger. The maps below show all seven anchor points, each with a shape drawn around it. Every color inside a shape looks the same - that's why each one is filled with a single flat color. Also, mine all lean in the same direction - see how they point along the yellow-green ↔ magenta axis? The one exception is green: still huge, but rounder than the others and stretched toward the center like a normal smear, instead of along my diagonal. I re-tested it, and I still don't know why.
-
-<!-- CLAUDE (#9): shortened the green aside to two sentences and fixed "nearly round, and points" (round things don't point). Same wording fix in the results footnote and the chart caption. -->
-
-<!-- CLAUDE (#8, PEANUTS): confirmed this is a drawing artifact. Your own smear.ts says the log-Fourier curve "pinches into a figure-8 once it's more than ~1.6:1," which is why the live test now draws true ellipses. MAP_normal, MAP_final, card-back, and card-inset were drawn before that fix, so all four need redrawing as ellipses before this post goes live. Recheck the card-inset caption ("covers almost the entire red-green band") after the redraw. -->
+The word I settled on for the region of colors that look identical to me is a **smear**. Everyone has them, but mine are much, much bigger. The maps below show all seven anchor points, each with a shape drawn around it. Every color inside a shape looks the same - that's why each one is filled with a single flat color. Also, mine all lean in the same direction - see how they point along the yellow-green ↔ magenta axis? The one exception is green: still huge, but rounder than the others and stretched toward the center like a normal smear, instead of along my diagonal. I re-tested it just to be sure and it's real, I just don't know why.
 
 <div class="pair">
   <figure>
@@ -161,8 +157,7 @@ Here's where it landed. Before you read on: **how many columns of stripes do you
 
 ![Card front: a purple-to-green panel in three columns, labeled with what I see: smooth, smooth, stripes](/images/2026/10/vision/card-front.png)
 
-<!-- CLAUDE (#8): states the answer outright, and adds a heads-up that the stripes are subtle (the middle column's steps are only ~3-5 RGB levels apart). -->
-**Front:** Most people count two columns of stripes: the middle and the right. I count one. The middle column looks like a smooth block to me, because its steps are well within normal vision but inside my smear. (Those steps are subtle, so a dim or low-quality screen can hide them even from normal eyes. If you don't see them either, the test below will tell you more than this card can.)
+**Front:** Most people count two columns of stripes: the middle and the right. I count one. The middle column looks like a smooth block to me, because its steps are well within normal vision but inside my smear. (Those steps are subtle, so a dim or low-quality screen can hide them even from normal eyes. If you don't see them either, the test at the end of this post will tell you more than this card can.)
 
 ![Card back: my smears drawn on a color wheel, a magnified inset of the gray center comparing a typical smear, mine, and a red-green colorblind band, and a stepped brightness strip](/images/2026/10/vision/card-back.png)
 
@@ -178,7 +173,6 @@ Taken together - normal lightness, a broad loss of color sensitivity, a lean tha
 
 The goal isn't a cure. It's a real diagnosis, or at least a documented one. In the meantime, I finally have a better answer than "I can't tell you what I am, but it's not red-green colorblind." Here it is:
 
-<!-- CLAUDE (#7 follow-up): added the lean, so the answer also covers "not exactly colorblind," not just "bad at color." -->
 > My brightness vision is normal. My color vision isn't - every color is surrounded by a smear about four times bigger than yours, where everything inside looks the same. And mine lean in a direction no known type of colorblindness does.
 
 ## Try it yourself
