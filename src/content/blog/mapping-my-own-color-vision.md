@@ -88,7 +88,6 @@ So, I took the only sane and rational next step: I built a controlled study[^stu
 
 It was also time to replace that tape measure. HSV is convenient for designers, but equal steps in HSV don't *look* equal to the eye, so a "5% shift" means something different depending on where you are on the wheel. Instead, I switched to a color space called CIELAB, which is built so that one unit is roughly the smallest difference a normal eye can see, anywhere. That makes it possible to say things like "my threshold is 4× normal" and have it mean something.
 
-<!-- CLAUDE (#6): moved "what a trial looks like" (and its figure) ahead of the trial counts, so the reader knows what a trial is before hearing how many there were. No wording changes. -->
 Here's what the trials look like. It's a standard testing mechanism - it starts from an anchor color and then tests how far it can move away from that anchor before you can tell the difference. The test itself shows four color blocks, three of which are always the same, and you have to pick which one is different. If you can't tell, you have to guess. The test assumes and requires that you guess - the math already bakes that in. It also self-adjusts over time so it can really find the boundary precisely.
 
 <figure>
@@ -119,15 +118,12 @@ The word I settled on for the region of colors that look identical to me is a **
   </figure>
 </div>
 
-<!-- CLAUDE (#4 leftover): in the two map captions above, swapped "CIEDE2000" for plain words and dropped "142°". Both still appear in the results footnote. -->
-
 [^results]: **Lightness:** my threshold is 0.70 ΔE. The volunteers averaged 0.69. Dead normal. **Color overall:** ~3.7× worse than my volunteers, ~4.3× worse than the standard normal-observer model. **Near gray:** 5–9× worse. Normal eyes are *most* sensitive near gray. Mine aren't, which is exactly why muted colors are my problem. **Direction:** at six of seven anchors, my smear stretches along the same diagonal, about 142° in CIELAB - roughly yellow-green ↔ magenta. The odds of that much alignment happening by chance are about 1 in 250. **The exception is green**, where my smear is nearly round, and points toward the center like a normal one - just about 4.6× bigger. I re-tested that on two screens; it's real, and I don't know why yet. I also used CIEDE2000 - a color-difference formula fitted to thousands of normal-observer judgments - as a "global control." It agrees with my 9 volunteers (r = 0.86) and with my results: about 4× normal.
 
 ## So what kind of colorblindness is it anyway?
 
 Ordinary colorblindness is directional. If you're red-green colorblind, you confuse colors along one line across the wheel, running roughly from red to green, but colors in other directions are easy to tell apart. These are called *confusion lines*, and each type of colorblindness has its own. So if my smears came from a known type, they'd stretch along that type's line, usually within a few degrees.
 
-<!-- CLAUDE (#4 leftover): plain-English verdict in the body; the angles and p-values moved to a new footnote. The chart legend still shows the degrees (p-values removed from the image). -->
 Mine don't. None of the known types line up. Blue-yellow comes closest, and even that's a loose fit, so my lean really does appear to be its own unique animal.[^angles]
 
 [^angles]: My lean is off by 47° from protan (one type of red-green), 37° from deutan (the other type of red-green), and 24° from tritan (blue-yellow). Only tritan is closer than chance would predict (p = 0.015, versus 0.58 for protan and 0.21 for deutan), and 24° is still a loose fit.
