@@ -144,7 +144,7 @@ I fail the red-green test without having a red-green defect - not because my con
 
 ## The vision card
 
-The wallet card idea went through 67 designs in 31 days, incorporating critiques from Reddit, Facebook, friends, family, myself, and of course, my thinking buddy, Claude. Eventually I created a design brief with the rule that it has to work in 2–3 seconds, or it fails, however clever it is. Here's the full progression of what that looked like.
+The wallet card idea went through 68 designs in 41 days, incorporating critiques from Reddit, Facebook, friends, family, myself, and of course, my thinking buddy, Claude. Eventually I created a design brief with the rule that it has to work in 2–3 seconds, or it fails, however clever it is. Here's the full progression of what that looked like.
 
 <picture>
   <source srcset="/images/2026/10/vision/card_iterations_dark.png" media="(prefers-color-scheme: dark)">
