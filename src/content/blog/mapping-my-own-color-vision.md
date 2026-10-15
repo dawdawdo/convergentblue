@@ -118,7 +118,7 @@ The word I settled on for the region of colors that look identical to me is a **
   </figure>
 </div>
 
-[^results]: **Lightness:** my threshold is 0.70 ΔE. The volunteers averaged 0.68. Dead normal. **Color overall:** ~3.7× worse than my volunteers, ~4.2× worse than the standard normal-observer model. **Near gray:** 5–9.5× worse. Normal eyes are *most* sensitive near gray. Mine aren't, which is exactly why muted colors are my problem. **Direction:** at six of seven anchors, my smear stretches along the same diagonal, about 143° in CIELAB - roughly yellow-green ↔ magenta. The odds of that much alignment happening by chance are about 1 in 130. **The exception is green**, where my smear is rounder and stretched toward the center like a normal one - just about 4.7× bigger. I re-tested that on two screens; it's real, and I don't know why yet. I also used CIEDE2000 - a color-difference formula fitted to thousands of normal-observer judgments - as a "global control." It agrees with my 10 volunteers (r = 0.87) and with my results: about 4× normal.
+[^results]: **Who I'm compared with:** the 7 volunteers who ran the same quick version of the test. One more run was left out for too many timeouts, and two volunteers ran the diagonal-only version, which feeds the direction results. **Lightness:** my threshold is 0.70 ΔE. The volunteers averaged 0.68. Dead normal. **Color overall:** ~3.7× worse than my volunteers, ~4.2× worse than the standard normal-observer model. **Near gray:** 5–9.5× worse. Normal eyes are *most* sensitive near gray. Mine aren't, which is exactly why muted colors are my problem. **Direction:** at six of seven anchors, my smear stretches along the same diagonal, about 143° in CIELAB - roughly yellow-green ↔ magenta. The odds of that much alignment happening by chance are about 1 in 130. **The exception is green**, where my smear is rounder and stretched toward the center like a normal one - just about 4.7× bigger. I re-tested that on two screens; it's real, and I don't know why yet. I also used CIEDE2000 - a color-difference formula fitted to thousands of normal-observer judgments - as a "global control." It agrees with my volunteers (r = 0.87) and with my results: about 4× normal.
 
 ## So what kind of colorblindness is it anyway?
 
@@ -126,7 +126,7 @@ Ordinary colorblindness is directional. If you're red-green colorblind, you conf
 
 Mine don't. None of the known types line up. Blue-yellow comes closest, and even that's a loose fit, so my lean really does appear to be its own unique animal.[^angles]
 
-[^angles]: My lean is off by 46° from protan (one type of red-green), 36° from deutan (the other type of red-green), and 25° from tritan (blue-yellow). Only tritan is closer than chance would predict (p = 0.022, versus 0.54 for protan and 0.19 for deutan), and 25° is still a loose fit.
+[^angles]: My lean is off by 46° from protan (one type of red-green), 36° from deutan (the other type of red-green), and 25° from tritan (blue-yellow). Tritan is the only one that comes anywhere near significance (p = 0.022, versus 0.54 for protan and 0.19 for deutan) - and since I tested three types, correcting for that puts it closer to 0.07. Either way, 25° is still a loose fit.
 
 <figure>
   <img src="/images/2026/10/vision/axis-comparison.png" alt="My measured lean at each anchor compared with the protan, deutan, and tritan confusion directions">
