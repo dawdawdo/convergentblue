@@ -165,19 +165,15 @@ Here's where it landed. Before you read on: **how many columns of stripes do you
 
 ## What's next
 
-There's one more piece I haven't mentioned. My central vision isn't blurry, it's missing entirely, replaced by a swirl of colors and patterns - like a kaleidoscope held wherever I look, eyes open or closed. It's most similar to the symptoms of Stargardt disease, which affects the macula (the center of the retina).
+There's one more piece I haven't mentioned - my central vision. It isn't blurry, it's missing entirely, replaced by a swirl of colors and patterns - like a kaleidoscope held wherever I look, eyes open or closed. It's most similar to the symptoms of Stargardt disease, which affects the macula (the center of the retina).
 
-Taken together - normal lightness, a broad loss of color sensitivity, a lean that doesn't match any known type, childhood onset, central vision loss, stable for 35 years - <!-- CLAUDE (#7): glossed "cones," and swapped the clinical test names for plain descriptions. The real names moved to a footnote for anyone who wants them. Kept the anomaloscope line, which is a great detail. -->
-the pattern points at the cones (the retina's color sensors) or the macula, rather than the optics of the eye. I've sent a clinical summary to a few color vision researchers, asking about the tests that could actually find something: detailed scans of the retina, tests that measure how the cones respond electrically, and formal color testing (an anomaloscope would settle the red-green question in about ten minutes).[^tests]
+Taken together - normal lightness, a broad loss of color sensitivity, a lean that doesn't match any known type, childhood onset, central vision loss, stable for 35 years - the pattern points at the cones (the retina's color sensors) or the macula, rather than the optics of the eye. I've sent a clinical summary to a few color vision researchers, asking about the tests that could actually find something: detailed scans of the retina, tests that measure how the cones respond electrically, and formal color testing (an anomaloscope would settle the red-green question in about ten minutes).[^tests]
 
 [^tests]: Specifically: high-resolution macular OCT, multifocal and full-field ERG, and fundus autofluorescence.
 
-<!-- CLAUDE (#7): the ending now actually gives the better answer: one sentence the reader can repeat to someone else. The last line calls back to the card's 2-3 second rule; cut it if it's too cute. -->
 The goal isn't a cure. It's a real diagnosis, or at least a documented one. In the meantime, I finally have a better answer than "I can't tell you what I am, but it's not red-green colorblind." Here it is:
 
-> My brightness vision is normal. My color vision isn't - every color is surrounded by a smear about four times bigger than yours, where everything looks the same.
-
-It takes about three seconds to say, which, as it turns out, was the whole design brief.
+> My brightness vision is normal. My color vision isn't - every color is surrounded by a smear about four times bigger than yours, where everything inside looks the same.
 
 ## Try it yourself
 
