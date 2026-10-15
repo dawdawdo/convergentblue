@@ -66,7 +66,6 @@ With that background, I generated an early, simple test: show two swatches, chan
 
 - **Value (brightness):** I could see about a 5% shift.
 - **Saturation (vividness):** I needed about an 18% shift.
-<!-- CLAUDE (#5): gave the 32° a gut-level reference point so the reader feels how big it is. -->
 - **Hue (color family):** still close to a coin flip at a 32° shift - roughly the gap between red and orange on the color wheel - and that was the largest shift the test tried.
 
 <figure>
@@ -74,11 +73,9 @@ With that background, I generated an early, simple test: show two swatches, chan
   <figcaption>Can you tell these apart? They differ by about 6° of hue. I answered "same."</figcaption>
 </figure>
 
-<!-- CLAUDE (#5): NEW. States the insight in plain words before the emotion, so the reader knows what the tears are about. -->
-That lopsided pattern was the revelation. My eyes weren't bad at seeing in general - brightness was fine. It was color itself, *which* color and *how vivid*, that didn't work.
+So, I could see brightness just fine - as well as anyone, in fact. It was my color vision - specicially *which* color and *how vivid* - that was broken.
 
-<!-- CLAUDE (#5): kept your "30+ years" and "what was 'wrong' with me" and the tears. Cut the boulder, "almost like magic," and "hit very hard." Gave it its own paragraph so it lands. -->
-After 30+ years of "red-green colorblind, I guess," I finally had a way to describe what was "wrong" with me - and I spent the next ten minutes in tears of relief.
+After 30+ years of "I know, it doesn't make sense to me either" I finally had a way to describe what was "wrong" with me - and I spent the next ten minutes in tears of relief.
 
 ## New info, new idea
 
