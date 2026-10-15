@@ -123,14 +123,28 @@ The word I settled on for the region of colors that look identical to me is a **
 
 ## So what kind of colorblindness is it anyway?
 
-If the lean of my smear were caused by a known type of colorblindness, it would line up with that type's direction, usually within a few degrees. Mine doesn't. It's off by 47° from protan (one type of red-green), 37° from deutan (the other type of red-green) and 24° from tritan (blue-yellow). Only tritan is closer than chance, and even that's a loose fit, so my angle really does appear to be its own unique animal.
+<!-- CLAUDE (#1): NEW paragraph. Sets up "confusion lines" so the lines-vs-zones punchline at the end of this section has something to land on. -->
+Ordinary colorblindness is directional. If you're red-green colorblind, you confuse colors along one line across the wheel, running roughly from red to green, but colors in other directions stay easy to tell apart. These are called *confusion lines*, and each type of colorblindness has its own. So if my smears came from a known type, they'd stretch along that type's line, usually within a few degrees.
+
+<!-- CLAUDE (#1): trimmed this opening, since the paragraph above now carries the setup. Degrees left as-is for now (that's #7). -->
+Mine don't. My lean is off by 47° from protan (one type of red-green), 37° from deutan (the other type of red-green) and 24° from tritan (blue-yellow). Only tritan is closer than chance, and even that's a loose fit, so my angle really does appear to be its own unique animal.
 
 <figure>
   <img src="/images/2026/10/vision/axis-comparison.png" alt="My measured lean at each anchor compared with the protan, deutan, and tritan confusion directions">
   <figcaption>White is my lean at each anchor. If I were red-green colorblind, the white line would sit on top of the red or orange one. It almost never does. The one exception is green (far left), where my smear is nearly round and points toward the center like a normal one - which at green happens to be the protan direction.</figcaption>
 </figure>
 
-So why do I fail Ishihara? Because my smears are so big that the plates' muted red-green differences fall *inside* them anyway. I fail the red-green test without having a red-green defect - not because my confusion *lines* are the same, but because my confusion *zones* are massive!
+<!-- CLAUDE (#2): pulled the near-gray finding up from the results footnote, since it's the reason Ishihara catches me. Check that "muted" is fair: the colors in your plate image are only moderately muted (median ~38% saturation). -->
+So why do I fail Ishihara? The plates are built from fairly muted colors, and muted colors sit near the gray center of the wheel. That's exactly where my smears are worst - 5 to 9 times bigger than normal. So the plates' red-green differences fall *inside* my smears anyway.
+
+<!-- CLAUDE (#1): NEW figure, cropped from the back of the card. The caption is a first pass. -->
+<figure>
+  <img src="/images/2026/10/vision/card-inset.png" alt="The gray center of the color wheel, magnified: a small oval labeled typical, a large blob labeled me, and a long dashed band labeled red-green colorblind running side to side through both" width="262" height="402">
+  <figcaption>The gray center of the wheel, magnified. A typical smear is a small oval. A red-green colorblind smear is a long, thin band. Mine is a big blob. A plate's red-green difference fits inside the band <em>or</em> the blob - so we both fail, for different reasons.</figcaption>
+</figure>
+
+<!-- CLAUDE (#1): punchline unchanged, just split into its own paragraph so it lands after the picture. -->
+I fail the red-green test without having a red-green defect - not because my confusion *lines* are the same, but because my confusion *zones* are massive!
 
 ## The vision card
 
