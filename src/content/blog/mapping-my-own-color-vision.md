@@ -1,6 +1,6 @@
 ---
 title: "I Failed Every Colorblind Test, But I'm Not Exactly Colorblind"
-description: "I built my own color vision test, ran 5,600 trials on myself, and drew a map of what I actually see. The results were... eye-opening."
+description: "I built my own color vision test, ran about 5,900 trials on myself, and drew a map of what I actually see. The results were... eye-opening."
 pubDate: 2026-10-13
 tags: [project, color, vision, data]
 draft: true
@@ -95,7 +95,8 @@ Here's what the trials look like. It's a standard testing mechanism - it starts 
   <figcaption>Which one is different? (It's the top-right square.)</figcaption>
 </figure>
 
-All told, I did about 5,600 trials on myself. Not all of them counted: the early HSV runs were exploratory, and one big run had a bug (a 3-second time limit that turned slow answers into wrong ones), so I threw it out. The map below is built on the roughly 2,000 clean trials that were left. My 9 volunteers, all with normal color vision, did a shorter version - only 540 trials each.
+<!-- CLAUDE (numbers): 5,600 -> 5,900 and 2,000 -> 2,300 add the 280-trial magenta run from 15 Oct. The magenta sentence is new; cut it if you don't want it. -->
+All told, I did about 5,900 trials on myself. Not all of them counted: the early HSV runs were exploratory, and one big run had a bug (a 3-second time limit that turned slow answers into wrong ones), so I threw it out. One magenta reading also looked odd, so I re-tested it - it didn't replicate, and the re-test replaced it. The map below is built on the roughly 2,300 clean trials that were left. My 10 volunteers, all with normal color vision, did a shorter version - only 540 trials each.
 
 [^study]: **Color space:** CIELAB, where a distance of 1 (one ΔE) is roughly one just-noticeable difference for a normal observer. Lightness was held fixed so only color changed. **Task:** four patches, three identical, pick the odd one out. **Coverage:** six anchor colors around the wheel plus neutral gray, four directions at each.
 
@@ -110,7 +111,7 @@ The word I settled on for the region of colors that look identical to me is a **
 <div class="pair">
   <figure>
     <img src="/images/2026/10/vision/MAP_normal.png" alt="Typical eye: small smears pointing toward gray" width="1520" height="1520">
-    <figcaption><strong>Typical eye.</strong> Smears are tiny, and each one points toward or away from the gray center. (Modeled with a standard normal-vision formula, fitted to my 9 volunteers.)</figcaption>
+    <figcaption><strong>Typical eye.</strong> Smears are tiny, and each one points toward or away from the gray center. (Modeled with a standard normal-vision formula, fitted to my 10 volunteers.)</figcaption>
   </figure>
   <figure>
     <img src="/images/2026/10/vision/MAP_final.png" alt="My eye: large smears leaning along the same diagonal" width="1520" height="1520">
@@ -118,7 +119,7 @@ The word I settled on for the region of colors that look identical to me is a **
   </figure>
 </div>
 
-[^results]: **Lightness:** my threshold is 0.70 ΔE. The volunteers averaged 0.69. Dead normal. **Color overall:** ~3.7× worse than my volunteers, ~4.3× worse than the standard normal-observer model. **Near gray:** 5–9× worse. Normal eyes are *most* sensitive near gray. Mine aren't, which is exactly why muted colors are my problem. **Direction:** at six of seven anchors, my smear stretches along the same diagonal, about 142° in CIELAB - roughly yellow-green ↔ magenta. The odds of that much alignment happening by chance are about 1 in 250. **The exception is green**, where my smear is rounder and stretched toward the center like a normal one - just about 4.6× bigger. I re-tested that on two screens; it's real, and I don't know why yet. I also used CIEDE2000 - a color-difference formula fitted to thousands of normal-observer judgments - as a "global control." It agrees with my 9 volunteers (r = 0.86) and with my results: about 4× normal.
+[^results]: **Lightness:** my threshold is 0.70 ΔE. The volunteers averaged 0.68. Dead normal. **Color overall:** ~3.7× worse than my volunteers, ~4.2× worse than the standard normal-observer model. **Near gray:** 5–9.5× worse. Normal eyes are *most* sensitive near gray. Mine aren't, which is exactly why muted colors are my problem. **Direction:** at six of seven anchors, my smear stretches along the same diagonal, about 143° in CIELAB - roughly yellow-green ↔ magenta. The odds of that much alignment happening by chance are about 1 in 130. **The exception is green**, where my smear is rounder and stretched toward the center like a normal one - just about 4.7× bigger. I re-tested that on two screens; it's real, and I don't know why yet. I also used CIEDE2000 - a color-difference formula fitted to thousands of normal-observer judgments - as a "global control." It agrees with my 10 volunteers (r = 0.87) and with my results: about 4× normal.
 
 ## So what kind of colorblindness is it anyway?
 
@@ -126,14 +127,14 @@ Ordinary colorblindness is directional. If you're red-green colorblind, you conf
 
 Mine don't. None of the known types line up. Blue-yellow comes closest, and even that's a loose fit, so my lean really does appear to be its own unique animal.[^angles]
 
-[^angles]: My lean is off by 47° from protan (one type of red-green), 37° from deutan (the other type of red-green), and 24° from tritan (blue-yellow). Only tritan is closer than chance would predict (p = 0.015, versus 0.58 for protan and 0.21 for deutan), and 24° is still a loose fit.
+[^angles]: My lean is off by 46° from protan (one type of red-green), 36° from deutan (the other type of red-green), and 25° from tritan (blue-yellow). Only tritan is closer than chance would predict (p = 0.022, versus 0.54 for protan and 0.19 for deutan), and 25° is still a loose fit.
 
 <figure>
   <img src="/images/2026/10/vision/axis-comparison.png" alt="My measured lean at each anchor compared with the protan, deutan, and tritan confusion directions">
   <figcaption>White is my lean at each anchor. If I were red-green colorblind, the white line would sit on top of the red or orange one. It almost never does. The one exception is green (far left), where my smear stretches toward the center like a normal one - which at green happens to be the protan direction.</figcaption>
 </figure>
 
-So why do I fail Ishihara? The plates are built from fairly muted colors, and muted colors sit near the gray center of the wheel. That's exactly where my smears are worst - 5 to 9 times bigger than normal. So the plates' red-green differences fall *inside* my smears anyway.
+So why do I fail Ishihara? The plates are built from fairly muted colors, and muted colors sit near the gray center of the wheel. That's exactly where my smears are worst - 5 to 10 times bigger than normal. So the plates' red-green differences fall *inside* my smears anyway.
 
 <figure>
   <img src="/images/2026/10/vision/card-inset.png" alt="The gray center of the color wheel, magnified: a small oval labeled typical, a large blob labeled me, and a long dashed band labeled red-green colorblind running side to side through both" width="262" height="402">
