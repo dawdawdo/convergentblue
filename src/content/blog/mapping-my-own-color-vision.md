@@ -22,29 +22,29 @@ Except it never quite fit. I never had the vocabulary to discuss it, so it just 
 
 I have three separately describable vision problems:
 
-- **Central vision loss**: My central vision isn't blurry, it's missing entirely, replaced by a swirl of colors and patterns — like a kaleidoscope held wherever I look, eyes open or closed. It's most similar to the symptoms of Stargardt disease, but it's not the focus of this post.
+- **Central vision loss**: My central vision isn't blurry, it's missing entirely, replaced by a swirl of colors and patterns - like a kaleidoscope held wherever I look, eyes open or closed. It's most similar to the symptoms of Stargardt disease, but it's not the focus of this post.
 - **Nearsightedness** (standard myopia): This is what most people my age have. It's blurry vision for anything outside of a given distance from my eyes. It's straightforward and it's correctable with prescription lenses, but it confuses people when they see that I'm wearing glasses and still can't see well, so it's worth mentioning here.
 - **Color discrimination**: Lots of colors are difficult for me to tell apart. Yes, sometimes that runs along the red-green spectrum, but sometimes it's blue-yellow too, and sometimes it's different from both, which always seemed weird to me. This post is the result of a deep-dive into exactly why that is.
 
 ## It all started with keycaps
 
-Earlier this year, I started a project to build custom keycaps (more on that in its own post once the set is done). Dye-sublimated keycaps live or die on contrast: a texture or icon that looks fine on screen can vanish once it's printed on the actual plastic. To predict which designs would survive printing, I had to get really intimate with color and design theory — hex, RGB, HSV, ink weight, and ink distribution measures, among others. Eventually, I stumbled onto the well-established concept of luminance[^lum], which is a measure of the way the human eye sees brightness. It turns out this was really useful for the keycaps — if the luminance gap between two colors was big enough, then the print would "work" in the sense that the legends and textures on the caps could be easily seen against the background. For instance, in the example below, the design reads fine on screen, but the luminance gap was too small to survive printing.
+Earlier this year, I started a project to build custom keycaps (more on that in its own post once the set is done). Dye-sublimated keycaps live or die on contrast: a texture or icon that looks fine on screen can vanish once it's printed on the actual plastic. To predict which designs would survive printing, I had to get really intimate with color and design theory - hex, RGB, HSV, ink weight, and ink distribution measures, among others. Eventually, I stumbled onto the well-established concept of luminance[^lum], which is a measure of the way the human eye sees brightness. It turns out this was really useful for the keycaps - if the luminance gap between two colors was big enough, then the print would "work" in the sense that the legends and textures on the caps could be easily seen against the background. For instance, in the example below, the design reads fine on screen, but the luminance gap was too small to survive printing.
 
 <picture>
   <source srcset="/images/2026/10/vision/flame_render_vs_print_lighttext.png" media="(prefers-color-scheme: dark)">
   <img src="/images/2026/10/vision/flame_render_vs_print_darktext.png" alt="An example of a keycap that renders just fine on a screen, but fails miserably after printing.">
 </picture>
 
-And this got me thinking — now that I could comfortably discuss hue, saturation, and luminance, and I also had a partner (Claude) who could see things that I couldn't, could I use that to learn a little more about my own vision?
+And this got me thinking - now that I could comfortably discuss hue, saturation, and luminance, and I also had a partner (Claude) who could see things that I couldn't, could I use that to learn a little more about my own vision?
 
 [^lum]: The luminance formula is $L = 0.2126R + 0.7152G + 0.0722B$, where $R$, $G$, and $B$ are the red, green, and blue channels of that color. Note that red, and especially blue, get a huge discount relative to green, which is the strongest color channel for humans. Luminance is different from value (the V from HSV), which is simply the maximum of red, green, or blue and much less reliable for measuring brightness the way we actually see it.
 
 ## Self-testing
 
-First, a little terminology. I need to define HSV — hue, saturation, and value. These are three numbers which can easily be calculated from RGB, but they each have a physical interpretation that's a little more natural than RGB channels.
+First, a little terminology. I need to define HSV - hue, saturation, and value. These are three numbers which can easily be calculated from RGB, but they each have a physical interpretation that's a little more natural than RGB channels.
 
 - **Hue**: This really just means the color family. It's an angle on the color wheel and answers questions like "is this more like a blue or a purple?"[^hue]
-- **Saturation**: This represents the degree of vividness. Low saturation looks muted and gray, while high saturation looks really vivid. It's a percentage — 0% is the middle of the color wheel, 100% is the edge.[^sat]
+- **Saturation**: This represents the degree of vividness. Low saturation looks muted and gray, while high saturation looks really vivid. It's a percentage - 0% is the middle of the color wheel, 100% is the edge.[^sat]
 - **Value**: This is a measure of brightness, also on a scale of 0%-100%.[^val]
 
 [^hue]: Mathematically, hue splits the wheel into three $120^\circ$ sections, centered on the primary colors red, green, and blue. The function looks strange because it's piecewise. Given $M = \max(R,G,B)$, $m = \min(R,G,B)$ and $C = M - m$:
@@ -78,22 +78,22 @@ With that background, I generated an early, simple test: show two swatches, chan
   <figcaption>Can you tell these apart? They differ by about 6° of hue. I answered "same."</figcaption>
 </figure>
 
-This was a huge revelation. The frustration of 30+ years of clinical uncertainty lifted in an instant. It was like suddenly having the strength to carry a boulder that was previously immovable — almost like magic — and the feeling hit very hard. I now had a way to describe what was "wrong" with me and I spent the next ten minutes in tears of relief.
+This was a huge revelation. The frustration of 30+ years of clinical uncertainty lifted in an instant. It was like suddenly having the strength to carry a boulder that was previously immovable - almost like magic - and the feeling hit very hard. I now had a way to describe what was "wrong" with me and I spent the next ten minutes in tears of relief.
 
 ## New info, new idea
 
-And it gave me a new idea — what if I built a "Stephen's vision on a card" statement that would be understandable to anyone at a glance? I could carry it in my wallet and pull it out whenever someone asked. I started by creating some visuals that I thought would help explain my color discrimination, but I discovered two things pretty quickly:
+And it gave me a new idea - what if I built a "Stephen's vision on a card" statement that would be understandable to anyone at a glance? I could carry it in my wallet and pull it out whenever someone asked. I started by creating some visuals that I thought would help explain my color discrimination, but I discovered two things pretty quickly:
 
 1. It was hard to explain to other people in a way that was engaging and understandable.
 2. I still didn't quite understand it well enough myself. For instance, when I showed an early card to a Reddit design group, someone reasonably said "that's just red-green colorblindness" which was fair because that's what the card showed, but I didn't know how to clarify.
 
-So, I took the only sane and rational next step: I built a controlled study[^study] and recruited volunteers through a Facebook post. You know — things that normal people do on a Saturday. In any case, HSV turned out to be the wrong ruler for this. It's convenient for designers, but equal steps in HSV don't *look* equal to the eye, so a "5% shift" means something different depending on where you are on the wheel. Instead, I switched to a color space called CIELAB, which is built so that one unit is roughly the smallest difference a normal eye can see, anywhere. That makes it possible to say things like "my threshold is 4× normal" and have it mean something.
+So, I took the only sane and rational next step: I built a controlled study[^study] and recruited volunteers through a Facebook post. You know - things that normal people do on a Saturday. In any case, HSV turned out to be the wrong ruler for this. It's convenient for designers, but equal steps in HSV don't *look* equal to the eye, so a "5% shift" means something different depending on where you are on the wheel. Instead, I switched to a color space called CIELAB, which is built so that one unit is roughly the smallest difference a normal eye can see, anywhere. That makes it possible to say things like "my threshold is 4× normal" and have it mean something.
 
-All told, I did about 5,600 trials on myself. Not all of them counted: the early HSV runs were exploratory, and one big run had a bug (a 3-second time limit that turned slow answers into wrong ones), so I threw it out. The map below is built on the roughly 2,000 clean trials that were left. My 9 volunteers, all with normal color vision, did a shorter version — only 540 trials each.
+All told, I did about 5,600 trials on myself. Not all of them counted: the early HSV runs were exploratory, and one big run had a bug (a 3-second time limit that turned slow answers into wrong ones), so I threw it out. The map below is built on the roughly 2,000 clean trials that were left. My 9 volunteers, all with normal color vision, did a shorter version - only 540 trials each.
 
 [^study]: **Color space:** CIELAB, where a distance of 1 (one ΔE) is roughly one just-noticeable difference for a normal observer. Lightness was held fixed so only color changed. **Task:** four patches, three identical, pick the odd one out. **Coverage:** six anchor colors around the wheel plus neutral gray, four directions at each.
 
-Here's what the trials look like. It's a standard testing mechanism — it starts from an anchor color and then tests how far it can move away from that anchor before you can tell the difference. The test itself shows four color blocks, three of which are always the same, and you have to pick which one is different. If you can't tell, you have to guess. The test assumes and requires that you guess — the math already bakes that in. It also self-adjusts over time so it can really find the boundary precisely.
+Here's what the trials look like. It's a standard testing mechanism - it starts from an anchor color and then tests how far it can move away from that anchor before you can tell the difference. The test itself shows four color blocks, three of which are always the same, and you have to pick which one is different. If you can't tell, you have to guess. The test assumes and requires that you guess - the math already bakes that in. It also self-adjusts over time so it can really find the boundary precisely.
 
 <figure>
   <img src="/images/2026/10/vision/odd-one-out.svg" alt="Four squares: three identical, one slightly different" width="264" height="264">
@@ -104,9 +104,9 @@ Here's what the trials look like. It's a standard testing mechanism — it start
 
 The short version: **my brightness discrimination is normal; color discrimination is about 4× worse than normal, and it almost always leans the same way.**[^results]
 
-Start with brightness, because it explains a lot. My lightness threshold is dead normal — essentially identical to my volunteers. Most of what we use color for in daily life actually leans on brightness: reading text, judging shadows and edges, or tracking a basketball across a gym (I actually play about once a week, and can shoot just fine). So for a lot of everyday cases, nothing seems obviously wrong for me. It also explains the keycaps: when I learned to design by luminance, I was unknowingly designing around the one channel that works perfectly for me.
+Start with brightness, because it explains a lot. My lightness threshold is dead normal - essentially identical to my volunteers. Most of what we use color for in daily life actually leans on brightness: reading text, judging shadows and edges, or tracking a basketball across a gym (I actually play about once a week, and can shoot just fine). So for a lot of everyday cases, nothing seems obviously wrong for me. It also explains the keycaps: when I learned to design by luminance, I was unknowingly designing around the one channel that works perfectly for me.
 
-The word I settled on for the region of colors that look identical to me is a **smear**. Everyone has them, but mine are much, much bigger. The maps below show all seven anchor points, each with a shape drawn around it. Every color inside a shape looks the same — that's why each one is filled with a single flat color. Also, mine all lean in the same direction — see how they point along the yellow-green ↔ magenta axis? There is one weird anomaly — my green smear is nearly round, and points toward the center like a normal one instead of along my diagonal, although it is still much bigger than everyone else's. I did extra testing here just to make sure and the pattern really holds up — I just have no idea why yet.
+The word I settled on for the region of colors that look identical to me is a **smear**. Everyone has them, but mine are much, much bigger. The maps below show all seven anchor points, each with a shape drawn around it. Every color inside a shape looks the same - that's why each one is filled with a single flat color. Also, mine all lean in the same direction - see how they point along the yellow-green ↔ magenta axis? There is one weird anomaly - my green smear is nearly round, and points toward the center like a normal one instead of along my diagonal, although it is still much bigger than everyone else's. I did extra testing here just to make sure and the pattern really holds up - I just have no idea why yet.
 
 <div class="pair">
   <figure>
@@ -119,7 +119,7 @@ The word I settled on for the region of colors that look identical to me is a **
   </figure>
 </div>
 
-[^results]: **Lightness:** my threshold is 0.70 ΔE. The volunteers averaged 0.69. Dead normal. **Color overall:** ~3.7× worse than my volunteers, ~4.3× worse than the standard normal-observer model. **Near gray:** 5–9× worse. Normal eyes are *most* sensitive near gray. Mine aren't, which is exactly why muted colors are my problem. **Direction:** at six of seven anchors, my smear stretches along the same diagonal, about 142° in CIELAB — roughly yellow-green ↔ magenta. The odds of that much alignment happening by chance are about 1 in 250. **The exception is green**, where my smear is nearly round, and points toward the center like a normal one — just about 4.6× bigger. I re-tested that on two screens; it's real, and I don't know why yet. I also used CIEDE2000 — a color-difference formula fitted to thousands of normal-observer judgments — as a "global control." It agrees with my 9 volunteers (r = 0.86) and with my results: about 4× normal.
+[^results]: **Lightness:** my threshold is 0.70 ΔE. The volunteers averaged 0.69. Dead normal. **Color overall:** ~3.7× worse than my volunteers, ~4.3× worse than the standard normal-observer model. **Near gray:** 5–9× worse. Normal eyes are *most* sensitive near gray. Mine aren't, which is exactly why muted colors are my problem. **Direction:** at six of seven anchors, my smear stretches along the same diagonal, about 142° in CIELAB - roughly yellow-green ↔ magenta. The odds of that much alignment happening by chance are about 1 in 250. **The exception is green**, where my smear is nearly round, and points toward the center like a normal one - just about 4.6× bigger. I re-tested that on two screens; it's real, and I don't know why yet. I also used CIEDE2000 - a color-difference formula fitted to thousands of normal-observer judgments - as a "global control." It agrees with my 9 volunteers (r = 0.86) and with my results: about 4× normal.
 
 ## So what kind of colorblindness is it anyway?
 
@@ -127,10 +127,10 @@ If the lean of my smear were caused by a known type of colorblindness, it would 
 
 <figure>
   <img src="/images/2026/10/vision/axis-comparison.png" alt="My measured lean at each anchor compared with the protan, deutan, and tritan confusion directions">
-  <figcaption>White is my lean at each anchor. If I were red-green colorblind, the white line would sit on top of the red or orange one. It almost never does. The one exception is green (far left), where my smear is nearly round and points toward the center like a normal one — which at green happens to be the protan direction.</figcaption>
+  <figcaption>White is my lean at each anchor. If I were red-green colorblind, the white line would sit on top of the red or orange one. It almost never does. The one exception is green (far left), where my smear is nearly round and points toward the center like a normal one - which at green happens to be the protan direction.</figcaption>
 </figure>
 
-So why do I fail Ishihara? Because my smears are so big that the plates' muted red-green differences fall *inside* them anyway. I fail the red-green test without having a red-green defect — not because my confusion *lines* are the same, but because my confusion *zones* are massive!
+So why do I fail Ishihara? Because my smears are so big that the plates' muted red-green differences fall *inside* them anyway. I fail the red-green test without having a red-green defect - not because my confusion *lines* are the same, but because my confusion *zones* are massive!
 
 ## The vision card
 
@@ -141,7 +141,7 @@ The wallet card idea went through 67 designs in 31 days, incorporating critiques
   <img src="/images/2026/10/vision/card_iterations_light.png" alt="All iterations of the front and back of the card, organized by timeline.">
 </picture>
 
-These versions failed for different reasons. For instance, the cards built on September 5 (first row above) failed on almost all counts — they didn't mention brightness at all, it was hard to make the connection between the front and the back, and they were just plain ugly from a design perspective. By September 16, the ugliness was gone, but the card was still too busy. Eventually, I reintroduced the color wheel, but made it the background of the card, reduced the amount of unnecessary text and highlighted an important zone to contrast my vision differences at a glance.
+These versions failed for different reasons. For instance, the cards built on September 5 (first row above) failed on almost all counts - they didn't mention brightness at all, it was hard to make the connection between the front and the back, and they were just plain ugly from a design perspective. By September 16, the ugliness was gone, but the card was still too busy. Eventually, I reintroduced the color wheel, but made it the background of the card, reduced the amount of unnecessary text and highlighted an important zone to contrast my vision differences at a glance.
 
 Here's where it landed. Before you read on: **how many columns of stripes do you see on the front?**
 
@@ -155,7 +155,7 @@ Here's where it landed. Before you read on: **how many columns of stripes do you
 
 ## What's next
 
-Taken together — normal lightness, a broad loss of color sensitivity, a lean that doesn't match any known type, childhood onset, central vision loss, stable for 35 years — the pattern points at the cones or the macula rather than the optics of the eye. I've sent a clinical summary to a few color vision researchers, asking about the tests that could actually find something: high-resolution macular OCT, multifocal and full-field ERG, fundus autofluorescence, and formal color testing (an anomaloscope would settle the red-green question in about ten minutes).
+Taken together - normal lightness, a broad loss of color sensitivity, a lean that doesn't match any known type, childhood onset, central vision loss, stable for 35 years - the pattern points at the cones or the macula rather than the optics of the eye. I've sent a clinical summary to a few color vision researchers, asking about the tests that could actually find something: high-resolution macular OCT, multifocal and full-field ERG, fundus autofluorescence, and formal color testing (an anomaloscope would settle the red-green question in about ten minutes).
 
 The goal isn't a cure. It's a real diagnosis, or at least a documented one. And in the meantime, I finally have a better answer than "I can't tell you what I am, but it's not red-green colorblind."
 
