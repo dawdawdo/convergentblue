@@ -95,8 +95,7 @@ Here's what the trials look like. It's a standard testing mechanism - it starts 
   <figcaption>Which one is different? (It's the top-right square.)</figcaption>
 </figure>
 
-<!-- CLAUDE (numbers): 5,600 -> 5,900 and 2,000 -> 2,300 add the 280-trial magenta run from 15 Oct. The magenta sentence is new; cut it if you don't want it. -->
-All told, I did about 5,900 trials on myself. Not all of them counted: the early HSV runs were exploratory, and one big run had a bug (a 3-second time limit that turned slow answers into wrong ones), so I threw it out. One magenta reading also looked odd, so I re-tested it - it didn't replicate, and the re-test replaced it. The map below is built on the roughly 2,300 clean trials that were left. My 10 volunteers, all with normal color vision, did a shorter version - only 540 trials each.
+All told, I did about 5,900 trials on myself. Not all of them counted: the early HSV runs were exploratory, and one big run had a bug (a 3-second time limit that turned slow answers into wrong ones), so I threw it out. The map below is built on the roughly 2,300 clean trials that were left. My 10 volunteers, all with normal color vision, did a shorter version - only 540 trials each.
 
 [^study]: **Color space:** CIELAB, where a distance of 1 (one ΔE) is roughly one just-noticeable difference for a normal observer. Lightness was held fixed so only color changed. **Task:** four patches, three identical, pick the odd one out. **Coverage:** six anchor colors around the wheel plus neutral gray, four directions at each.
 
