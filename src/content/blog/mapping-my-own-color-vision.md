@@ -40,7 +40,7 @@ Designers describe every color with three numbers, called HSV:
 - **Saturation**: how vivid it is. 0% is gray, at the middle of the wheel; 100% is full-strength color, at the edge.[^sat]
 - **Value**: how bright it is, from 0% (black) to 100%.[^val]
 
-It's like the tape-measure for designers, and it was good enough to help me understand how far away I am from "normal" but I would quickly discover that I needed some more tools to paint the complete picture.
+It's the designer's tape measure, and it was good enough to show me *where* my problem was, but it turned out to be an imprecise tool for what I actually needed to measure.
 
 [^hue]: Mathematically, hue splits the wheel into three $120^\circ$ sections, centered on the primary colors red, green, and blue. The function looks strange because it's piecewise. Given $M = \max(R,G,B)$, $m = \min(R,G,B)$ and $C = M - m$:
 
@@ -84,7 +84,7 @@ And it gave me a new idea - what if I built a "Stephen's vision on a card" state
 
 So, I took the only sane and rational next step: I built a controlled study[^study] and recruited volunteers through a Facebook post. You know - things that normal people do on a Saturday.
 
-It was also time to replace that tape-measure. HSV is convenient for designers, but equal steps in HSV don't *look* equal to the eye, so a "5% shift" means something different depending on where you are on the wheel. Instead, I switched to a color space called CIELAB, which is built so that one unit is roughly the smallest difference a normal eye can see, anywhere. That makes it possible to say things like "my threshold is 4× normal" and have it mean something.
+It was also time to replace that tape measure. HSV is convenient for designers, but equal steps in HSV don't *look* equal to the eye, so a "5% shift" means something different depending on where you are on the wheel. Instead, I switched to a color space called CIELAB, which is built so that one unit is roughly the smallest difference a normal eye can see, anywhere. That makes it possible to say things like "my threshold is 4× normal" and have it mean something.
 
 All told, I did about 5,600 trials on myself. Not all of them counted: the early HSV runs were exploratory, and one big run had a bug (a 3-second time limit that turned slow answers into wrong ones), so I threw it out. The map below is built on the roughly 2,000 clean trials that were left. My 9 volunteers, all with normal color vision, did a shorter version - only 540 trials each.
 
