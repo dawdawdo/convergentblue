@@ -11,16 +11,12 @@ demo: /color-threshold-test/
 
 <figure>
   <img src="/images/2026/10/vision/Ishihara_9.svg" alt="An Ishihara color plate: a circle of colored dots hiding a number" width="255" height="255">
-  <figcaption>What number do you see? I've been asked that question my whole life, and I almost never know.</figcaption>
+  <figcaption> What number do you see? Most people see 74. People with red-green colorblindness usually see 21. I don't see a number at all. </figcaption>
 </figure>
-<!-- CLAUDE (#9, optional): this plate has a known answer, so the caption could pay off its own question: "What number do you see? Most people see 74. People with red-green colorblindness usually see 21. I don't see a number at all." -->
 
 You've probably seen one of these: a circle of colored dots with a number hidden inside. It's called an Ishihara plate and it's designed to test for red-green colorblindness. I've taken this test more times than I can count, starting around age ten, and I almost always fail it. The conclusion everyone reaches is "red-green colorblind," and that's usually where the conversation ends.
 
-<!-- CLAUDE (#3): folded the old "Color discrimination" bullet into this paragraph. It's evidence for "it never quite fit," so it lives here now. -->
 Except it never quite fit. Lots of colors are hard for me to tell apart, and yes, sometimes that runs along the red-green spectrum - but sometimes it's blue-yellow, and sometimes it's neither, which always seemed weird to me. I never had the vocabulary to discuss it, so it just remained a vaguely uneasy feeling until this fall, when I finally had an opportunity to explore it myself. I do fail the test, but not for the reason everyone assumes.
-
-<!-- CLAUDE (#3): cut the "Three different vision problems" section. Central vision moved to "What's next," myopia dropped. -->
 
 ## It all started with keycaps
 
@@ -160,7 +156,6 @@ Here's where it landed. Before you read on: **how many columns of stripes do you
 
 ## What's next
 
-<!-- CLAUDE (#3): central vision moved here from the old intro section, where it's part of the evidence. Added a short definition of the macula, since the next paragraph uses the word. -->
 There's one more piece I haven't mentioned. My central vision isn't blurry, it's missing entirely, replaced by a swirl of colors and patterns - like a kaleidoscope held wherever I look, eyes open or closed. It's most similar to the symptoms of Stargardt disease, which affects the macula (the center of the retina).
 
 Taken together - normal lightness, a broad loss of color sensitivity, a lean that doesn't match any known type, childhood onset, central vision loss, stable for 35 years - the pattern points at the cones or the macula rather than the optics of the eye. I've sent a clinical summary to a few color vision researchers, asking about the tests that could actually find something: high-resolution macular OCT, multifocal and full-field ERG, fundus autofluorescence, and formal color testing (an anomaloscope would settle the red-green question in about ten minutes).
