@@ -10,7 +10,7 @@ demo: /color-threshold-test/
 ---
 
 <figure>
-  <img src="/images/2026/10/vision/ishihara_red_green.png" alt="An Ishihara-style color plate: a circle of colored dots hiding a number" width="255" height="259">
+  <img src="/images/2026/10/vision/Ishihara_9.svg" alt="An Ishihara-style color plate: a circle of colored dots hiding a number" width="255" height="259">
   <figcaption>What number do you see? I've been asked that question my whole life, and I almost never know.</figcaption>
 </figure>
 
