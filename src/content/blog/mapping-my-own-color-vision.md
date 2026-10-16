@@ -1,9 +1,9 @@
 ---
 title: "I Failed Every Colorblind Test, But I'm Not Exactly Colorblind"
 description: "I built my own color vision test, ran about 5,900 trials on myself, and drew a map of what I actually see. The results were... eye-opening."
-pubDate: 2026-10-13
+pubDate: 2026-10-16
 tags: [project, color, vision, data]
-draft: true
+draft: false
 cover: "/images/2026/10/vision/MAP_final.png"
 coverFit: contain
 demo: /color-threshold-test/
