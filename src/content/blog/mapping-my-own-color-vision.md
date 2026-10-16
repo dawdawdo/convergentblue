@@ -105,24 +105,26 @@ The short version: **my brightness discrimination is normal; color discriminatio
 
 Start with brightness, because it explains a lot. My lightness threshold is dead normal - essentially identical to my volunteers. Most of what we use color for in daily life actually leans on brightness: reading text, judging shadows and edges, or tracking a basketball across a gym (I actually play about once a week, and can shoot just fine). So for a lot of everyday cases, nothing seems obviously wrong for me. It also explains the keycaps: when I learned to design by luminance, I was unknowingly designing around the one channel that works perfectly for me.
 
-The word I settled on for the region of colors that look identical to me is a **smear**. Everyone has them, but mine are much, much bigger. The maps below show all seven anchor points, each with a shape drawn around it. Every color inside a shape looks the same - that's why each one is filled with a single flat color. Also, mine all lean in the same direction - see how they point along the yellow-green ↔ magenta axis? The one exception is green: still huge, but rounder than the others and stretched toward the center like a normal smear, instead of along my diagonal. I re-tested it just to be sure and it's real, I just don't know why.
+I call the region of colors that look identical to me a **confusion zone**.[^zones] Everyone has them, but mine are much, much bigger. The maps below show all seven anchor points, each with a shape drawn around it. Every color inside a shape looks the same - that's why each one is filled with a single flat color. Also, mine all lean in the same direction - see how they point along the yellow-green ↔ magenta axis? The one exception is green: still huge, but rounder than the others and stretched toward the center like a normal one, instead of along my diagonal. I re-tested it just to be sure and it's real, I just don't know why.
+
+[^zones]: Color scientists call these *discrimination ellipses*, or MacAdam ellipses, after David MacAdam's 1942 study that first mapped them for normal eyes. I use "confusion zone" because it pairs with the *confusion lines* of ordinary colorblindness, which come up below.
 
 <div class="pair">
   <figure>
-    <img src="/images/2026/10/vision/MAP_normal.png" alt="Typical eye: small smears pointing toward gray" width="1520" height="1520">
-    <figcaption><strong>Typical eye.</strong> Smears are tiny, and each one points toward or away from the gray center. (Modeled with a standard normal-vision formula, fitted to my 10 volunteers.)</figcaption>
+    <img src="/images/2026/10/vision/MAP_normal.png" alt="Typical eye: small confusion zones pointing toward gray" width="1520" height="1520">
+    <figcaption><strong>Typical eye.</strong> Zones are tiny, and each one points toward or away from the gray center. (Modeled with a standard normal-vision formula, fitted to my 10 volunteers.)</figcaption>
   </figure>
   <figure>
-    <img src="/images/2026/10/vision/MAP_final.png" alt="My eye: large smears leaning along the same diagonal" width="1520" height="1520">
+    <img src="/images/2026/10/vision/MAP_final.png" alt="My eye: large confusion zones leaning along the same diagonal" width="1520" height="1520">
     <figcaption><strong>My eye, same scale.</strong> About 4× bigger, and nearly all lean along the same diagonal (yellow-green ↔ magenta). Green is the exception.</figcaption>
   </figure>
 </div>
 
-[^results]: **Who I'm compared with:** the 7 volunteers who ran the same quick version of the test. One more run was left out for too many timeouts, and two volunteers ran the diagonal-only version, which feeds the direction results. **Lightness:** my threshold is 0.70 ΔE. The volunteers averaged 0.68. Dead normal. **Color overall:** ~3.7× worse than my volunteers, ~4.2× worse than the standard normal-observer model. **Near gray:** 5–9.5× worse. Normal eyes are *most* sensitive near gray. Mine aren't, which is exactly why muted colors are my problem. **Direction:** at six of seven anchors, my smear stretches along the same diagonal, about 143° in CIELAB - roughly yellow-green ↔ magenta. The odds of that much alignment happening by chance are about 1 in 130. **The exception is green**, where my smear is rounder and stretched toward the center like a normal one - just about 4.7× bigger. I re-tested that on two screens; it's real, and I don't know why yet. I also used CIEDE2000 - a color-difference formula fitted to thousands of normal-observer judgments - as a "global control." It agrees with my volunteers (r = 0.87) and with my results: about 4× normal.
+[^results]: **Who I'm compared with:** the 7 volunteers who ran the same quick version of the test. One more run was left out for too many timeouts, and two volunteers ran the diagonal-only version, which feeds the direction results. **Lightness:** my threshold is 0.70 ΔE. The volunteers averaged 0.68. Dead normal. **Color overall:** ~3.7× worse than my volunteers, ~4.2× worse than the standard normal-observer model. **Near gray:** 5–9.5× worse. Normal eyes are *most* sensitive near gray. Mine aren't, which is exactly why muted colors are my problem. **Direction:** at six of seven anchors, my zone stretches along the same diagonal, about 143° in CIELAB - roughly yellow-green ↔ magenta. The odds of that much alignment happening by chance are about 1 in 130. **The exception is green**, where my zone is rounder and stretched toward the center like a normal one - just about 4.7× bigger. I re-tested that on two screens; it's real, and I don't know why yet. I also used CIEDE2000 - a color-difference formula fitted to thousands of normal-observer judgments - as a "global control." It agrees with my volunteers (r = 0.87) and with my results: about 4× normal.
 
 ## So what kind of colorblindness is it anyway?
 
-Ordinary colorblindness is directional. If you're red-green colorblind, you confuse colors along one line across the wheel, running roughly from red to green, but colors in other directions are easy to tell apart. These are called *confusion lines*, and each type of colorblindness has its own. So if my smears came from a known type, they'd stretch along that type's line, usually within a few degrees.
+Ordinary colorblindness is directional. If you're red-green colorblind, you confuse colors along one line across the wheel, running roughly from red to green, but colors in other directions are easy to tell apart. These are called *confusion lines*, and each type of colorblindness has its own. So if my zones came from a known type, they'd stretch along that type's line, usually within a few degrees.
 
 Mine don't. None of the known types line up. Blue-yellow comes closest, and even that's a loose fit, so my lean really does appear to be its own unique animal.[^angles]
 
@@ -130,21 +132,21 @@ Mine don't. None of the known types line up. Blue-yellow comes closest, and even
 
 <figure>
   <img src="/images/2026/10/vision/axis-comparison.png" alt="My measured lean at each anchor compared with the protan, deutan, and tritan confusion directions">
-  <figcaption>White is my lean at each anchor. If I were red-green colorblind, the white line would sit on top of the red or orange one. It almost never does. The one exception is green (far left), where my smear stretches toward the center like a normal one - which at green happens to be the protan direction.</figcaption>
+  <figcaption>White is my lean at each anchor. If I were red-green colorblind, the white line would sit on top of the red or orange one. It almost never does. The one exception is green (far left), where my zone stretches toward the center like a normal one - which at green happens to be the protan direction.</figcaption>
 </figure>
 
-So why do I fail Ishihara? The plates are built from fairly muted colors, and muted colors sit near the gray center of the wheel. That's exactly where my smears are worst - 5 to 10 times bigger than normal. So the plates' red-green differences fall *inside* my smears anyway.
+So why do I fail Ishihara? The plates are built from fairly muted colors, and muted colors sit near the gray center of the wheel. That's exactly where my zones are worst - 5 to 10 times bigger than normal. So the plates' red-green differences fall *inside* my zones anyway.
 
 <figure>
   <img src="/images/2026/10/vision/card-inset.png" alt="The gray center of the color wheel, magnified: a small oval labeled typical, a large blob labeled me, and a long dashed band labeled red-green colorblind running side to side through both" width="262" height="402">
-  <figcaption>The gray center of the wheel, magnified. A typical smear is a small oval. A red-green colorblind smear is a long, thin band. Mine is a big blob, but it covers almost the entire red-green band - so we both fail, for different reasons.</figcaption>
+  <figcaption>The gray center of the wheel, magnified. A typical confusion zone is a small oval. A red-green colorblind one is a long, thin band - its confusion line. Mine is a big blob, but it covers almost the entire red-green band - so we both fail, for different reasons.</figcaption>
 </figure>
 
 I fail the red-green test without having a red-green defect - not because my confusion *lines* are the same, but because my confusion *zones* are massive!
 
 ## The vision card
 
-The wallet card idea went through 68 designs in 41 days, incorporating critiques from Reddit, Facebook, friends, family, myself, and of course, my thinking buddy, Claude. Eventually I created a design brief with the rule that it has to work in 2–3 seconds, or it fails, however clever it is. Here's the full progression of what that looked like.
+The wallet card idea went through 74 designs in 41 days, incorporating critiques from Reddit, Facebook, friends, family, myself, and of course, my thinking buddy, Claude. Eventually I created a design brief with the rule that it has to work in 2–3 seconds, or it fails, however clever it is. Here's the full progression of what that looked like.
 
 <picture>
   <source srcset="/images/2026/10/vision/card_iterations_dark.png" media="(prefers-color-scheme: dark)">
@@ -157,11 +159,11 @@ Here's where it landed. Before you read on: **how many columns of stripes do you
 
 ![Card front: a purple-to-green panel in three columns, labeled with what I see: smooth, smooth, stripes](/images/2026/10/vision/card-front.png)
 
-**Front:** Most people see stripes in the middle column. I see it as a smooth gradient - same as the first column, because its steps are outisde a normal vision smear, but inside my own. (Those steps are subtle, so a dim or low-quality screen can hide them even from normal eyes. If you don't see them either, the test at the end of this post will tell you more than this card can.) The last column shows steps of exactly the same size, but in brightness only and I can see them just fine.
+**Front:** Most people see stripes in the middle column. I see it as a smooth gradient - same as the first column, because its steps are outside a normal confusion zone, but inside mine. (Those steps are subtle, so a dim or low-quality screen can hide them even from normal eyes. If you don't see them either, the test at the end of this post will tell you more than this card can.) The last column shows steps of exactly the same size, but in brightness only and I can see them just fine.
 
-![Card back: my smears drawn on a color wheel, a magnified inset of the gray center comparing a typical smear, mine, and a red-green colorblind band, and a stepped brightness strip](/images/2026/10/vision/card-back.png)
+![Card back: my confusion zones drawn on a color wheel, a magnified inset of the gray center comparing a typical zone, mine, and a red-green colorblind band, and a stepped brightness strip](/images/2026/10/vision/card-back.png)
 
-**Back:** the gray center of color space, magnified, showing my smear vs. a typical one vs. a red-green one, with a stepped brightness strip to show that part is fine.
+**Back:** the gray center of color space, magnified, showing my confusion zone vs. a typical one vs. a red-green one, with a stepped brightness strip to show that part is fine.
 
 ## What's next
 
@@ -173,11 +175,11 @@ Taken together - normal lightness, a broad loss of color sensitivity, a lean tha
 
 The goal isn't a cure. It's a real diagnosis, or at least a documented one. In the meantime, I finally have a better answer than "I can't tell you what I am, but it's not red-green colorblind." Here it is:
 
-> My brightness vision is normal. My color vision isn't - every color is surrounded by a smear about four times bigger than yours, where everything inside looks the same. And mine lean in a direction no known type of colorblindness does.
+> My brightness vision is normal. My color vision isn't - every color sits inside a confusion zone about four times bigger than yours, where everything looks the same. And mine lean in a direction no known type of colorblindness does.
 
 ## Try it yourself
 
-If you're interested in either of the tests I built, you can try them here. The threshold test draws your own smear chart at the end, and nothing leaves your device unless you choose to send it. If you're willing to join the comparison group, check "Yes, send my results to Stephen" at the end: that sends me your answers, thresholds, and screen and browser details, plus a name or note only if you add one. I'll use them as controls for further analysis.
+If you're interested in either of the tests I built, you can try them here. The threshold test draws a map of your own confusion zones at the end, and nothing leaves your device unless you choose to send it. If you're willing to join the comparison group, check "Yes, send my results to Stephen" at the end: that sends me your answers, thresholds, and screen and browser details, plus a name or note only if you add one. I'll use them as controls for further analysis.
 
-<p><a class="try-it" href="/color-threshold-test/">Try it: map your own color smears →</a></p>
+<p><a class="try-it" href="/color-threshold-test/">Try it: map your own confusion zones →</a></p>
 <p><a class="try-it" href="/color-swatch-test/">Try it: see my original swatch test →</a></p>

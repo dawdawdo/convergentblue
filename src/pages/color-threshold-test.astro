@@ -1,11 +1,11 @@
 ---
 import Base from '../layouts/Base.astro';
 ---
-<Base title="Color Threshold Test" description="Four patches, one is different. A browser version of the odd-one-out test I used to map my own color vision, with a map of your own color smear zones at the end.">
+<Base title="Color Threshold Test" description="Four patches, one is different. A browser version of the odd-one-out test I used to map my own color vision, with a map of your own confusion zones at the end.">
   <article class="wrap">
     <p class="eyebrow"><a href="/blog/mapping-my-own-color-vision/">From the post: Mapping My Own Color Vision</a></p>
     <h1>Color Threshold Test</h1>
-    <p class="lede">Four patches, one is different. Pick the odd one out. The test homes in on the smallest color difference you can see in each direction, then maps your own color smear zones.</p>
+    <p class="lede">Four patches, one is different. Pick the odd one out. The test homes in on the smallest color difference you can see in each direction, then maps your own color confusion zones.</p>
     <div id="ctt-app" class="ctt"></div>
   </article>
 
@@ -293,7 +293,7 @@ import Base from '../layouts/Base.astro';
         : S.log.length ? `<p>${latePct.toFixed(1)}% of trials ran out of time, low enough to ignore.</p>` : ''}
 
       <div id="ctt-mapwrap">
-        <canvas id="ctt-map" class="ctt-map" aria-label="Map of your color smear zones"></canvas>
+        <canvas id="ctt-map" class="ctt-map" aria-label="Map of your color confusion zones"></canvas>
         <p class="ctt-stat" id="ctt-stat"></p>
         <p id="ctt-statnote"></p>
         <div class="ctt-row">
@@ -326,7 +326,7 @@ import Base from '../layouts/Base.astro';
       summary = drawSmearMap(canvas, combined(), zoom.checked ? 3 : 1);
       const stat = document.getElementById('ctt-stat')!, note = document.getElementById('ctt-statnote')!;
       if (!summary.anchors) { stat.textContent = 'Answer a few trials to see your map.'; note.textContent = ''; return; }
-      stat.textContent = `Your color smear zones are about ${summary.multiple!.toFixed(1)}× typical size.`;
+      stat.textContent = `Your color confusion zones are about ${summary.multiple!.toFixed(1)}× typical size.`;
       note.innerHTML = `Colors inside a shape look the same to you. Thick outlines are yours, thin ones are a typical eye's
         (the CIEDE2000 standard observer, which matched my nine volunteers well).
         ${summary.lightness ? `Your lightness threshold is ${summary.lightness.toFixed(1)}× typical.` : ''}
@@ -338,7 +338,7 @@ import Base from '../layouts/Base.astro';
     zoom.onchange = redraw;
     document.getElementById('ctt-savepng')!.onclick = () => canvas.toBlob((b) => {
       if (!b) return; const a = document.createElement('a'); a.href = URL.createObjectURL(b);
-      a.download = `my-color-smears-${new Date().toISOString().slice(0, 10)}.png`; a.click(); setTimeout(() => URL.revokeObjectURL(a.href), 1500);
+      a.download = `my-confusion-zones-${new Date().toISOString().slice(0, 10)}.png`; a.click(); setTimeout(() => URL.revokeObjectURL(a.href), 1500);
     });
     document.getElementById('ctt-merge')!.onchange = async (e) => {
       const f = (e.target as HTMLInputElement).files?.[0], msg = document.getElementById('ctt-mergemsg')!;

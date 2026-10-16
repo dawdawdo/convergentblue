@@ -134,7 +134,7 @@ export function drawSmearMap(canvas: HTMLCanvasElement, results: Cond[], zoom = 
   // legend strip (part of the canvas so a saved PNG explains itself)
   ctx.fillStyle = '#fff'; ctx.fillRect(0, N, N, LEG);
   ctx.fillStyle = '#111'; ctx.font = '600 20px Inter, system-ui, sans-serif';
-  ctx.fillText('My color smear zones', 18, N + 32);
+  ctx.fillText('My color confusion zones', 18, N + 32);
   ctx.font = '15px Inter, system-ui, sans-serif'; ctx.fillStyle = '#444';
   const m = summary.multiple ? `about ${summary.multiple.toFixed(1)}× typical size` : '';
   ctx.fillText(`Colors inside a shape look the same. Thick = mine${m ? ` (${m})` : ''}, thin = typical.`, 18, N + 56);
