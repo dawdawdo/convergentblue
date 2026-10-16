@@ -74,14 +74,14 @@ With that background, I generated an early, simple test: show two swatches, chan
 
 So, I could see brightness just fine. It was my color vision - specifically *which* color and *how vivid* - that was broken.
 
-After 30+ years of "I admit, it doesn't make sense to me either" I finally had a way to describe what was "wrong" with me - and I spent the next ten minutes in tears of relief.
+After 30+ years of "I admit, it doesn't make sense to me either," I finally had a way to describe what was "wrong" with me - and I spent the next ten minutes in tears of relief.
 
 ## From a card to a real study
 
 And it gave me a new idea - what if I built a "Stephen's vision on a card" statement that would be understandable to anyone at a glance? I could carry it in my wallet and pull it out whenever someone asked. I started by creating some visuals that I thought would help explain my color discrimination, but I discovered two things pretty quickly:
 
 1. It was hard to explain to other people in a way that was engaging and understandable.
-2. I still didn't quite understand it well enough myself. For instance, when I showed an early card to a Reddit design group, someone suggested "that's just red-green colorblindness" which was completely reasonable because that's what the card showed, but I didn't know how to clarify.
+2. I still didn't quite understand it well enough myself. For instance, when I showed an early card to a Reddit design group, someone suggested "that's just red-green colorblindness," which was completely reasonable because that's what the card showed, but I didn't know how to clarify.
 
 So, I took the only sane and rational next step: I built a controlled study[^study] and recruited volunteers through a Facebook post. You know - things that normal people do on a Saturday.
 
@@ -96,13 +96,13 @@ Here's what the trials look like. It's a standard testing mechanism - it starts 
 
 All told, I did about 5,900 trials on myself. Not all of them counted: the early HSV runs were exploratory, and one big run had a bug (a 3-second time limit that turned slow answers into wrong ones), so I threw it out. The map below is built on the roughly 2,300 clean trials that were left. My 10 volunteers, all with normal color vision, did a shorter version - most ran about 540 trials.
 
-[^study]: **Color space:** CIELAB, where a distance of 1 (one ΔE) is roughly one just-noticeable difference for a normal observer. Lightness was held fixed so only color changed. **Task:** four patches, three identical, pick the odd one out. **Coverage:** six anchor colors around the wheel plus neutral gray, four directions at each.
+[^study]: **Color space:** CIELAB, where a distance of 1 (one ΔE) is roughly one just-noticeable difference for a normal observer. Lightness was held fixed so only color changed. **Task:** four patches, three identical, pick the odd one out. **Coverage:** six anchor colors around the wheel plus neutral gray, at least four directions at each.
 
 ## What the map shows
 
 The short version: **my brightness discrimination is normal; color discrimination is about 4× worse than normal, and it almost always leans the same way (more on that below).**[^results]
 
-Let me start with brightness, because it turns out to be quite important. My lightness threshold is dead normal - essentially identical to my volunteers. And that exaplained a lot for me. Most of what we use color for in daily life actually leans on brightness: reading text, judging shadows and edges, or tracking a basketball across a gym (I actually play about once a week, and can shoot just fine). So for a lot of everyday cases, nothing seems obviously wrong for me. It also explains the keycaps: when I learned to design by luminance, I was unknowingly designing around the one channel that works perfectly for me.
+Let me start with brightness, because it turns out to be quite important. My lightness threshold is dead normal - essentially identical to my volunteers. And that explained a lot for me. Most of what we use color for in daily life actually leans on brightness: reading text, judging shadows and edges, or tracking a basketball across a gym (I actually play about once a week, and can shoot just fine). So for a lot of everyday cases, nothing seems obviously wrong for me. It also explains the keycaps: when I learned to design by luminance, I was unknowingly designing around the one channel that works perfectly for me.
 
 Around every color there’s a region of nearby colors that look identical to it. I call that region a **confusion zone**.[^zones] Everyone has them, but mine are much, much bigger. The maps below show all seven anchor points (the dots), each with its zone outlined around it. To me, every color inside an outline looks the same as the color at its dot. Look how much color that is. Also, mine all lean in the same direction - see how they all tilt from top-left to bottom-right, roughly yellow-green to magenta? The one exception is green: still huge, but rounder than the others and stretched toward the center like a normal one, instead of along my diagonal. I re-tested it just to be sure and it's real, I just don't know why.
 
@@ -166,7 +166,7 @@ Here's where it landed. Before you read on: **how many columns of stripes do you
 
 ## What's next
 
-There's one more piece I haven't mentioned - my central vision, which is missing entirely, replaced by a swirl of colors and patterns - like a kaleidoscope held wherever I look, eyes open or closed. It's most similar to the symptoms of Stargardt disease, which affects the macula (the center of the retina). It's not the focus of this post, but I may do a later deep dive there too and it bears mentioning here as it relates to my other symptoms.
+There's one more piece I haven't mentioned - my central vision, which is missing entirely, replaced by a swirl of colors and patterns - like a kaleidoscope held wherever I look, eyes open or closed. It's most similar to the symptoms of Stargardt disease, which affects the macula (the center of the retina). It's not the focus here (maybe a future post), but it's part of the same picture.
 
 Taken together - normal lightness, a broad loss of color sensitivity, a lean that doesn't match any known type, childhood onset, central vision loss, stable for 35 years - the pattern points at the cones (the retina's color sensors) or the macula, rather than the optics of the eye. I've sent a clinical summary to a few color vision researchers, asking about the tests that could actually find something: detailed scans of the retina, tests that measure how the cones respond electrically, and formal color testing (an anomaloscope would settle the red-green question in about ten minutes).[^tests]
 
