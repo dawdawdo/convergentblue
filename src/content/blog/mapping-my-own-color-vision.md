@@ -167,7 +167,7 @@ Here's where it landed. Before you read on: **how many columns of stripes do you
 
 ## What's next
 
-There's one more piece I haven't mentioned - my central vision, which is missing entirely, replaced by a swirl of colors and patterns - like a kaleidoscope held wherever I look, eyes open or closed. It's most similar to the symptoms of Stargardt disease, which affects the macula (the center of the retina).
+There's one more piece I haven't mentioned - my central vision, which is missing entirely, replaced by a swirl of colors and patterns - like a kaleidoscope held wherever I look, eyes open or closed. It's most similar to the symptoms of Stargardt disease, which affects the macula (the center of the retina). It's not the focus of this post, but I may do a later deep dive there too but it bears mentioning here as it relates to my other symptoms.
 
 Taken together - normal lightness, a broad loss of color sensitivity, a lean that doesn't match any known type, childhood onset, central vision loss, stable for 35 years - the pattern points at the cones (the retina's color sensors) or the macula, rather than the optics of the eye. I've sent a clinical summary to a few color vision researchers, asking about the tests that could actually find something: detailed scans of the retina, tests that measure how the cones respond electrically, and formal color testing (an anomaloscope would settle the red-green question in about ten minutes).[^tests]
 
