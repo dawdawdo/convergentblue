@@ -20,15 +20,14 @@ Except it never quite fit. Lots of colors are hard for me to tell apart, and yes
 
 ## It all started with keycaps
 
-Earlier this year, I started a project to build custom keycaps (more on that in its own post once the set is done). Dye-sublimated keycaps live or die on contrast: a texture or icon that looks fine on screen can vanish once it's printed on the actual plastic.
-To predict which designs would survive printing, I had to get really intimate with color theory and I eventually stumbled onto the well-established concept of luminance[^lum], which is a measure of the way the human eye sees brightness. It turns out this was really useful for the keycaps - if the luminance gap between two colors was big enough, then the print would "work" in the sense that the legends and textures on the caps could be easily seen against the background. For instance, in the example below, the design reads fine on screen, but the luminance gap was too small to survive printing.
+Earlier this year, I started a project to build custom keycaps (more on that in its own post once the set is done). Dye-sublimated keycaps live or die on contrast: a texture or icon that looks fine on screen can vanish once it's printed on the actual plastic. To predict which designs would survive printing, I had to get really intimate with color theory and I eventually stumbled onto the well-established concept of luminance[^lum], which is a measure of the way the human eye sees brightness. It turns out this was really useful for the keycaps - if the luminance gap between two colors was big enough, then the print would "work" in the sense that the letters and textures on the caps could be easily seen against the background. For instance, in the example below, the design reads fine on screen, but the luminance gap was too small to survive printing.
 
 <picture>
   <source srcset="/images/2026/10/vision/flame_render_vs_print_lighttext.png" media="(prefers-color-scheme: dark)">
   <img src="/images/2026/10/vision/flame_render_vs_print_darktext.png" alt="An example of a keycap that renders just fine on a screen, but fails miserably after printing.">
 </picture>
 
-And this got me thinking - now that I could comfortably discuss hue, saturation, and luminance, and I also had a partner (Claude) who could see things that I couldn't, could I use that to learn a little more about my own vision?
+And this got me thinking - now that I could comfortably discuss hue, saturation, and luminance, and I also had a partner, Claude, who could measure things I couldn’t see, could I use that to learn a little more about my own vision?
 
 [^lum]: The luminance formula is $L = 0.2126R + 0.7152G + 0.0722B$, where $R$, $G$, and $B$ are the red, green, and blue channels of that color. Note that red, and especially blue, get a huge discount relative to green, which is the strongest color channel for humans. Luminance is different from value (the V from HSV), which is simply the maximum of red, green, or blue and much less reliable for measuring brightness the way we actually see it.
 
@@ -73,16 +72,16 @@ With that background, I generated an early, simple test: show two swatches, chan
   <figcaption>Can you tell these apart? They differ by about 6° of hue. I answered "same."</figcaption>
 </figure>
 
-So, I could see brightness just fine - as well as anyone, in fact. It was my color vision - specicially *which* color and *how vivid* - that was broken.
+So, I could see brightness just fine. It was my color vision - specifically *which* color and *how vivid* - that was broken.
 
 After 30+ years of "I know, it doesn't make sense to me either" I finally had a way to describe what was "wrong" with me - and I spent the next ten minutes in tears of relief.
 
-## New info, new idea
+## From a card to a real study
 
 And it gave me a new idea - what if I built a "Stephen's vision on a card" statement that would be understandable to anyone at a glance? I could carry it in my wallet and pull it out whenever someone asked. I started by creating some visuals that I thought would help explain my color discrimination, but I discovered two things pretty quickly:
 
 1. It was hard to explain to other people in a way that was engaging and understandable.
-2. I still didn't quite understand it well enough myself. For instance, when I showed an early card to a Reddit design group, someone reasonably said "that's just red-green colorblindness" which was fair because that's what the card showed, but I didn't know how to clarify.
+2. I still didn't quite understand it well enough myself. For instance, when I showed an early card to a Reddit design group, someone suggested "that's just red-green colorblindness" which was completely reasonable because that's what the card showed, but I didn't know how to clarify.
 
 So, I took the only sane and rational next step: I built a controlled study[^study] and recruited volunteers through a Facebook post. You know - things that normal people do on a Saturday.
 
@@ -95,7 +94,7 @@ Here's what the trials look like. It's a standard testing mechanism - it starts 
   <figcaption>Which one is different? (It's the top-right square.)</figcaption>
 </figure>
 
-All told, I did about 5,900 trials on myself. Not all of them counted: the early HSV runs were exploratory, and one big run had a bug (a 3-second time limit that turned slow answers into wrong ones), so I threw it out. The map below is built on the roughly 2,300 clean trials that were left. My 10 volunteers, all with normal color vision, did a shorter version - only 540 trials each.
+All told, I did about 5,900 trials on myself. Not all of them counted: the early HSV runs were exploratory, and one big run had a bug (a 3-second time limit that turned slow answers into wrong ones), so I threw it out. The map below is built on the roughly 2,300 clean trials that were left. My 10 volunteers, all with normal color vision, did a shorter version - most ran about 540 trials.
 
 [^study]: **Color space:** CIELAB, where a distance of 1 (one ΔE) is roughly one just-noticeable difference for a normal observer. Lightness was held fixed so only color changed. **Task:** four patches, three identical, pick the odd one out. **Coverage:** six anchor colors around the wheel plus neutral gray, four directions at each.
 
@@ -103,16 +102,16 @@ All told, I did about 5,900 trials on myself. Not all of them counted: the early
 
 The short version: **my brightness discrimination is normal; color discrimination is about 4× worse than normal, and it almost always leans the same way.**[^results]
 
-Let me start with brightness, because it explains a lot. My lightness threshold is dead normal - essentially identical to my volunteers. And that makes sense! Why? Most of what we use color for in daily life actually leans on brightness: reading text, judging shadows and edges, or tracking a basketball across a gym (I actually play about once a week, and can shoot just fine). So for a lot of everyday cases, nothing seems obviously wrong for me. It also explains the keycaps: when I learned to design by luminance, I was unknowingly designing around the one channel that works perfectly for me.
+Let me start with brightness, because it explains a lot. My lightness threshold is dead normal - essentially identical to my volunteers. And that exaplained a lot for me. Most of what we use color for in daily life actually leans on brightness: reading text, judging shadows and edges, or tracking a basketball across a gym (I actually play about once a week, and can shoot just fine). So for a lot of everyday cases, nothing seems obviously wrong for me. It also explains the keycaps: when I learned to design by luminance, I was unknowingly designing around the one channel that works perfectly for me.
 
-I call the region of colors that look identical to me a **confusion zone**.[^zones] Everyone has them, but mine are much, much bigger. The maps below show all seven anchor points (the dots), each with its zone outlined around it. To me, every color inside an outline looks the same as the color at its dot. Look how much color that is. Also, mine all lean in the same direction - see how they point along the yellow-green ↔ magenta axis? The one exception is green: still huge, but rounder than the others and stretched toward the center like a normal one, instead of along my diagonal. I re-tested it just to be sure and it's real, I just don't know why.
+Around every color there’s a region of nearby colors that look identical to it. I call that region a **confusion zone**.[^zones] Everyone has them, but mine are much, much bigger. The maps below show all seven anchor points (the dots), each with its zone outlined around it. To me, every color inside an outline looks the same as the color at its dot. Look how much color that is. Also, mine all lean in the same direction - see how they all tilt from top-left to bottom-right, roughly yellow-green to magenta? The one exception is green: still huge, but rounder than the others and stretched toward the center like a normal one, instead of along my diagonal. I re-tested it just to be sure and it's real, I just don't know why.
 
 [^zones]: Color scientists call these *discrimination ellipses*, or MacAdam ellipses, after David MacAdam's 1942 study that first mapped them for normal eyes. I use "confusion zone" because it pairs with the *confusion lines* of ordinary colorblindness, which come up below.
 
 <div class="pair">
   <figure>
     <img src="/images/2026/10/vision/MAP_normal.png" alt="Typical eye: small confusion zones pointing toward gray" width="1520" height="1520">
-    <figcaption><strong>Typical eye.</strong> Zones are tiny, and each one points toward or away from the gray center. (Modeled with a standard normal-vision formula, fitted to my 10 volunteers.)</figcaption>
+    <figcaption><strong>Typical eye.</strong> Zones are tiny, and each one points toward or away from the gray center. (Modeled with a standard normal-vision formula, fitted to my volunteers.)</figcaption>
   </figure>
   <figure>
     <img src="/images/2026/10/vision/MAP_final.png" alt="My eye: large confusion zones leaning along the same diagonal" width="1520" height="1520">
@@ -142,7 +141,7 @@ So why do I fail Ishihara? The plates are built from fairly muted colors, and mu
   <figcaption>The gray center of the wheel, magnified. A typical confusion zone is a small oval. A red-green colorblind one is a long, thin band - its confusion line. Mine is a big blob, but it covers almost the entire red-green band - so we both fail, for different reasons.</figcaption>
 </figure>
 
-I fail the red-green test without having a red-green defect - not because my confusion *lines* are the same, but because my confusion *zones* are massive!
+I fail the red-green test without having a red-green defect - not because my confusion *lines* are the same, but because my confusion *zones* are massive! So, to that Redditor: reasonable guess, but no.
 
 ## The vision card
 
@@ -153,7 +152,7 @@ The wallet card idea went through 74 designs in 41 days, incorporating critiques
   <img src="/images/2026/10/vision/card_iterations_light.png" alt="All iterations of the front and back of the card, organized by timeline.">
 </picture>
 
-These versions failed for different reasons. For instance, the cards built on September 5 (first row above) failed on almost all counts - they didn't mention brightness at all, it was hard to make the connection between the front and the back, and they were just plain ugly from a design perspective. By September 16, the ugliness was gone, but the card was still too busy. Eventually, I reintroduced the color wheel, but made it the background of the card, reduced the amount of unnecessary text and highlighted an important zone to contrast my vision differences at a glance.
+These versions failed for different reasons. For instance, the cards built on September 5 (first row above) failed on almost all counts - they didn't mention brightness at all, it was hard to make the connection between the front and the back, and they were just plain ugly from a design perspective. By September 16, the ugliness was gone, but the card was still too busy. Eventually, I reintroduced the color wheel, but made it the background of the card, reduced the amount of unnecessary text and highlighted an important zone to contrast my vision differences at a glance. The final change came while writing this post: I swapped the third column for brightness steps, because that’s the half of the story that everyone (including me) kept missing.
 
 Here's where it landed. Before you read on: **how many columns of stripes do you see on the front?**
 
