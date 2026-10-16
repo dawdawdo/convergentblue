@@ -157,7 +157,7 @@ Here's where it landed. Before you read on: **how many columns of stripes do you
 
 ![Card front: a purple-to-green panel in three columns, labeled with what I see: smooth, smooth, stripes](/images/2026/10/vision/card-front.png)
 
-**Front:** Most people count two columns of stripes: the middle and the right. I count one. The middle column looks like a smooth block to me, because its steps are well within normal vision but inside my smear. (Those steps are subtle, so a dim or low-quality screen can hide them even from normal eyes. If you don't see them either, the test at the end of this post will tell you more than this card can.)
+**Front:** Most people see stripes in the middle column. I see it as a smooth gradient - same as the first column, because its steps are outisde a normal vision smear, but inside my own. (Those steps are subtle, so a dim or low-quality screen can hide them even from normal eyes. If you don't see them either, the test at the end of this post will tell you more than this card can.) The last column shows steps of exactly the same size, but in brightness only and I can see them just fine.
 
 ![Card back: my smears drawn on a color wheel, a magnified inset of the gray center comparing a typical smear, mine, and a red-green colorblind band, and a stepped brightness strip](/images/2026/10/vision/card-back.png)
 
@@ -165,7 +165,7 @@ Here's where it landed. Before you read on: **how many columns of stripes do you
 
 ## What's next
 
-There's one more piece I haven't mentioned - my central vision. It isn't blurry, it's missing entirely, replaced by a swirl of colors and patterns - like a kaleidoscope held wherever I look, eyes open or closed. It's most similar to the symptoms of Stargardt disease, which affects the macula (the center of the retina).
+There's one more piece I haven't mentioned - my central vision, which is missing entirely, replaced by a swirl of colors and patterns - like a kaleidoscope held wherever I look, eyes open or closed. It's most similar to the symptoms of Stargardt disease, which affects the macula (the center of the retina).
 
 Taken together - normal lightness, a broad loss of color sensitivity, a lean that doesn't match any known type, childhood onset, central vision loss, stable for 35 years - the pattern points at the cones (the retina's color sensors) or the macula, rather than the optics of the eye. I've sent a clinical summary to a few color vision researchers, asking about the tests that could actually find something: detailed scans of the retina, tests that measure how the cones respond electrically, and formal color testing (an anomaloscope would settle the red-green question in about ten minutes).[^tests]
 
