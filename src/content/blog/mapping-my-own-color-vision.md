@@ -100,7 +100,7 @@ All told, I did about 5,900 trials on myself. Not all of them counted: the early
 
 ## What the map shows
 
-The short version: **my brightness discrimination is normal; color discrimination is about 4× worse than normal, and it almost always leans the same way.**[^results]
+The short version: **my brightness discrimination is normal; color discrimination is about 4× worse than normal, and it almost always leans the same way (more on that below).**[^results]
 
 Let me start with brightness, because it explains a lot. My lightness threshold is dead normal - essentially identical to my volunteers. And that exaplained a lot for me. Most of what we use color for in daily life actually leans on brightness: reading text, judging shadows and edges, or tracking a basketball across a gym (I actually play about once a week, and can shoot just fine). So for a lot of everyday cases, nothing seems obviously wrong for me. It also explains the keycaps: when I learned to design by luminance, I was unknowingly designing around the one channel that works perfectly for me.
 
