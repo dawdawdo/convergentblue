@@ -145,7 +145,7 @@ I fail the red-green test without having a red-green defect - not because my con
 
 ## The vision card
 
-The wallet card idea went through 74 designs in 41 days, incorporating critiques from Reddit, Facebook, friends, family, myself, and of course, my thinking buddy, Claude. Eventually I created a design brief with the rule that it has to work in 2–3 seconds, or it fails, however clever it is. Here's the full progression of what that looked like.
+The wallet card idea went through 75 designs in 42 days, incorporating critiques from Reddit, Facebook, friends, family, myself, and of course, my thinking buddy, Claude. Eventually I created a design brief with the rule that it has to work in 2–3 seconds, or it fails, however clever it is. Here's the full progression of what that looked like.
 
 <picture>
   <source srcset="/images/2026/10/vision/card_iterations_dark.png" media="(prefers-color-scheme: dark)">
@@ -156,9 +156,9 @@ These versions failed for different reasons. For instance, the cards built on Se
 
 Here's where it landed. Before you read on: **how many columns of stripes do you see on the front?**
 
-![Card front: a purple-to-green panel in three columns, labeled with what I see: smooth, smooth, stripes](/images/2026/10/vision/card-front.png)
+![Card front: three columns - a smooth purple-to-green gradient, the same gradient in fine steps, and a gray brightness ramp in steps of the same size - labeled with what I see: smooth, smooth, stripes](/images/2026/10/vision/card-front.png)
 
-**Front:** Most people see stripes in the middle column. I see it as a smooth gradient - same as the first column, because its steps are outside a normal confusion zone, but inside mine. (Those steps are subtle, so a dim or low-quality screen can hide them even from normal eyes. If you don't see them either, the test at the end of this post will tell you more than this card can.) The last column shows steps of exactly the same size, but in brightness only and I can see them just fine.
+**Front:** Most people count two columns of stripes: the middle and the right. I count one. I see the middle column as a smooth gradient - same as the first column, because its steps are outside a normal confusion zone, but inside mine. (Those steps are subtle, so a dim or low-quality screen can hide them even from normal eyes. If you don't see them either, the test at the end of this post will tell you more than this card can.) The last column shows steps of exactly the same size, but in brightness only, and I can see them just fine. Because both columns are measured in CIELAB, "the same size" really means the same: each step is 4.5 units, about 5× what a typical eye needs near gray. In color, that's inside my confusion zone. In brightness, it's more than 6× my threshold.
 
 ![Card back: my confusion zones drawn on a color wheel, a magnified inset of the gray center comparing a typical zone, mine, and a red-green colorblind band, and a stepped brightness strip](/images/2026/10/vision/card-back.png)
 
