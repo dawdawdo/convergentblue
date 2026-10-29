@@ -7,7 +7,7 @@ Stephen Abrams's showcase site: restored posts from his old blog (2006–2020) p
 - Run `npm run build` before committing; it must pass.
 - Local preview: `npm run dev` (http://localhost:4321). Drafts show only with `$env:SHOW_DRAFTS="true"; npm run dev` (PowerShell). Production builds never include drafts.
 - Node 22 (`.node-version`). `wrangler.jsonc` sets the 404 page and disables `*.workers.dev` / preview URLs; keep it that way.
-- Stephen's local clone is `C:\dev\convergentblue` (outside Google Drive on purpose); he commits and Syncs from VS Code. If he says he edited something that isn't on GitHub, he probably committed without syncing.
+- Stephen's local clone is `D:\AutoDev\webdev\convergentblue` (outside Google Drive on purpose); he commits and Syncs from VS Code. If he says he edited something that isn't on GitHub, he probably committed without syncing.
 
 ## Layout
 - `src/content/blog/<slug>.md`: posts. Schema in `src/content.config.ts`.
