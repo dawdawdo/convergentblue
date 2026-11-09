@@ -18,5 +18,9 @@
   // secret RESULTS_TO (set in the dashboard, not here) and must be a verified
   // Email Routing destination address.
   "send_email": [{ "name": "RESULTS_EMAIL" }],
-  "vars": { "RESULTS_FROM": "color-tests@convergentblue.com" }
+  "vars": { "RESULTS_FROM": "color-tests@convergentblue.com" },
+  // D2R bot remote control (worker/bot.js, page /bot/). Secrets BOT_TOKEN and DASH_TOKEN are set in the
+  // dashboard, not here.
+  "durable_objects": { "bindings": [{ "name": "BOT_STATE", "class_name": "BotState" }] },
+  "migrations": [{ "tag": "v1", "new_sqlite_classes": ["BotState"] }]
 }

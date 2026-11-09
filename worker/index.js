@@ -11,6 +11,9 @@
 //      (kept out of this public repo on purpose).
 // RESULTS_FROM (a sender on the onboarded domain) lives in wrangler.jsonc.
 
+import { bot } from './bot.js';
+export { BotState } from './bot.js';
+
 const MAX_BYTES = 2_000_000;              // full threshold runs are ~0.3–0.6 MB
 const KINDS = { swatch: 'Swatch test', threshold: 'Threshold test' };
 const ALLOWED_ORIGINS = ['https://convergentblue.com', 'https://www.convergentblue.com'];
@@ -84,6 +87,7 @@ export default {
   async fetch(request, env) {
     const url = new URL(request.url);
     if (url.pathname === '/api/submit') return submit(request, env);
+    if (url.pathname.startsWith('/api/bot/')) return bot(request, env, url.pathname.slice('/api/bot/'.length));
     if (url.pathname.startsWith('/api/')) return json(404, { ok: false, error: 'not found' });
     return env.ASSETS.fetch(request);
   },

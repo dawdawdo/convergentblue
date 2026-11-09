@@ -1,0 +1,313 @@
+---
+// Private console for Stephen's D2R bot (GLaDOS). Data and control go through worker/bot.js; the password is the
+// DASH_TOKEN secret, kept in this browser's localStorage. Styled after Blizzaga's Armory, not the site theme.
+// Not linked anywhere, noindex, left out of the sitemap (astro.config.mjs).
+---
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<meta name="robots" content="noindex,nofollow">
+<title>Blizzaga's Bot</title>
+<link rel="icon" href="/favicon.png" type="image/png">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Atkinson+Hyperlegible:wght@400;700&family=Cinzel:wght@600;700&display=swap">
+<style is:inline>
+:root{
+  --bg:#f5f2eb;--panel:#fffdf9;--raise:#efeadf;--line:#e2dccf;--line2:#cbc2b2;--fg:#1d1a15;--mute:#565044;--faint:#857c6d;
+  --accent:#87590f;--accent-ink:#fff8ea;--rw:#a1500b;--unique:#7a5f22;--ok:#2b6e28;--bad:#a3302a;
+  --display:"Cinzel",Georgia,serif;--body:"Atkinson Hyperlegible",system-ui,-apple-system,"Segoe UI",sans-serif;
+  color-scheme:light;
+}
+@media (prefers-color-scheme:dark){:root{
+  --bg:#100f0d;--panel:#181613;--raise:#211e1a;--line:#2d2924;--line2:#423b32;--fg:#eee8dc;--mute:#b1a897;--faint:#81796c;
+  --accent:#e2b45c;--accent-ink:#1a1307;--rw:#eda352;--unique:#d2b77f;--ok:#82cc7f;--bad:#f2806f;color-scheme:dark}}
+*{box-sizing:border-box}
+body{margin:0;background:var(--bg);color:var(--fg);font-family:var(--body);font-size:16px;line-height:1.5}
+button,input{font:inherit;color:inherit}
+.wrap{max-width:1040px;margin:0 auto;padding:0 16px 64px}
+[hidden]{display:none!important}
+:focus-visible{outline:2px solid var(--accent);outline-offset:2px}
+.top{display:flex;flex-wrap:wrap;align-items:center;gap:10px 20px;padding:22px 0 18px;border-bottom:1px solid var(--line);margin-bottom:22px}
+.top h1{font-family:var(--display);font-weight:700;font-size:clamp(26px,4.4vw,34px);letter-spacing:.03em;line-height:1.1;margin:0;color:var(--accent)}
+.brand{flex:1 1 260px;min-width:0}
+.sub{margin:2px 0 0;color:var(--mute);font-size:15px}
+.pill{display:inline-flex;align-items:center;gap:8px;border:1px solid var(--line2);background:var(--panel);border-radius:99px;padding:7px 14px;font-size:15px;min-height:40px}
+.pill .dot{width:10px;height:10px;border-radius:50%;background:var(--ok);flex:none}
+.pill.stale .dot{background:transparent;border:2px solid var(--bad)}
+.pill.stale b{color:var(--bad)}
+h2{font-family:var(--display);font-weight:700;font-size:20px;letter-spacing:.02em;margin:34px 0 12px;display:flex;align-items:center;gap:14px}
+h2::after{content:"";flex:1;height:1px;background:var(--line)}
+h2 small{font-family:var(--body);font-weight:400;font-size:15px;color:var(--mute);letter-spacing:0}
+.card{background:var(--panel);border:1px solid var(--line);border-radius:12px}
+.muted{color:var(--mute)}.small{font-size:14px;color:var(--mute)}
+/* now */
+.now{padding:18px 20px;display:grid;grid-template-columns:minmax(0,1fr) auto;gap:14px 24px;align-items:start}
+.state{font-family:var(--display);font-size:28px;font-weight:700;line-height:1.1;display:flex;align-items:center;gap:12px}
+.state i{width:14px;height:14px;border-radius:50%;flex:none;display:inline-block}
+.s-run i{background:var(--ok)}.s-run{color:var(--ok)}
+.s-stop i{border:2.5px solid var(--fg);border-radius:2px}
+.s-wait i{border:2.5px dashed var(--fg)}
+.s-off{color:var(--bad)}.s-off i{background:var(--bad);border-radius:0;clip-path:polygon(20% 0,50% 30%,80% 0,100% 20%,70% 50%,100% 80%,80% 100%,50% 70%,20% 100%,0 80%,30% 50%,0 20%)}
+.facts{margin:8px 0 0;color:var(--mute)}
+.facts b{color:var(--fg)}
+.queued{margin:10px 0 0;padding:8px 12px;border-radius:8px;background:var(--raise);font-size:15px}
+.ctl{display:grid;gap:10px;justify-items:end}
+.seg{display:inline-flex;border:1px solid var(--line2);border-radius:99px;background:var(--panel);padding:3px;gap:2px;flex-wrap:wrap}
+.seg button{border:0;background:none;border-radius:99px;padding:6px 14px;min-height:34px;cursor:pointer;font-size:15px;color:var(--mute);white-space:nowrap}
+.seg button[aria-pressed="true"]{background:var(--fg);color:var(--bg)}
+.btns{display:flex;flex-wrap:wrap;gap:8px;justify-content:flex-end}
+.btn{min-height:40px;padding:6px 16px;border-radius:99px;border:1px solid var(--line2);background:var(--panel);cursor:pointer;font-weight:700;font-size:15px}
+.btn.go{background:var(--accent);border-color:var(--accent);color:var(--accent-ink)}
+.btn.danger{color:var(--bad);border-color:currentColor}
+.btn:disabled{opacity:.5;cursor:default}
+@media (max-width:720px){.now{grid-template-columns:1fr}.ctl{justify-items:start}.btns{justify-content:flex-start}}
+/* tiles */
+.meters{display:grid;grid-template-columns:repeat(auto-fit,minmax(200px,1fr));gap:12px}
+.mt{padding:14px 18px}
+.mt .k{font-size:13px;font-weight:700;letter-spacing:.06em;text-transform:uppercase;color:var(--mute)}
+.mt .v{font-size:32px;font-weight:700;line-height:1.15;margin:4px 0 2px;font-variant-numeric:tabular-nums}
+.mt .d{color:var(--mute);font-size:15px}
+/* loot */
+.loot{padding:14px 16px;display:flex;flex-wrap:wrap;gap:6px}
+.lc{display:inline-flex;align-items:baseline;gap:6px;border:1px solid var(--line2);border-radius:6px;padding:2px 10px;font-size:15px;background:var(--bg)}
+.lc b{font-variant-numeric:tabular-nums}
+.lc.rare{border-color:var(--accent);color:var(--accent);font-weight:700}
+/* runs */
+.tbl{overflow-x:auto;border:1px solid var(--line);border-radius:12px;background:var(--panel)}
+.tbl table{border-collapse:collapse;width:100%;font-size:15px}
+.tbl th,.tbl td{text-align:left;padding:8px 14px;border-bottom:1px solid var(--line);vertical-align:top}
+.tbl th{font-size:13px;letter-spacing:.06em;text-transform:uppercase;color:var(--mute);font-weight:700;background:var(--raise)}
+.tbl tr:last-child td{border-bottom:0}
+.tbl td.n{text-align:right;font-variant-numeric:tabular-nums;white-space:nowrap}
+.tbl td.t{white-space:nowrap;font-variant-numeric:tabular-nums}
+.tag{display:inline-flex;align-items:center;gap:7px;font-size:14px;font-weight:700;white-space:nowrap}
+.tag i{width:10px;height:10px;border-radius:50%;flex:none;display:inline-block}
+.r-ok{color:var(--ok)}.r-ok i{background:currentColor}
+.r-chicken i{border:2px solid currentColor}
+.r-fail{color:var(--bad)}.r-fail i{background:currentColor;border-radius:0;clip-path:polygon(20% 0,50% 30%,80% 0,100% 20%,70% 50%,100% 80%,80% 100%,50% 70%,20% 100%,0 80%,30% 50%,0 20%)}
+.err{color:var(--mute);font-size:14px}
+/* login */
+.login{max-width:420px;padding:20px;margin:40px auto}
+.login h2{margin-top:0}
+.login form{display:flex;gap:8px}
+.login input{flex:1;min-width:0;height:42px;border:1px solid var(--line2);border-radius:8px;background:var(--bg);padding:0 12px}
+.msg{color:var(--bad);margin:10px 0 0}
+footer{margin-top:40px;color:var(--faint);font-size:14px;display:flex;gap:16px;flex-wrap:wrap}
+footer button{border:0;background:none;color:var(--accent);cursor:pointer;padding:0;font-size:14px}
+</style>
+</head>
+<body>
+<div class="wrap">
+<header class="top">
+  <div class="brand"><h1>Blizzaga's Bot</h1><p class="sub" id="sub">D2R offline · remote console</p></div>
+  <div class="pill" id="pill" hidden><span class="dot"></span><span id="pilltxt"></span></div>
+</header>
+
+<section class="card login" id="login" hidden>
+  <h2>Password</h2>
+  <form id="loginform"><input id="pw" type="password" autocomplete="current-password" aria-label="Password"><button class="btn go">Open</button></form>
+  <p class="msg" id="loginmsg" hidden></p>
+</section>
+
+<main id="main" hidden>
+  <section class="card now">
+    <div>
+      <div class="state" id="state"><i></i><span></span></div>
+      <p class="facts" id="facts"></p>
+      <p class="queued" id="queued" hidden></p>
+    </div>
+    <div class="ctl">
+      <div class="seg" id="tasks" aria-label="What to run">
+        <button data-t="meph">Mephisto</button><button data-t="lk">Lower Kurast</button><button data-t="lk,meph">LK + Meph</button>
+      </div>
+      <div class="btns">
+        <button class="btn go" id="start">Start</button>
+        <button class="btn" id="stopafter">Stop after this run</button>
+        <button class="btn danger" id="stopnow">Stop now</button>
+      </div>
+    </div>
+  </section>
+
+  <h2>Last 24 hours <small id="statsub"></small></h2>
+  <div class="meters" id="meters"></div>
+
+  <h2>Loot <small>last 24 hours</small></h2>
+  <div class="card loot" id="loot"></div>
+
+  <h2>Recent runs</h2>
+  <div class="tbl"><table><thead><tr><th>Started</th><th>Task</th><th>Result</th><th style="text-align:right">Time</th><th style="text-align:right">Chests</th><th>Picked up</th></tr></thead><tbody id="runs"></tbody></table></div>
+</main>
+<footer id="foot" hidden><span id="foottxt"></span><button id="logout">Forget password on this device</button></footer>
+</div>
+
+<script is:inline>
+(() => {
+  const $ = (id) => document.getElementById(id);
+  const KEY = 'botDashToken';
+  const store = {
+    get() { try { return localStorage.getItem(KEY) || ''; } catch { return ''; } },
+    set(v) { try { v ? localStorage.setItem(KEY, v) : localStorage.removeItem(KEY); } catch {} },
+  };
+  let token = store.get();
+  let task = 'meph';
+  let taskTouched = false;
+  let last = null;
+  const esc = (s) => String(s ?? '').replace(/[&<>"]/g, (c) => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;' }[c]));
+  const TASK_NAME = { meph: 'Mephisto', lk: 'Lower Kurast', 'lk,meph': 'LK + Meph' };
+  const ago = (ms) => {
+    const s = Math.max(0, Math.round(ms / 1000));
+    if (s < 90) return `${s} s`;
+    if (s < 5400) return `${Math.round(s / 60)} min`;
+    if (s < 172800) return `${(s / 3600).toFixed(1)} h`;
+    return `${Math.round(s / 86400)} days`;
+  };
+  const hhmm = (start) => String(start).slice(11, 16);
+  const when = (ts) => new Date(ts).toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' });
+  const runTime = (r) => new Date(String(r.start).replace(' ', 'T')).getTime();  // the bot's local time = viewer's
+
+  async function api(path, body) {
+    const r = await fetch(`/api/bot/${path}`, {
+      method: body ? 'POST' : 'GET',
+      headers: { authorization: `Bearer ${token}`, ...(body ? { 'content-type': 'application/json' } : {}) },
+      body: body ? JSON.stringify(body) : undefined, cache: 'no-store',
+    });
+    const j = await r.json().catch(() => ({}));
+    if (r.status === 401) { showLogin('Wrong password.'); throw new Error('401'); }
+    if (!r.ok) throw new Error(j.error || `HTTP ${r.status}`);
+    return j;
+  }
+
+  function showLogin(msg) {
+    $('main').hidden = true; $('foot').hidden = true; $('pill').hidden = true; $('login').hidden = false;
+    $('loginmsg').hidden = !msg; $('loginmsg').textContent = msg || '';
+    $('pw').focus();
+  }
+
+  $('loginform').addEventListener('submit', (e) => {
+    e.preventDefault();
+    token = $('pw').value.trim();
+    if (!token) return;
+    store.set(token);
+    $('pw').value = '';
+    refresh();
+  });
+  $('logout').addEventListener('click', () => { store.set(''); token = ''; showLogin(); });
+
+  for (const b of $('tasks').querySelectorAll('button')) {
+    b.addEventListener('click', () => { task = b.dataset.t; taskTouched = true; paintTasks(); });
+  }
+  function paintTasks() {
+    for (const b of $('tasks').querySelectorAll('button')) b.setAttribute('aria-pressed', String(b.dataset.t === task));
+  }
+
+  async function send(body, label) {
+    for (const id of ['start', 'stopafter', 'stopnow']) $(id).disabled = true;
+    try { await api('control', body); taskTouched = false; await refresh(); }
+    catch (e) { if (e.message !== '401') alert(`${label} failed: ${e.message}`); }
+    finally { for (const id of ['start', 'stopafter', 'stopnow']) $(id).disabled = false; }
+  }
+  $('start').addEventListener('click', () => send({ desired: { run: true, tasks: task } }, 'Start'));
+  $('stopafter').addEventListener('click', () => send({ command: 'stop_after_run' }, 'Stop'));
+  $('stopnow').addEventListener('click', () => {
+    if (confirm('Stop the bot right away, mid-run? She is left wherever she is; the next start recovers the game.'))
+      send({ command: 'stop_now' }, 'Stop');
+  });
+
+  function describe(s, now) {
+    if (!s) return { cls: 's-off', word: 'Never checked in', facts: 'The bot has not reported to this site yet.' };
+    const age = now - s.received;
+    const sup = s.supervisor || {}, bot = s.bot || {}, want = s.desired || {};
+    if (age > 120e3) return { cls: 's-off', word: 'Offline', facts: `Last heard from ${esc(s.machine)} ${ago(age)} ago.` };
+    const running = bot.state === 'running' && sup.pid;
+    const bits = [];
+    if (running) {
+      bits.push(`Run <b>${esc(bot.run)}</b> of ${esc(bot.runs)}`, `task <b>${esc(TASK_NAME[bot.task] || bot.task)}</b>`);
+      if (bot.started) bits.push(`session ${ago(now - bot.started * 1000)}`);
+      if (!want.run) return { cls: 's-wait', word: 'Stopping after this run', facts: bits.join(' · ') };
+      return { cls: 's-run', word: 'Running', facts: bits.join(' · ') };
+    }
+    if (sup.state === 'backoff') {
+      return { cls: 's-wait', word: 'Waiting to retry',
+               facts: `${esc(sup.last_end || '')}; next try ${when(sup.backoff_until * 1000)}.` };
+    }
+    if (want.run) return { cls: 's-wait', word: 'Starting', facts: esc(sup.state || '') };
+    const by = want.stopped_by === 'F12' ? 'F12 (or a hand on the mouse) stopped it' : want.set_by === 'remote' ? 'stopped from here' : 'stopped';
+    return { cls: 's-stop', word: 'Stopped', facts: `${by}${sup.last_end ? ` · last session ${esc(sup.last_end)}` : ''}.` };
+  }
+
+  function paint(st) {
+    const now = st.now, s = st.snapshot;
+    const d = describe(s, now);
+    $('state').className = `state ${d.cls}`;
+    $('state').querySelector('span').textContent = d.word;
+    $('facts').innerHTML = d.facts;
+    if (s) {
+      const age = now - s.received;
+      $('pill').hidden = false;
+      $('pill').classList.toggle('stale', age > 120e3);
+      $('pilltxt').innerHTML = age > 120e3 ? `<b>Offline</b> · ${ago(age)}` : `${esc(s.machine)} · checked in ${ago(age)} ago`;
+      if (!taskTouched && s.desired && TASK_NAME[s.desired.tasks]) task = s.desired.tasks;
+    }
+    paintTasks();
+    const q = st.pending, dl = st.delivered;
+    const say = (p) => [p.desired ? (p.desired.run ? `start ${TASK_NAME[p.desired.tasks] || ''}` : 'stop') : '',
+                        p.command ? p.command.replace(/_/g, ' ') : ''].filter(Boolean).join(', ');
+    if (q) { $('queued').hidden = false; $('queued').textContent = `Queued at ${when(q.queued)}: ${say(q)}. The bot picks it up at its next check-in (every 30 s).`; }
+    else if (dl && now - dl.delivered < 600e3) { $('queued').hidden = false; $('queued').textContent = `Sent to the bot at ${when(dl.delivered)}: ${say(dl)}.`; }
+    else $('queued').hidden = true;
+
+    const runs = st.runs || [];
+    const day = runs.filter((r) => now - runTime(r) < 86400e3);
+    const recent = runs.filter((r) => now - runTime(r) < 3 * 3600e3);
+    const by = (rs, t) => rs.filter((r) => r.task === t);
+    const pct = (a, b) => (b ? `${Math.round((100 * a) / b)}%` : '–');
+    const meph = by(day, 'meph'), lk = by(day, 'lk');
+    const okM = meph.filter((r) => r.result === 'ok').length;
+    const chickens = day.filter((r) => r.result === 'chicken').length, fails = day.filter((r) => r.result === 'fail').length;
+    const hours = recent.length ? Math.max(0.25, (now - Math.min(...recent.map(runTime))) / 3600e3) : 0;
+    const chestsLk = lk.reduce((a, r) => a + (r.chests || 0), 0);
+    $('statsub').textContent = `${day.length} runs`;
+    $('meters').innerHTML = [
+      ['Runs per hour', recent.length ? (recent.length / hours).toFixed(1) : '–', 'last 3 hours'],
+      ['Mephisto ok', pct(okM, meph.length), `${okM} of ${meph.length} runs`],
+      ['Chickens · fails', `${chickens} · ${fails}`, 'chicken = saved out on low life'],
+      ['LK chests a run', lk.length ? (chestsLk / lk.length).toFixed(1) : '–', `${lk.length} LK runs`],
+    ].map(([k, v, dd]) => `<div class="card mt"><div class="k">${k}</div><div class="v">${v}</div><div class="d">${dd}</div></div>`).join('');
+
+    const counts = {};
+    for (const r of day) for (const w of String(r.picked || '').split(/\s+/).filter(Boolean)) counts[w] = (counts[w] || 0) + 1;
+    const common = new Set(['gem', 'key', 'rejuv', 'rejuv_spare', 'gold', 'potion']);
+    const loot = Object.entries(counts).sort((a, b) => (common.has(a[0]) - common.has(b[0])) || b[1] - a[1]);
+    $('loot').innerHTML = loot.length
+      ? loot.map(([w, n]) => `<span class="lc${common.has(w) ? '' : ' rare'}">${esc(w.replace(/_/g, ' '))} <b>×${n}</b></span>`).join('')
+      : '<span class="muted">Nothing picked up in the last 24 hours.</span>';
+
+    $('runs').innerHTML = runs.slice(0, 40).map((r) => {
+      const res = r.result || '?';
+      return `<tr><td class="t">${esc(String(r.start).slice(5, 10))} ${esc(hhmm(r.start))}</td><td>${esc(TASK_NAME[r.task] || r.task)}</td>`
+        + `<td><span class="tag r-${esc(res)}"><i></i>${esc(res)}</span>${r.error ? `<div class="err">${esc(r.error)}</div>` : ''}</td>`
+        + `<td class="n">${Math.round(r.duration || 0)} s</td><td class="n">${r.chests || ''}</td><td>${esc(String(r.picked || '').replace(/_/g, ' '))}</td></tr>`;
+    }).join('') || '<tr><td colspan="6" class="muted">No runs yet.</td></tr>';
+    $('foottxt').textContent = `Updated ${when(now)} · refreshes every 15 s`;
+  }
+
+  async function refresh() {
+    if (!token) return showLogin();
+    try {
+      last = await api('state');
+      $('login').hidden = true; $('main').hidden = false; $('foot').hidden = false;
+      paint(last);
+    } catch (e) {
+      if (e.message !== '401') { $('foot').hidden = false; $('foottxt').textContent = `Couldn't reach the site: ${e.message}`; }
+    }
+  }
+  refresh();
+  setInterval(() => { if (token && !document.hidden) refresh(); }, 15000);
+  document.addEventListener('visibilitychange', () => { if (!document.hidden && token) refresh(); });
+})();
+</script>
+</body>
+</html>
