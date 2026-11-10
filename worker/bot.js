@@ -39,7 +39,17 @@ async function sameSecret(given, want) {
 
 const bearer = (request) => (request.headers.get('authorization') || '').replace(/^Bearer\s+/i, '');
 
+// A Durable Object call that throws (e.g. the free plan's daily rows-read limit, 2026-11-10) used to surface as
+// Cloudflare error 1101 / HTTP 500 with no message; say what it is instead.
 export async function bot(request, env, path) {
+  try {
+    return await route(request, env, path);
+  } catch (e) {
+    return json(503, { ok: false, error: `bot storage unavailable (free plan's daily limit? resets 00:00 UTC): ${String(e && e.message || e).slice(0, 120)}` });
+  }
+}
+
+async function route(request, env, path) {
   if (!env.BOT_STATE || !env.BOT_TOKEN || !env.DASH_TOKEN) return json(503, { ok: false, error: 'not set up yet' });
   const stub = env.BOT_STATE.get(env.BOT_STATE.idFromName('glados'));
 
