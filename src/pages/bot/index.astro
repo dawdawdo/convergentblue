@@ -1,6 +1,6 @@
 ---
 // Private console for Stephen's D2R bot (GLaDOS). Data and control go through worker/bot.js; the password is the
-// DASH_TOKEN secret, kept in this browser's localStorage. Site layout and theme; all styles live under .bot.
+// DASH_TOKEN secret, kept in this browser's localStorage. Anyone can watch; only the owner's controls work. Site layout and theme; all styles live under .bot.
 // Not linked anywhere, noindex, left out of the sitemap (astro.config.mjs).
 import Base from '../../layouts/Base.astro';
 ---
@@ -70,14 +70,16 @@ import Base from '../../layouts/Base.astro';
 .bot .r-chicken i { border: 2px solid currentColor; }
 .bot .r-fail { color: var(--bad); }
 .bot .err { color: var(--muted); font-size: 0.85rem; }
-/* login */
-.bot .login { max-width: 26rem; padding: 1.25rem 1.4rem; margin: 2rem 0; }
-.bot .login h2 { margin: 0 0 0.75rem; }
-.bot .login form { display: flex; gap: 0.5rem; }
+/* owner sign-in */
+.bot .owner-note { margin: 0; font-size: 0.85rem; color: var(--muted); }
+.bot .linkish, .bot .foot button { border: 0; background: none; color: var(--accent); cursor: pointer; padding: 0; font-size: inherit; text-decoration: underline; text-underline-offset: 0.18em; }
+.bot .login { display: flex; gap: 0.5rem; width: min(100%, 20rem); }
+.bot .login[hidden] { display: none; }
 .bot .login input { flex: 1; min-width: 0; height: 2.6rem; border: 1px solid var(--rule); border-radius: 6px; background: var(--bg); padding: 0 0.75rem; }
-.bot .msg { color: var(--bad); margin: 0.6rem 0 0; }
+.bot .msg { color: var(--bad); margin: 0; font-size: 0.85rem; }
+.bot .seg button:disabled { cursor: default; color: var(--muted); }
+.bot .locked .seg, .bot .locked .btns { opacity: 0.45; }
 .bot .foot { margin-top: 2.5rem; color: var(--muted); font-size: 0.85rem; display: flex; gap: 1rem; flex-wrap: wrap; }
-.bot .foot button { border: 0; background: none; color: var(--accent); cursor: pointer; padding: 0; font-size: 0.85rem; text-decoration: underline; text-underline-offset: 0.18em; }
 </style>
 <div class="wide bot">
 <header class="page-top">
@@ -85,13 +87,7 @@ import Base from '../../layouts/Base.astro';
   <div class="pill" id="pill" hidden><span class="dot"></span><span id="pilltxt"></span></div>
 </header>
 
-<section class="panel login" id="login" hidden>
-  <h2>Password</h2>
-  <form id="loginform"><input id="pw" type="password" autocomplete="current-password" aria-label="Password"><button class="btn go">Open</button></form>
-  <p class="msg" id="loginmsg" hidden></p>
-</section>
-
-<div id="main" hidden>
+<div id="main">
   <section class="panel now">
     <div>
       <div class="state" id="state"><i></i><span></span></div>
@@ -107,6 +103,9 @@ import Base from '../../layouts/Base.astro';
         <button class="btn" id="stopafter">Stop after this run</button>
         <button class="btn danger" id="stopnow">Stop now</button>
       </div>
+      <p class="owner-note" id="ownernote">Controls are for the owner. <button class="linkish" id="signin">Owner sign-in</button></p>
+      <form class="login" id="loginform" hidden><input id="pw" type="password" autocomplete="current-password" aria-label="Owner password" placeholder="Password"><button class="btn go">Sign in</button></form>
+      <p class="msg" id="loginmsg" hidden></p>
     </div>
   </section>
 
@@ -119,7 +118,7 @@ import Base from '../../layouts/Base.astro';
   <h2>Recent runs</h2>
   <div class="tbl"><table><thead><tr><th>Started</th><th>Task</th><th>Result</th><th style="text-align:right">Time</th><th style="text-align:right">Chests</th><th>Picked up</th></tr></thead><tbody id="runs"></tbody></table></div>
 </div>
-<div class="foot" id="foot" hidden><span id="foottxt"></span><button id="logout">Forget password on this device</button></div>
+<div class="foot" id="foot" hidden><span id="foottxt"></span><button id="logout" hidden>Sign out on this device</button></div>
 </div>
 
 <script is:inline>
@@ -134,8 +133,9 @@ import Base from '../../layouts/Base.astro';
   let task = 'meph';
   let taskTouched = false;
   let last = null;
+  let owner = false;
   const esc = (s) => String(s ?? '').replace(/[&<>"]/g, (c) => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;' }[c]));
-  const TASK_NAME = { meph: 'Mephisto', lk: 'Lower Kurast', 'lk,meph': 'LK + Meph' };
+  const TASK_NAME = { meph: 'Mephisto', lk: 'Lower Kurast', 'lk,meph': 'LK + Meph', 'lk+meph': 'LK + Meph' };
   const ago = (ms) => {
     const s = Math.max(0, Math.round(ms / 1000));
     if (s < 90) return `${s} s`;
@@ -150,20 +150,28 @@ import Base from '../../layouts/Base.astro';
   async function api(path, body) {
     const r = await fetch(`/api/bot/${path}`, {
       method: body ? 'POST' : 'GET',
-      headers: { authorization: `Bearer ${token}`, ...(body ? { 'content-type': 'application/json' } : {}) },
+      headers: { ...(token ? { authorization: `Bearer ${token}` } : {}), ...(body ? { 'content-type': 'application/json' } : {}) },
       body: body ? JSON.stringify(body) : undefined, cache: 'no-store',
     });
     const j = await r.json().catch(() => ({}));
-    if (r.status === 401) { showLogin('Wrong password.'); throw new Error('401'); }
+    if (r.status === 401) { token = ''; store.set(''); setOwner(false); showLogin('Wrong password.'); throw new Error('401'); }
     if (!r.ok) throw new Error(j.error || `HTTP ${r.status}`);
     return j;
   }
 
   function showLogin(msg) {
-    $('main').hidden = true; $('foot').hidden = true; $('pill').hidden = true; $('login').hidden = false;
+    $('loginform').hidden = false;
     $('loginmsg').hidden = !msg; $('loginmsg').textContent = msg || '';
     $('pw').focus();
   }
+  function setOwner(on) {
+    owner = on;
+    document.querySelector('.now').classList.toggle('locked', !on);
+    for (const b of document.querySelectorAll('#tasks button, .btns button')) b.disabled = !on;
+    $('ownernote').hidden = on; $('logout').hidden = !on;
+    if (on) { $('loginform').hidden = true; $('loginmsg').hidden = true; }
+  }
+  $('signin').addEventListener('click', () => showLogin());
 
   $('loginform').addEventListener('submit', (e) => {
     e.preventDefault();
@@ -173,7 +181,7 @@ import Base from '../../layouts/Base.astro';
     $('pw').value = '';
     refresh();
   });
-  $('logout').addEventListener('click', () => { store.set(''); token = ''; showLogin(); });
+  $('logout').addEventListener('click', () => { store.set(''); token = ''; setOwner(false); });
 
   for (const b of $('tasks').querySelectorAll('button')) {
     b.addEventListener('click', () => { task = b.dataset.t; taskTouched = true; paintTasks(); });
@@ -186,7 +194,7 @@ import Base from '../../layouts/Base.astro';
     for (const id of ['start', 'stopafter', 'stopnow']) $(id).disabled = true;
     try { await api('control', body); taskTouched = false; await refresh(); }
     catch (e) { if (e.message !== '401') alert(`${label} failed: ${e.message}`); }
-    finally { for (const id of ['start', 'stopafter', 'stopnow']) $(id).disabled = false; }
+    finally { setOwner(owner); }
   }
   $('start').addEventListener('click', () => send({ desired: { run: true, tasks: task } }, 'Start'));
   $('stopafter').addEventListener('click', () => send({ command: 'stop_after_run' }, 'Stop'));
@@ -274,18 +282,19 @@ import Base from '../../layouts/Base.astro';
   }
 
   async function refresh() {
-    if (!token) return showLogin();
     try {
       last = await api('state');
-      $('login').hidden = true; $('main').hidden = false; $('foot').hidden = false;
+      setOwner(!!last.owner);
+      $('foot').hidden = false;
       paint(last);
     } catch (e) {
       if (e.message !== '401') { $('foot').hidden = false; $('foottxt').textContent = `Couldn't reach the site: ${e.message}`; }
     }
   }
   refresh();
-  setInterval(() => { if (token && !document.hidden) refresh(); }, 15000);
-  document.addEventListener('visibilitychange', () => { if (!document.hidden && token) refresh(); });
+  setOwner(false);
+  setInterval(() => { if (!document.hidden) refresh(); }, 15000);
+  document.addEventListener('visibilitychange', () => { if (!document.hidden) refresh(); });
 })();
 </script>
 </Base>

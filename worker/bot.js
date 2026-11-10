@@ -3,7 +3,8 @@
 // POST /api/bot/checkin   the bot's supervisor, every 30 s, Bearer BOT_TOKEN. Body: its status snapshot.
 //                         Reply: {"desired": {...}} and/or {"command": "..."} when the page queued one (sent once,
 //                         so a local F12 is never overridden by a stale request from here).
-// GET  /api/bot/state     the page, Bearer DASH_TOKEN: last snapshot, run history, what's queued.
+// GET  /api/bot/state     the page; public. Last snapshot (pids stripped), run history, what's queued. With a valid
+//                         Bearer DASH_TOKEN it adds owner: true (a wrong one is 401); public replies are cached 10 s.
 // POST /api/bot/control   the page, Bearer DASH_TOKEN: {"desired": {"run": bool, "tasks": "meph"}} or
 //                         {"command": "stop_now" | "stop_after_run"}.
 //
@@ -47,9 +48,25 @@ export async function bot(request, env, path) {
     return json(200, await stub.checkin(snap));
   }
 
-  if (path === 'state' || path === 'control') {
+  if (path === 'state') {
+    const given = bearer(request);
+    if (given) {
+      if (!(await sameSecret(given, env.DASH_TOKEN))) return json(401, { ok: false, error: 'bad password' });
+      return json(200, { ...(await stub.state()), owner: true });
+    }
+    const cache = caches.default;
+    const key = new Request(new URL('/api/bot/state?public', request.url));
+    const hit = await cache.match(key);
+    if (hit) return hit;
+    const res = json(200, { ...(await stub.state()), owner: false });
+    res.headers.set('cache-control', 'public, max-age=10');
+    await cache.put(key, res.clone());
+    res.headers.set('cache-control', 'no-store');
+    return res;
+  }
+
+  if (path === 'control') {
     if (!(await sameSecret(bearer(request), env.DASH_TOKEN))) return json(401, { ok: false, error: 'bad password' });
-    if (path === 'state') return json(200, await stub.state());
     if (request.method !== 'POST') return json(405, { ok: false, error: 'POST only' });
     let body;
     try { body = await request.json(); } catch { return json(400, { ok: false, error: 'bad json' }); }
@@ -117,6 +134,10 @@ export class BotState extends DurableObject {
       since).toArray();
     const [snapshot, pending, delivered] = await Promise.all(
       ['snapshot', 'pending', 'delivered'].map((k) => this.ctx.storage.get(k)));
+    if (snapshot) {  // pids are of no use to the page and needn't be public
+      for (const k of ['supervisor', 'bot']) if (snapshot[k]) snapshot[k] = { ...snapshot[k], pid: snapshot[k].pid ? 1 : 0 };
+      delete snapshot.loot;
+    }
     return { ok: true, now: Date.now(), snapshot: snapshot || null, pending: pending || null,
              delivered: delivered || null, runs };
   }
