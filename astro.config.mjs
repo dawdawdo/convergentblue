@@ -8,7 +8,7 @@ import remarkStripComments from './src/remark-strip-comments.mjs';
 
 export default defineConfig({
   site: 'https://convergentblue.com',
-  integrations: [sitemap({ filter: (page) => !page.includes('/bot/') })],  // /bot/ is private
+  integrations: [sitemap({ filter: (page) => !/\/(bot|armory)\//.test(page) })],  // unlisted (noindex) pages
   markdown: {
     // remark-math + KaTeX: write $x^2$ inline or $$...$$ for display math
     processor: unified({ remarkPlugins: [remarkMath, remarkStripComments], rehypePlugins: [rehypeKatex] }),

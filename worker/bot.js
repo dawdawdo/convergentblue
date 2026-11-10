@@ -5,6 +5,8 @@
 //                         so a local F12 is never overridden by a stale request from here).
 // GET  /api/bot/state     the page; public. Last snapshot (pids stripped), run history, what's queued. With a valid
 //                         Bearer DASH_TOKEN it adds owner: true (a wrong one is 401); public replies are cached 10 s.
+// POST /api/bot/armory    GLaDOS, Bearer BOT_TOKEN: gzipped pagedata.json for the armory page, sent when it changes.
+// GET  /api/bot/armory    public: that JSON (edge-cached 5 min). 404 until the first upload.
 // POST /api/bot/control   the page, Bearer DASH_TOKEN: {"desired": {"run": bool, "tasks": "meph"}} or
 //                         {"command": "stop_now" | "stop_after_run"}.
 //
@@ -17,6 +19,7 @@ import { DurableObject } from 'cloudflare:workers';
 const TASKS = ['meph', 'lk', 'lk,meph'];
 const COMMANDS = ['stop_now', 'stop_after_run'];
 const MAX_BODY = 256_000;
+const MAX_ARMORY_GZ = 1_000_000;
 const RECENT_H = 25;     // the page shows the last 24 h
 const RECENT_MAX = 1100; // keeps the 'recent' blob well under the 128 KiB value limit
 const KEEP_DAYS = 60;
@@ -48,6 +51,28 @@ export async function bot(request, env, path) {
     let snap;
     try { snap = JSON.parse(raw); } catch { return json(400, { ok: false, error: 'bad json' }); }
     return json(200, await stub.checkin(snap));
+  }
+
+  if (path === 'armory') {
+    if (request.method === 'POST') {
+      if (!(await sameSecret(bearer(request), env.BOT_TOKEN))) return json(401, { ok: false, error: 'bad token' });
+      const gz = await request.arrayBuffer();
+      if (gz.byteLength > MAX_ARMORY_GZ) return json(413, { ok: false, error: 'too large' });
+      try { JSON.parse(await new Response(new Blob([gz]).stream().pipeThrough(new DecompressionStream('gzip'))).text()); }
+      catch { return json(400, { ok: false, error: 'not gzipped json' }); }
+      await stub.putArmory(gz);
+      await caches.default.delete(new Request(new URL('/api/bot/armory', request.url)));
+      return json(200, { ok: true, bytes: gz.byteLength });
+    }
+    const key = new Request(new URL('/api/bot/armory', request.url));
+    const hit = await caches.default.match(key);
+    if (hit) return hit;
+    const gz = await stub.getArmory();
+    if (!gz) return json(404, { ok: false, error: 'no armory yet' });
+    const res = new Response(new Blob([gz]).stream().pipeThrough(new DecompressionStream('gzip')),
+      { headers: { 'content-type': 'application/json', 'cache-control': 'public, max-age=300' } });
+    await caches.default.put(key, res.clone());
+    return res;
   }
 
   if (path === 'state') {
@@ -148,6 +173,9 @@ export class BotState extends DurableObject {
     const { queued, ...reply } = pending;
     return { ok: true, ...reply };
   }
+
+  async putArmory(gz) { await this.ctx.storage.put('armory', gz); }
+  async getArmory() { return (await this.ctx.storage.get('armory')) || null; }
 
   async queue(req) {
     const old = (await this.ctx.storage.get('pending')) || {};
