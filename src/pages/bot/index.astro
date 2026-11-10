@@ -384,6 +384,25 @@ main:has(.armory) { background: radial-gradient(70rem 26rem at 50% -8rem, #1b254
 .armory .afoot a{color:inherit}
 @media (max-width:700px){.armory .aspiral{width:190px;top:-20px;opacity:.11}}
 #aload.snapnote{margin:0 0 14px;border-radius:4px}
+/* type scale: Cinzel's small caps read about two sizes smaller than Inter, so display text is set larger; the smallest body text comes up a step too */
+.armory .tabs a{font-size:18px;padding:12px 16px 11px}
+.armory .tabs a small{font-size:15px}
+.armory h2{font-size:22px}
+.armory h2 small{font-size:16px}
+.armory .nm{font-size:18px}
+.armory .rw .nm{font-size:19px}
+.armory .goal>summary h3{font-size:20px}
+.armory .ig>summary b,.armory .grp>summary b{font-size:18px}
+.armory .rn b{font-size:15px}
+.armory .mt .k,.armory .rail h4,.armory .matg h4,.armory .tbl th,.armory .results .rg,.bot .mt .k,.bot .tbl th{font-size:15px}
+.armory .star{font-size:15px}
+.armory .small,.armory .it .meta,.armory .rw .meta,.armory .it .st,.armory .tag,.armory .goal .prog,.armory .mi span,.armory .results button span,.armory .afoot,.armory .news .dismiss,.armory .ledger2 th{font-size:15px}
+.armory .rail li span,.armory .chip small,.armory .rc small,.armory .find kbd{font-size:14px}
+.armory .it .ist,.armory .goal .who,.armory .goal .ctx,.armory .step .h,.armory .how .box,.armory .rw .body,.armory .mt .d,.armory .lede{font-size:16px}
+.armory .step .t{font-size:17px}
+/* phones: all five tabs fit without sideways scrolling */
+@media (max-width:700px){.armory .tabs a{font-size:16px;padding:12px 8px 11px;letter-spacing:.06em}.armory .tabs a small{display:none}}
+@media (max-width:430px){.armory .tabs a{font-size:15px;padding:12px 6px 11px;letter-spacing:.04em}}
 /* Bot tab in the same dress */
 .bot{--ok:#7fd08a;--bad:#ff8a80}
 .bot .panel,.bot .tbl,.bot .btn,.bot .queued,.bot .login input{border-radius:4px}
