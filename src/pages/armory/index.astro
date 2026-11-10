@@ -672,7 +672,7 @@ function renderStash() {
     const op = filtering || OPENG.has(g);
     return `<details class="card ig" data-grp="${esc(g)}"${op ? ' open' : ''}><summary><b>${esc(g)}</b><span class="small">${c ? `Level ${c.lv} ${esc(c.c)} · ` : ''}${plural(rs.length, 'item')}${notable(rs)}</span></summary>${rs.map(([i, ix]) => {
       const [sk, sl, sn] = status(i), p = place(i);
-      const meta = [qlabel(i), i.set && i.q === 'Set' ? i.set : '', i.n !== i.b ? i.b : '', TIER[i.t] || '', i.e ? 'ethereal' : '', !i.rw && i.s.length ? 'socketed: ' + i.s.join(', ') : ''].filter(Boolean).join(' · ');
+      const meta = [qlabel(i), i.set && i.q === 'Set' ? i.set : '', i.n !== i.b ? i.b : '', TIER[i.t] || '', i.e ? 'ethereal' : '', i.il ? 'ilvl ' + i.il : '', !i.rw && i.s.length ? 'socketed: ' + i.s.join(', ') : ''].filter(Boolean).join(' · ');
       const tags = [NEW.has(ix) ? '<span class="tag t-new"><i></i>New</span>' : '', sk === 'move' ? `<span class="tag t-move"><i></i>Move ${esc(sn)}</span>` : '', sk === 'ditch' ? '<span class="tag t-ditch"><i></i>Ditch</span>' : ''].join('');
       return `<div class="it" id="it-${ix}" tabindex="0" role="button" aria-expanded="false"><div><div class="nm q-${qkey(i)}">${esc(i.n)}</div><div class="meta">${esc(meta)}</div></div><div class="ist">${esc(i.st.join(' · ')) || '<span class="faint">no magic properties</span>'}</div><div class="st"><span class="pl">${esc(p.where)}</span>${tags}</div></div>`; }).join('')}</details>`;
   }).join('') || '<div class="card empty">No items match. <button class="chip" id="clearf">Clear filters</button></div>';
