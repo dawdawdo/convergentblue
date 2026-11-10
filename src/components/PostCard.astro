@@ -17,7 +17,14 @@ const cover = coverOf(post);
   </div>
   <div class="card-body">
     <span class="meta">{fmtDate(d.pubDate)}{d.draft && ' · draft'}</span>
-    <h3>{d.title}</h3>
+    {/* the title morphs into the post's headline on navigation (view transitions) */}
+    <h3 style={`view-transition-name: t-${post.id}`}>{d.title}</h3>
     {d.description && <p>{d.description}</p>}
+    {feature && (
+      <div class="card-actions">
+        {d.demo && <a class="try-it" href={d.demo}>Try the demo →</a>}
+        <a class="read-it" href={`/blog/${post.id}/`}>Read the story</a>
+      </div>
+    )}
   </div>
 </article>

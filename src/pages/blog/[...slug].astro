@@ -2,26 +2,39 @@
 import { render } from 'astro:content';
 import Base from '../../layouts/Base.astro';
 import Toc from '../../components/Toc.astro';
-import { getPosts, fmtDate } from '../../lib';
+import PostGrid from '../../components/PostGrid.astro';
+import { getPosts, fmtDate, coverOf, readingTime, relatedPosts } from '../../lib';
 
 export async function getStaticPaths() {
   const posts = await getPosts();
-  return posts.map((post) => ({ params: { slug: post.id }, props: { post } }));
+  return posts.map((post) => ({ params: { slug: post.id }, props: { post, more: relatedPosts(post, posts) } }));
 }
-const { post } = Astro.props;
+const { post, more } = Astro.props;
 const { Content, headings } = await render(post);
 const d = post.data;
+// Show the description as a lede unless it is just the post's opening words (true of many restored posts).
+const norm = (s: string) => s.replace(/[^a-z0-9]+/gi, ' ').trim().toLowerCase();
+const showLede = d.description && !norm(post.body ?? '').startsWith(norm(d.description).slice(0, 40));
 ---
-<Base title={d.title} description={d.description}>
+<Base title={d.title} description={d.description} image={coverOf(post)} progress>
   <article class="wrap">
     <header class="post-header">
-      <span class="meta">{fmtDate(d.pubDate)}{d.updatedDate && ` · updated ${fmtDate(d.updatedDate)}`}</span>
+      <span class="meta">{fmtDate(d.pubDate)}{d.updatedDate && ` · updated ${fmtDate(d.updatedDate)}`} · {readingTime(post)} min read</span>
       {d.draft && <span class="badge">Draft</span>}
-      <h1>{d.title}</h1>
+      <h1 style={`view-transition-name: t-${post.id}`}>{d.title}</h1>
+      {showLede && <p class="lede">{d.description}</p>}
       <ul class="tags">{d.tags.map((t) => <li><a href={`/tags/${t}/`}>{t}</a></li>)}</ul>
+      {d.demo && <p class="post-demo"><a class="try-it" href={d.demo}>Try the live demo →</a></p>}
     </header>
     {d.legacy && <p class="legacy-note">Originally published on divergentblue.com in {d.pubDate.getUTCFullYear()}, restored from backup. Some links to other sites may no longer work.</p>}
     <Toc headings={headings} />
     <div class="prose"><Content /></div>
+    {d.demo && <p class="post-demo post-demo-end"><a class="try-it" href={d.demo}>Try the live demo →</a></p>}
   </article>
+  {more.length > 0 && (
+    <aside class="wide keep-reading">
+      <div class="section-head"><h2>Keep reading</h2><a href="/blog/">All writing →</a></div>
+      <PostGrid posts={more} />
+    </aside>
+  )}
 </Base>

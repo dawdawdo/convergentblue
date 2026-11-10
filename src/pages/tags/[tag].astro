@@ -1,6 +1,7 @@
 ---
 import Base from '../../layouts/Base.astro';
 import PostGrid from '../../components/PostGrid.astro';
+import TagNav from '../../components/TagNav.astro';
 import { getPosts } from '../../lib';
 
 export async function getStaticPaths() {
@@ -15,11 +16,16 @@ export async function getStaticPaths() {
 }
 const { tag } = Astro.params;
 const { posts } = Astro.props;
+const title = tag === 'project' ? 'Projects' : tag;
 ---
-<Base title={`Topic: ${tag}`}>
+<Base title={`Topic: ${title}`}>
   <div class="wide">
-    <p class="eyebrow">Tag</p>
-    <h1>{tag}</h1>
+    <header class="page-head">
+      <p class="eyebrow">Topic</p>
+      <h1>{title}</h1>
+      <p class="lede">{tag === 'project' ? 'Things I built.' : `${posts.length} ${posts.length === 1 ? 'post' : 'posts'}.`}</p>
+      <TagNav current={tag} />
+    </header>
     <PostGrid posts={posts} />
   </div>
 </Base>

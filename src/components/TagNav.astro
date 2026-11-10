@@ -1,0 +1,14 @@
+---
+// Row of topic chips linking to the tag pages: tags used by 2+ posts, plus the one being viewed (`current`).
+import { getPosts, tagCounts } from '../lib';
+interface Props { current?: string; }
+const { current } = Astro.props;
+const tags = tagCounts(await getPosts()).filter(([t, n]) => n >= 2 || t === current);
+const label = (t: string) => (t === 'project' ? 'projects' : t);
+---
+<nav class="tag-nav" aria-label="Topics">
+  <ul class="tags">
+    <li><a href="/blog/" aria-current={current ? undefined : 'page'}>all</a></li>
+    {tags.map(([t, n]) => <li><a href={`/tags/${t}/`} aria-current={t === current ? 'page' : undefined}>{label(t)} <span>{n}</span></a></li>)}
+  </ul>
+</nav>

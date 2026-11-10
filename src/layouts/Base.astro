@@ -2,9 +2,11 @@
 import '../styles/global.css';
 import 'katex/dist/katex.min.css';
 import { SITE_TITLE, SITE_DESCRIPTION, AUTHOR } from '../consts';
+import Spiral from '../components/Spiral.astro';
 
-interface Props { title?: string; description?: string; noindex?: boolean; }
-const { title, description = SITE_DESCRIPTION, noindex = false } = Astro.props;
+// image: social preview (og:image). progress: the header spiral draws itself as the page scrolls (posts).
+interface Props { title?: string; description?: string; noindex?: boolean; image?: string; progress?: boolean; }
+const { title, description = SITE_DESCRIPTION, noindex = false, image, progress = false } = Astro.props;
 const fullTitle = title ? `${title} · ${SITE_TITLE}` : SITE_TITLE;
 const canonical = new URL(Astro.url.pathname, Astro.site);
 const path = Astro.url.pathname;
@@ -29,6 +31,8 @@ const nav = [
     <meta property="og:title" content={fullTitle} />
     <meta property="og:description" content={description} />
     <meta property="og:url" content={canonical} />
+    {image && <meta property="og:image" content={new URL(image, Astro.site)} />}
+    {image && <meta name="twitter:card" content="summary_large_image" />}
     <link rel="preconnect" href="https://fonts.googleapis.com" />
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=JetBrains+Mono:wght@400&family=Newsreader:ital,opsz,wght@0,6..72,400;0,6..72,600;1,6..72,400&display=swap" rel="stylesheet" />
@@ -36,7 +40,7 @@ const nav = [
   <body>
     <header class="site-header">
       <div class="wide">
-        <a class="brand" href="/"><picture><source srcset="/images/branding/spiral-96-dark.png" media="(prefers-color-scheme: dark)" /><img src="/images/branding/spiral-96.png" width="34" height="34" alt="" /></picture> {SITE_TITLE}</a>
+        <a class="brand" href="/"><Spiral class="brand-spiral" size={34} strokeWidth={10} progress={progress} /> {SITE_TITLE}</a>
         <nav>
           {nav.map((n) => <a href={n.href} aria-current={path.startsWith(n.href) ? 'page' : undefined}>{n.label}</a>)}
         </nav>
@@ -45,8 +49,8 @@ const nav = [
     <main><slot /></main>
     <footer class="site-footer">
       <div class="wide">
-        <span>© {new Date().getFullYear()} {AUTHOR}</span>
-        <span><a href="/rss.xml">RSS</a> · <a href="https://github.com/dawdawdo">GitHub</a></span>
+        <span>{SITE_DESCRIPTION}<br />© {new Date().getFullYear()} {AUTHOR}</span>
+        <span><a href="/tags/project/">Projects</a> · <a href="/blog/">Writing</a> · <a href="/about/">About</a> · <a href="/rss.xml">RSS</a> · <a href="https://github.com/dawdawdo">GitHub</a></span>
       </div>
     </footer>
   </body>

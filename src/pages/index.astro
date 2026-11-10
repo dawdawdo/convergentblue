@@ -15,16 +15,16 @@ const recent = posts.filter((p) => p !== featured).slice(0, 6);
         <p class="eyebrow">Stephen Abrams</p>
         <h1>Things I build.</h1>
         <p class="lede">It's all coming together.</p>
-        <p class="hero-links"><a href="/blog/">Read the archive →</a></p>
+        <p class="hero-links"><a href="/tags/project/">See the projects →</a><a href="/blog/">All writing</a></p>
       </div>
-      <Spiral class="hero-spiral" size="100%" animate />
+      <Spiral class="hero-spiral" size="100%" animate construct />
     </div>
   </section>
 
   <div class="wide">
     {featured && (
       <section class="home-section">
-        <div class="section-head"><h2>Try it</h2></div>
+        <div class="section-head"><h2>Featured</h2></div>
         <PostCard post={featured} feature />
       </section>
     )}

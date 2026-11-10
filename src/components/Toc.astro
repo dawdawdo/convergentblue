@@ -1,11 +1,15 @@
 ---
+// Contents list. Phones: a collapsed "Contents" toggle. Wide screens: opened and pinned beside the text (see .toc in global.css).
 import type { MarkdownHeading } from 'astro';
 interface Props { headings: MarkdownHeading[]; }
 const items = Astro.props.headings.filter((h) => h.depth === 2);
 ---
 {items.length >= 3 && (
-  <nav class="toc" aria-label="Contents">
-    <p>Contents</p>
+  <details class="toc">
+    <summary>Contents</summary>
     <ol>{items.map((h) => <li><a href={`#${h.slug}`}>{h.text}</a></li>)}</ol>
-  </nav>
+  </details>
+  <script is:inline>
+    if (matchMedia('(min-width: 78rem)').matches) document.querySelector('details.toc').open = true;
+  </script>
 )}

@@ -47,7 +47,9 @@ img { max-width: 100%; height: auto; }
 .wide { max-width: 72rem; margin: 0 auto; padding: 0 1rem; }
 
 /* header */
-.site-header { background: var(--band); padding: 1rem 0; }
+/* stays put while scrolling, so the logo's reading progress is visible on posts */
+.site-header { background: var(--band); padding: 0.7rem 0; position: sticky; top: 0; z-index: 50; }
+html { scroll-padding-top: 4.5rem; }
 .site-header .wide { display: flex; align-items: center; justify-content: space-between; gap: 1rem; flex-wrap: wrap; }
 .brand { display: flex; align-items: center; gap: 0.6rem; color: var(--band-ink); text-decoration: none; font: 600 1.05rem/1 var(--sans); letter-spacing: 0.01em; }
 .brand picture, .brand img { flex: none; display: block; }
@@ -63,6 +65,10 @@ main { padding: 2.5rem 0 4rem; }
 /* type */
 h1, h2, h3, h4 { font-family: var(--sans); line-height: 1.25; letter-spacing: -0.01em; }
 h1 { font-size: clamp(1.8rem, 4vw, 2.4rem); margin: 0 0 0.5rem; }
+/* headlines in the body serif; UI, cards and section heads stay sans */
+.hero h1, .post-header h1, .page-head h1, .card-feature h3 { font-family: var(--serif); font-weight: 600; letter-spacing: -0.015em; }
+.post-header h1, .page-head h1 { font-size: clamp(2.1rem, 5vw, 3rem); line-height: 1.1; }
+sup, sub { line-height: 0; }  /* footnote markers must not push lines apart */
 h2 { font-size: 1.35rem; margin: 2.2rem 0 0.6rem; }
 h3 { font-size: 1.1rem; margin: 1.8rem 0 0.5rem; }
 .meta { font: 0.85rem/1.4 var(--mono); color: var(--muted); }
@@ -76,8 +82,11 @@ hr { border: 0; border-top: 1px solid var(--rule); margin: 2.5rem 0; }
 
 /* tags */
 .tags { display: flex; flex-wrap: wrap; gap: 0.4rem; list-style: none; padding: 0; margin: 0.75rem 0 0; }
-.tags a { display: inline-block; font: 0.78rem/1 var(--mono); color: var(--muted); text-decoration: none; border: 1px solid var(--rule); border-radius: 999px; padding: 0.3rem 0.6rem; }
+.tags a { display: inline-block; font: 0.78rem/1 var(--mono); color: var(--muted); text-decoration: none; border: 1px solid var(--rule); border-radius: 999px; padding: 0.5rem 0.75rem; }
 .tags a:hover { color: var(--ink); border-color: var(--ink); }
+.tags a[aria-current='page'] { background: var(--ink); border-color: var(--ink); color: var(--bg); }
+.tag-nav { margin-top: 1.25rem; }
+.tag-nav span { opacity: 0.65; }
 .badge { font: 600 0.7rem/1 var(--sans); text-transform: uppercase; letter-spacing: 0.08em; background: var(--ink); color: var(--bg); padding: 0.2rem 0.45rem; border-radius: 3px; vertical-align: middle; }
 
 /* post list */
@@ -90,11 +99,26 @@ hr { border: 0; border-top: 1px solid var(--rule); margin: 2.5rem 0; }
 .post-list p { margin: 0; color: var(--muted); font-size: 1rem; }
 
 /* article */
+/* text column is 40rem (about 70 characters); figures, tables and code use the full 46rem */
+.post-header, .legacy-note, .prose > * { max-width: 40rem; margin-inline: auto; }
+.prose > :is(figure, .pair, .face-grid, table, pre, video, p:has(> img), p:has(> a > img), p:has(> picture)) { max-width: none; }
 .post-header { margin-bottom: 2rem; }
-.legacy-note { font: 0.9rem/1.5 var(--sans); color: var(--muted); border: 1px dashed var(--rule); border-radius: 6px; padding: 0.7rem 0.9rem; margin: 0 0 2rem; }
-.toc { font: 0.92rem/1.5 var(--sans); border-left: 2px solid var(--rule); padding: 0.2rem 0 0.2rem 1rem; margin: 0 0 2rem; }
-.toc p { margin: 0 0 0.4rem; font-weight: 600; }
-.toc ol { margin: 0; padding-left: 1.1rem; }
+.post-header .lede { margin: 0.75rem 0 1rem; }
+.post-demo { margin: 1.5rem 0 0; }
+.post-demo-end { max-width: 40rem; margin: 2.5rem auto 0; }
+.keep-reading { margin-top: 4rem; padding-top: 0.5rem; border-top: 1px solid var(--rule); }
+.keep-reading .section-head { margin-top: 2rem; }
+.legacy-note { font: 0.9rem/1.5 var(--sans); color: var(--muted); border: 1px dashed var(--rule); border-radius: 6px; padding: 0.7rem 0.9rem; margin-top: 0; margin-bottom: 2rem; }
+.toc { font: 0.92rem/1.5 var(--sans); border-left: 2px solid var(--rule); padding: 0.2rem 0 0.2rem 1rem; max-width: 40rem; margin: 0 auto 2rem; }
+.toc summary { font-weight: 600; cursor: pointer; padding: 0.3rem 0; }
+.toc ol { margin: 0.4rem 0 0; padding-left: 1.1rem; }
+.toc li { padding: 0.15rem 0; }
+/* wide screens: pinned in the right margin (Toc.astro opens it) */
+@media (min-width: 78rem) {
+  .toc { float: right; position: sticky; top: 5.5rem; width: 13rem; margin: 0.4rem -15rem 0 0; font-size: 0.85rem; }
+  .toc summary { list-style: none; cursor: default; pointer-events: none; }
+  .toc summary::-webkit-details-marker { display: none; }
+}
 .toc a { color: var(--muted); text-decoration: none; }
 .toc a:hover { color: var(--ink); text-decoration: underline; }
 .prose video { display: block; width: 100%; max-width: 720px; margin: 1.5rem auto; border-radius: 4px; background: #000; }
@@ -126,29 +150,58 @@ hr { border: 0; border-top: 1px solid var(--rule); margin: 2.5rem 0; }
 
 .try-it { display: inline-block; font: 600 1rem/1 var(--sans); padding: .75rem 1.1rem; border-radius: 6px; background: var(--ink); color: var(--bg); text-decoration: none; }
 .try-it:hover { background: var(--accent); color: var(--accent-ink); }
+.read-it { font: 600 1rem/1 var(--sans); color: var(--ink); }
 
 /* ---------- hero ---------- */
-.hero { background: var(--band); color: var(--band-ink); padding: 2.5rem 0 3.5rem; overflow: hidden; }
+.hero { background: var(--band); color: var(--band-ink); padding: 1.5rem 0 2.5rem; overflow: hidden; }
 .hero-inner { display: grid; grid-template-columns: 1.3fr 1fr; align-items: center; gap: 2rem; }
 .hero .eyebrow { color: var(--band-muted); }
 .hero h1 { font-size: clamp(2.6rem, 7vw, 4.6rem); line-height: 1.02; letter-spacing: -0.03em; margin: 0 0 1rem; }
 .hero .lede { color: var(--band-muted); font-size: 1.35rem; }
 .hero-links { margin: 1.75rem 0 0; font: 600 1rem var(--sans); }
+.hero-links { display: flex; flex-wrap: wrap; gap: 0.75rem 1.75rem; }
 .hero-links a { color: var(--band-brand); text-decoration: none; border-bottom: 2px solid currentColor; padding-bottom: 2px; }
-.hero-spiral { color: var(--band-brand); max-width: 340px; justify-self: center; }
+.hero-links a + a { color: var(--band-muted); }
+.hero-spiral { color: var(--band-brand); width: 100%; height: auto; aspect-ratio: 155 / 110; max-width: 420px; justify-self: center; }
 @media (max-width: 700px) {
-  .hero-inner { grid-template-columns: 1fr; }
-  .hero-spiral { max-width: 180px; order: -1; justify-self: start; }
+  /* phones: the spiral sits behind the text, bleeding off the right edge, so content starts sooner */
+  .hero { padding: 2.25rem 0 2.5rem; }
+  .hero-inner { grid-template-columns: 1fr; position: relative; }
+  .hero-text { position: relative; z-index: 1; }
+  .hero-spiral { position: absolute; right: -3.5rem; top: 50%; translate: 0 -50%; width: 300px; max-width: none; opacity: 0.22; }
 }
-.spiral-animate path { stroke-dasharray: 1; stroke-dashoffset: 1; animation: spiral-draw 2.4s cubic-bezier(.45,.05,.25,1) .2s forwards; }
+.spiral-animate .spiral-line { stroke-dasharray: 1; stroke-dashoffset: 1; animation: spiral-draw 2.4s cubic-bezier(.45,.05,.25,1) .2s forwards; }
 @keyframes spiral-draw { to { stroke-dashoffset: 0; } }
-@media (prefers-reduced-motion: reduce) { .spiral-animate path { animation: none; stroke-dashoffset: 0; } }
+/* the golden-rectangle construction fades in once the spiral has drawn; then the whole figure breathes:
+   it swells and settles about the spiral's pole (a change in size, not just in brightness) */
+.spiral-construct { opacity: 0; animation: construct-in 1.6s ease 2.3s forwards; }
+@keyframes construct-in { to { opacity: 0.45; } }
+.hero-spiral { transform-origin: 69.7% 68.2%; animation: spiral-breathe 7s ease-in-out 4s infinite alternate; }
+@keyframes spiral-breathe { from { transform: scale(1); } to { transform: scale(0.9); } }
+@media (prefers-reduced-motion: reduce) {
+  .spiral-animate .spiral-line { animation: none; stroke-dashoffset: 0; }
+  .spiral-construct { animation: none; opacity: 0.45; }
+  .hero-spiral { animation: none; }
+}
+
+/* header logo on posts: draws itself as you scroll (reading progress). Browsers without scroll timelines show it whole. */
+.brand-spiral { flex: none; color: var(--band-brand); width: 38px; height: 27px; }
+@supports (animation-timeline: scroll()) {
+  .spiral-track { opacity: 0.3; }
+  .spiral-progress { stroke-dasharray: 1; stroke-dashoffset: 1; animation: spiral-draw linear both; animation-timeline: scroll(root); }
+}
+
+/* page-to-page transitions: a short cross-fade, and a card's title glides into the post headline */
+@view-transition { navigation: auto; }
+@media (prefers-reduced-motion: reduce) { @view-transition { navigation: none; } }
 
 .home-section { margin-top: 3rem; }
 .home-section .section-head { margin-top: 0; }
 .page-head { margin: 0.5rem 0 1rem; }
-.year { margin-top: 2.5rem; }
-.year-label { font: 700 0.85rem/1 var(--sans); letter-spacing: 0.14em; text-transform: uppercase; color: var(--muted); border-bottom: 1px solid var(--rule); padding-bottom: 0.6rem; margin: 0 0 1.25rem; }
+.year { margin-top: 4rem; }
+/* the archive divider: a heavy rule and a real heading, so the line between new and restored posts is obvious */
+.year-label { font: 700 1.35rem/1.2 var(--sans); letter-spacing: -0.01em; color: var(--ink); border-top: 3px solid var(--ink); padding-top: 0.9rem; margin: 0 0 1.5rem; }
+.year-label span { display: block; font: 400 1rem/1.5 var(--serif); letter-spacing: 0; color: var(--muted); margin-top: 0.25rem; }
 
 /* ---------- cards ---------- */
 .card-grid { display: grid; gap: 1.5rem; grid-template-columns: repeat(auto-fill, minmax(16.5rem, 1fr)); }
@@ -163,20 +216,27 @@ hr { border: 0; border-top: 1px solid var(--rule); margin: 2.5rem 0; }
 .card-fallback { width: 100%; height: 100%; display: grid; place-items: center; background: var(--band); color: var(--band-brand); }
 .card-badge { position: absolute; top: .6rem; left: .6rem; font: 700 .7rem/1 var(--sans); letter-spacing: .08em; text-transform: uppercase; background: var(--brand); color: var(--accent-ink); padding: .4rem .55rem; border-radius: 4px; }
 .card-body { padding: 1rem 1.1rem 1.2rem; }
-.card-body h3 { margin: .35rem 0 .4rem; font-size: 1.15rem; line-height: 1.3; }
+.card-body h3 { margin: .35rem 0 .4rem; font-size: 1.15rem; line-height: 1.3; width: fit-content; }
 .card-body p { margin: 0; color: var(--muted); font-size: 1rem; line-height: 1.5; display: -webkit-box; -webkit-line-clamp: 3; -webkit-box-orient: vertical; overflow: hidden; }
 .card:hover h3 { color: var(--brand); }
+/* dark mode: take the glare off white-background thumbnails until hovered */
+@media (prefers-color-scheme: dark) {
+  .card-media { background: #d9dbe1; }
+  .card-media img { filter: brightness(0.85); transition: transform .35s ease, filter .2s ease; }
+  .card:hover .card-media img { filter: none; }
+}
 
 /* featured: image left, text right */
 .card-feature { flex-direction: row; }
-.card-feature .card-media { flex: 1.4; aspect-ratio: auto; min-height: 15rem; border-bottom: 0; border-right: 1px solid var(--rule); }
-.card-feature .card-media img { object-fit: contain; background: #fff; }
-.card-feature .card-body { flex: 1; padding: 1.75rem; align-self: center; }
-.card-feature h3 { font-size: 1.6rem; }
-.card-feature p { -webkit-line-clamp: 5; font-size: 1.05rem; }
+.card-feature .card-media { flex: 1; aspect-ratio: auto; min-height: 17rem; max-height: 24rem; border-bottom: 0; border-right: 1px solid var(--rule); }
+.card-feature .card-media img { object-fit: contain; }
+.card-feature .card-body { flex: 1.15; padding: 2rem 2.25rem; align-self: center; }
+.card-feature h3 { font-size: clamp(1.6rem, 3.2vw, 2.3rem); line-height: 1.12; margin: .5rem 0 .75rem; }
+.card-feature p { -webkit-line-clamp: 5; font-size: 1.15rem; }
+.card-actions { position: relative; z-index: 3; display: flex; flex-wrap: wrap; align-items: center; gap: 0.75rem 1.5rem; margin-top: 1.4rem; }
 @media (max-width: 700px) {
   .card-feature { flex-direction: column; }
-  .card-feature .card-media { min-height: 0; aspect-ratio: 16 / 7; border-right: 0; border-bottom: 1px solid var(--rule); }
+  .card-feature .card-media { min-height: 0; max-height: none; aspect-ratio: 16 / 9; border-right: 0; border-bottom: 1px solid var(--rule); }
   .card-feature .card-body { padding: 1.1rem; }
 }
 main:has(> .hero:first-child) { padding-top: 0; }

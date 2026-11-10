@@ -1,21 +1,25 @@
 ---
 import Base from '../../layouts/Base.astro';
 import PostGrid from '../../components/PostGrid.astro';
+import TagNav from '../../components/TagNav.astro';
 import { getPosts } from '../../lib';
 const posts = await getPosts();
-const byYear = Object.entries(Object.groupBy(posts, (p) => String(p.data.pubDate.getUTCFullYear()))).sort((a, b) => +b[0] - +a[0]);
+const fresh = posts.filter((p) => !p.data.legacy);
+const archive = posts.filter((p) => p.data.legacy);
 ---
 <Base title="Writing" description="Everything I've written, newest first.">
   <div class="wide">
     <header class="page-head">
       <h1>Writing</h1>
       <p class="lede">{posts.length} posts. Older ones were rescued from divergentblue.com (2006–2020).</p>
+      <TagNav />
     </header>
-    {byYear.map(([year, list]) => (
+    <PostGrid posts={fresh} />
+    {archive.length > 0 && (
       <section class="year">
-        <h2 class="year-label">{year}</h2>
-        <PostGrid posts={list!} />
+        <h2 class="year-label">From the archive <span>Restored from the old blog, 2006–2020.</span></h2>
+        <PostGrid posts={archive} />
       </section>
-    ))}
+    )}
   </div>
 </Base>
