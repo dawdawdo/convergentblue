@@ -1,119 +1,98 @@
 ---
 // Private console for Stephen's D2R bot (GLaDOS). Data and control go through worker/bot.js; the password is the
-// DASH_TOKEN secret, kept in this browser's localStorage. Styled after Blizzaga's Armory, not the site theme.
+// DASH_TOKEN secret, kept in this browser's localStorage. Site layout and theme; all styles live under .bot.
 // Not linked anywhere, noindex, left out of the sitemap (astro.config.mjs).
+import Base from '../../layouts/Base.astro';
 ---
-<!doctype html>
-<html lang="en">
-<head>
-<meta charset="utf-8">
-<meta name="viewport" content="width=device-width,initial-scale=1">
-<meta name="robots" content="noindex,nofollow">
-<title>Blizzaga's Bot</title>
-<link rel="icon" href="/favicon.png" type="image/png">
-<link rel="preconnect" href="https://fonts.googleapis.com">
-<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Atkinson+Hyperlegible:wght@400;700&family=Cinzel:wght@600;700&display=swap">
-<style is:inline>
-:root{
-  --bg:#f5f2eb;--panel:#fffdf9;--raise:#efeadf;--line:#e2dccf;--line2:#cbc2b2;--fg:#1d1a15;--mute:#565044;--faint:#857c6d;
-  --accent:#87590f;--accent-ink:#fff8ea;--rw:#a1500b;--unique:#7a5f22;--ok:#2b6e28;--bad:#a3302a;
-  --display:"Cinzel",Georgia,serif;--body:"Atkinson Hyperlegible",system-ui,-apple-system,"Segoe UI",sans-serif;
-  color-scheme:light;
-}
-@media (prefers-color-scheme:dark){:root{
-  --bg:#100f0d;--panel:#181613;--raise:#211e1a;--line:#2d2924;--line2:#423b32;--fg:#eee8dc;--mute:#b1a897;--faint:#81796c;
-  --accent:#e2b45c;--accent-ink:#1a1307;--rw:#eda352;--unique:#d2b77f;--ok:#82cc7f;--bad:#f2806f;color-scheme:dark}}
-*{box-sizing:border-box}
-body{margin:0;background:var(--bg);color:var(--fg);font-family:var(--body);font-size:16px;line-height:1.5}
-button,input{font:inherit;color:inherit}
-.wrap{max-width:1040px;margin:0 auto;padding:0 16px 64px}
-[hidden]{display:none!important}
-:focus-visible{outline:2px solid var(--accent);outline-offset:2px}
-.top{display:flex;flex-wrap:wrap;align-items:center;gap:10px 20px;padding:22px 0 18px;border-bottom:1px solid var(--line);margin-bottom:22px}
-.top h1{font-family:var(--display);font-weight:700;font-size:clamp(26px,4.4vw,34px);letter-spacing:.03em;line-height:1.1;margin:0;color:var(--accent)}
-.brand{flex:1 1 260px;min-width:0}
-.sub{margin:2px 0 0;color:var(--mute);font-size:15px}
-.pill{display:inline-flex;align-items:center;gap:8px;border:1px solid var(--line2);background:var(--panel);border-radius:99px;padding:7px 14px;font-size:15px;min-height:40px}
-.pill .dot{width:10px;height:10px;border-radius:50%;background:var(--ok);flex:none}
-.pill.stale .dot{background:transparent;border:2px solid var(--bad)}
-.pill.stale b{color:var(--bad)}
-h2{font-family:var(--display);font-weight:700;font-size:20px;letter-spacing:.02em;margin:34px 0 12px;display:flex;align-items:center;gap:14px}
-h2::after{content:"";flex:1;height:1px;background:var(--line)}
-h2 small{font-family:var(--body);font-weight:400;font-size:15px;color:var(--mute);letter-spacing:0}
-.card{background:var(--panel);border:1px solid var(--line);border-radius:12px}
-.muted{color:var(--mute)}.small{font-size:14px;color:var(--mute)}
+<Base title="Blizzaga's Bot" description="Remote console for a D2R bot." noindex>
+<style is:global>
+.bot { --ok: #23722a; --bad: #b02a2a; font: 1rem/1.5 var(--sans); }
+@media (prefers-color-scheme: dark) { .bot { --ok: #7fd08a; --bad: #ff8a80; } }
+.bot button, .bot input { font: inherit; color: inherit; }
+.bot :focus-visible { outline: 2px solid var(--brand); outline-offset: 2px; }
+.bot .page-top { display: flex; flex-wrap: wrap; align-items: flex-end; justify-content: space-between; gap: 0.75rem 1.5rem; margin: 0.5rem 0 1.75rem; }
+.bot .page-top h1 { margin: 0; }
+.bot .page-top .eyebrow { margin: 0 0 0.6rem; }
+.bot .pill { display: inline-flex; align-items: center; gap: 0.5rem; border: 1px solid var(--rule); background: var(--surface); border-radius: 999px; padding: 0.4rem 0.9rem; font-size: 0.9rem; color: var(--muted); }
+.bot .pill .dot { width: 0.6rem; height: 0.6rem; border-radius: 50%; background: var(--ok); flex: none; }
+.bot .pill.stale .dot { background: transparent; border: 2px solid var(--bad); }
+.bot .pill.stale b { color: var(--bad); }
+.bot h2 { display: flex; align-items: baseline; gap: 0.75rem; margin: 2.5rem 0 0.9rem; }
+.bot h2 small { font: 400 0.9rem var(--sans); color: var(--muted); }
+.bot .panel { background: var(--surface); border: 1px solid var(--rule); border-radius: 10px; }
+.bot .muted { color: var(--muted); }
 /* now */
-.now{padding:18px 20px;display:grid;grid-template-columns:minmax(0,1fr) auto;gap:14px 24px;align-items:start}
-.state{font-family:var(--display);font-size:28px;font-weight:700;line-height:1.1;display:flex;align-items:center;gap:12px}
-.state i{width:14px;height:14px;border-radius:50%;flex:none;display:inline-block}
-.s-run i{background:var(--ok)}.s-run{color:var(--ok)}
-.s-stop i{border:2.5px solid var(--fg);border-radius:2px}
-.s-wait i{border:2.5px dashed var(--fg)}
-.s-off{color:var(--bad)}.s-off i{background:var(--bad);border-radius:0;clip-path:polygon(20% 0,50% 30%,80% 0,100% 20%,70% 50%,100% 80%,80% 100%,50% 70%,20% 100%,0 80%,30% 50%,0 20%)}
-.facts{margin:8px 0 0;color:var(--mute)}
-.facts b{color:var(--fg)}
-.queued{margin:10px 0 0;padding:8px 12px;border-radius:8px;background:var(--raise);font-size:15px}
-.ctl{display:grid;gap:10px;justify-items:end}
-.seg{display:inline-flex;border:1px solid var(--line2);border-radius:99px;background:var(--panel);padding:3px;gap:2px;flex-wrap:wrap}
-.seg button{border:0;background:none;border-radius:99px;padding:6px 14px;min-height:34px;cursor:pointer;font-size:15px;color:var(--mute);white-space:nowrap}
-.seg button[aria-pressed="true"]{background:var(--fg);color:var(--bg)}
-.btns{display:flex;flex-wrap:wrap;gap:8px;justify-content:flex-end}
-.btn{min-height:40px;padding:6px 16px;border-radius:99px;border:1px solid var(--line2);background:var(--panel);cursor:pointer;font-weight:700;font-size:15px}
-.btn.go{background:var(--accent);border-color:var(--accent);color:var(--accent-ink)}
-.btn.danger{color:var(--bad);border-color:currentColor}
-.btn:disabled{opacity:.5;cursor:default}
-@media (max-width:720px){.now{grid-template-columns:1fr}.ctl{justify-items:start}.btns{justify-content:flex-start}}
+.bot .now { padding: 1.25rem 1.4rem; display: grid; grid-template-columns: minmax(0, 1fr) auto; gap: 1rem 1.5rem; align-items: start; }
+.bot .state { font: 700 1.75rem/1.15 var(--sans); letter-spacing: -0.01em; display: flex; align-items: center; gap: 0.75rem; }
+.bot .state i { width: 0.85rem; height: 0.85rem; border-radius: 50%; flex: none; display: inline-block; }
+.bot .s-run { color: var(--ok); } .bot .s-run i { background: var(--ok); }
+.bot .s-stop i { border: 2.5px solid var(--ink); border-radius: 2px; }
+.bot .s-wait i { border: 2.5px dashed var(--ink); }
+.bot .s-off { color: var(--bad); }
+.bot .s-off i, .bot .r-fail i { background: var(--bad); border-radius: 0; clip-path: polygon(20% 0,50% 30%,80% 0,100% 20%,70% 50%,100% 80%,80% 100%,50% 70%,20% 100%,0 80%,30% 50%,0 20%); }
+.bot .facts { margin: 0.5rem 0 0; color: var(--muted); }
+.bot .facts b { color: var(--ink); font-weight: 600; }
+.bot .queued { margin: 0.75rem 0 0; padding: 0.5rem 0.75rem; border-radius: 6px; background: var(--code-bg); font-size: 0.92rem; }
+.bot .ctl { display: grid; gap: 0.7rem; justify-items: end; }
+.bot .seg { display: inline-flex; flex-wrap: wrap; gap: 2px; border: 1px solid var(--rule); border-radius: 999px; background: var(--bg); padding: 3px; }
+.bot .seg button { border: 0; background: none; border-radius: 999px; padding: 0.4rem 0.9rem; min-height: 2.1rem; cursor: pointer; font-size: 0.92rem; color: var(--muted); white-space: nowrap; }
+.bot .seg button:hover { color: var(--ink); }
+.bot .seg button[aria-pressed="true"] { background: var(--ink); color: var(--bg); }
+.bot .btns { display: flex; flex-wrap: wrap; gap: 0.5rem; justify-content: flex-end; }
+.bot .btn { min-height: 2.5rem; padding: 0.45rem 1rem; border-radius: 6px; border: 1px solid var(--rule); background: var(--surface); cursor: pointer; font-weight: 600; font-size: 0.95rem; }
+.bot .btn:hover { border-color: var(--ink); }
+.bot .btn.go { background: var(--ink); border-color: var(--ink); color: var(--bg); }
+.bot .btn.go:hover { background: var(--accent); border-color: var(--accent); color: var(--accent-ink); }
+.bot .btn.danger { color: var(--bad); border-color: currentColor; }
+.bot .btn:disabled { opacity: 0.5; cursor: default; }
+@media (max-width: 720px) { .bot .now { grid-template-columns: 1fr; } .bot .ctl { justify-items: start; } .bot .btns { justify-content: flex-start; } }
 /* tiles */
-.meters{display:grid;grid-template-columns:repeat(auto-fit,minmax(200px,1fr));gap:12px}
-.mt{padding:14px 18px}
-.mt .k{font-size:13px;font-weight:700;letter-spacing:.06em;text-transform:uppercase;color:var(--mute)}
-.mt .v{font-size:32px;font-weight:700;line-height:1.15;margin:4px 0 2px;font-variant-numeric:tabular-nums}
-.mt .d{color:var(--mute);font-size:15px}
+.bot .meters { display: grid; grid-template-columns: repeat(auto-fit, minmax(12rem, 1fr)); gap: 1rem; }
+.bot .mt { padding: 0.9rem 1.1rem; }
+.bot .mt .k { font: 600 0.75rem/1.3 var(--sans); letter-spacing: 0.12em; text-transform: uppercase; color: var(--muted); }
+.bot .mt .v { font-size: 1.9rem; font-weight: 700; line-height: 1.15; margin: 0.3rem 0 0.15rem; font-variant-numeric: tabular-nums; letter-spacing: -0.01em; }
+.bot .mt .d { color: var(--muted); font-size: 0.9rem; }
 /* loot */
-.loot{padding:14px 16px;display:flex;flex-wrap:wrap;gap:6px}
-.lc{display:inline-flex;align-items:baseline;gap:6px;border:1px solid var(--line2);border-radius:6px;padding:2px 10px;font-size:15px;background:var(--bg)}
-.lc b{font-variant-numeric:tabular-nums}
-.lc.rare{border-color:var(--accent);color:var(--accent);font-weight:700}
+.bot .loot { padding: 0.9rem 1rem; display: flex; flex-wrap: wrap; gap: 0.4rem; }
+.bot .lc { display: inline-flex; align-items: baseline; gap: 0.35rem; border: 1px solid var(--rule); border-radius: 999px; padding: 0.2rem 0.65rem; font: 0.8rem/1.4 var(--mono); color: var(--muted); }
+.bot .lc.rare { border-color: var(--ink); color: var(--ink); font-weight: 600; }
 /* runs */
-.tbl{overflow-x:auto;border:1px solid var(--line);border-radius:12px;background:var(--panel)}
-.tbl table{border-collapse:collapse;width:100%;font-size:15px}
-.tbl th,.tbl td{text-align:left;padding:8px 14px;border-bottom:1px solid var(--line);vertical-align:top}
-.tbl th{font-size:13px;letter-spacing:.06em;text-transform:uppercase;color:var(--mute);font-weight:700;background:var(--raise)}
-.tbl tr:last-child td{border-bottom:0}
-.tbl td.n{text-align:right;font-variant-numeric:tabular-nums;white-space:nowrap}
-.tbl td.t{white-space:nowrap;font-variant-numeric:tabular-nums}
-.tag{display:inline-flex;align-items:center;gap:7px;font-size:14px;font-weight:700;white-space:nowrap}
-.tag i{width:10px;height:10px;border-radius:50%;flex:none;display:inline-block}
-.r-ok{color:var(--ok)}.r-ok i{background:currentColor}
-.r-chicken i{border:2px solid currentColor}
-.r-fail{color:var(--bad)}.r-fail i{background:currentColor;border-radius:0;clip-path:polygon(20% 0,50% 30%,80% 0,100% 20%,70% 50%,100% 80%,80% 100%,50% 70%,20% 100%,0 80%,30% 50%,0 20%)}
-.err{color:var(--mute);font-size:14px}
+.bot .tbl { overflow-x: auto; border: 1px solid var(--rule); border-radius: 10px; background: var(--surface); }
+.bot .tbl table { border-collapse: collapse; width: 100%; font-size: 0.92rem; }
+.bot .tbl th, .bot .tbl td { text-align: left; padding: 0.5rem 0.9rem; border-bottom: 1px solid var(--rule); vertical-align: top; }
+.bot .tbl th { font: 600 0.72rem/1.3 var(--sans); letter-spacing: 0.12em; text-transform: uppercase; color: var(--muted); background: var(--code-bg); }
+.bot .tbl tr:last-child td { border-bottom: 0; }
+.bot .tbl td.n { text-align: right; font-variant-numeric: tabular-nums; white-space: nowrap; }
+.bot .tbl td.t { white-space: nowrap; font: 0.85rem/1.6 var(--mono); color: var(--muted); }
+.bot .tag { display: inline-flex; align-items: center; gap: 0.45rem; font-weight: 600; white-space: nowrap; }
+.bot .tag i { width: 0.6rem; height: 0.6rem; border-radius: 50%; flex: none; display: inline-block; }
+.bot .r-ok { color: var(--ok); } .bot .r-ok i { background: currentColor; }
+.bot .r-chicken i { border: 2px solid currentColor; }
+.bot .r-fail { color: var(--bad); }
+.bot .err { color: var(--muted); font-size: 0.85rem; }
 /* login */
-.login{max-width:420px;padding:20px;margin:40px auto}
-.login h2{margin-top:0}
-.login form{display:flex;gap:8px}
-.login input{flex:1;min-width:0;height:42px;border:1px solid var(--line2);border-radius:8px;background:var(--bg);padding:0 12px}
-.msg{color:var(--bad);margin:10px 0 0}
-footer{margin-top:40px;color:var(--faint);font-size:14px;display:flex;gap:16px;flex-wrap:wrap}
-footer button{border:0;background:none;color:var(--accent);cursor:pointer;padding:0;font-size:14px}
+.bot .login { max-width: 26rem; padding: 1.25rem 1.4rem; margin: 2rem 0; }
+.bot .login h2 { margin: 0 0 0.75rem; }
+.bot .login form { display: flex; gap: 0.5rem; }
+.bot .login input { flex: 1; min-width: 0; height: 2.6rem; border: 1px solid var(--rule); border-radius: 6px; background: var(--bg); padding: 0 0.75rem; }
+.bot .msg { color: var(--bad); margin: 0.6rem 0 0; }
+.bot .foot { margin-top: 2.5rem; color: var(--muted); font-size: 0.85rem; display: flex; gap: 1rem; flex-wrap: wrap; }
+.bot .foot button { border: 0; background: none; color: var(--accent); cursor: pointer; padding: 0; font-size: 0.85rem; text-decoration: underline; text-underline-offset: 0.18em; }
 </style>
-</head>
-<body>
-<div class="wrap">
-<header class="top">
-  <div class="brand"><h1>Blizzaga's Bot</h1><p class="sub" id="sub">D2R offline · remote console</p></div>
+<div class="wide bot">
+<header class="page-top">
+  <div><p class="eyebrow" id="sub">D2R offline · remote console</p><h1>Blizzaga's Bot</h1></div>
   <div class="pill" id="pill" hidden><span class="dot"></span><span id="pilltxt"></span></div>
 </header>
 
-<section class="card login" id="login" hidden>
+<section class="panel login" id="login" hidden>
   <h2>Password</h2>
   <form id="loginform"><input id="pw" type="password" autocomplete="current-password" aria-label="Password"><button class="btn go">Open</button></form>
   <p class="msg" id="loginmsg" hidden></p>
 </section>
 
-<main id="main" hidden>
-  <section class="card now">
+<div id="main" hidden>
+  <section class="panel now">
     <div>
       <div class="state" id="state"><i></i><span></span></div>
       <p class="facts" id="facts"></p>
@@ -135,12 +114,12 @@ footer button{border:0;background:none;color:var(--accent);cursor:pointer;paddin
   <div class="meters" id="meters"></div>
 
   <h2>Loot <small>last 24 hours</small></h2>
-  <div class="card loot" id="loot"></div>
+  <div class="panel loot" id="loot"></div>
 
   <h2>Recent runs</h2>
   <div class="tbl"><table><thead><tr><th>Started</th><th>Task</th><th>Result</th><th style="text-align:right">Time</th><th style="text-align:right">Chests</th><th>Picked up</th></tr></thead><tbody id="runs"></tbody></table></div>
-</main>
-<footer id="foot" hidden><span id="foottxt"></span><button id="logout">Forget password on this device</button></footer>
+</div>
+<div class="foot" id="foot" hidden><span id="foottxt"></span><button id="logout">Forget password on this device</button></div>
 </div>
 
 <script is:inline>
@@ -275,7 +254,7 @@ footer button{border:0;background:none;color:var(--accent);cursor:pointer;paddin
       ['Mephisto ok', pct(okM, meph.length), `${okM} of ${meph.length} runs`],
       ['Chickens · fails', `${chickens} · ${fails}`, 'chicken = saved out on low life'],
       ['LK chests a run', lk.length ? (chestsLk / lk.length).toFixed(1) : '–', `${lk.length} LK runs`],
-    ].map(([k, v, dd]) => `<div class="card mt"><div class="k">${k}</div><div class="v">${v}</div><div class="d">${dd}</div></div>`).join('');
+    ].map(([k, v, dd]) => `<div class="panel mt"><div class="k">${k}</div><div class="v">${v}</div><div class="d">${dd}</div></div>`).join('');
 
     const counts = {};
     for (const r of day) for (const w of String(r.picked || '').split(/\s+/).filter(Boolean)) counts[w] = (counts[w] || 0) + 1;
@@ -309,5 +288,4 @@ footer button{border:0;background:none;color:var(--accent);cursor:pointer;paddin
   document.addEventListener('visibilitychange', () => { if (!document.hidden && token) refresh(); });
 })();
 </script>
-</body>
-</html>
+</Base>
