@@ -17,7 +17,9 @@ import { DurableObject } from 'cloudflare:workers';
 const TASKS = ['meph', 'lk', 'lk,meph'];
 const COMMANDS = ['stop_now', 'stop_after_run'];
 const MAX_BODY = 256_000;
-const KEEP_RUNS = 5000;
+const RECENT_H = 25;     // the page shows the last 24 h
+const RECENT_MAX = 1100; // keeps the 'recent' blob well under the 128 KiB value limit
+const KEEP_DAYS = 60;
 
 const json = (status, body) =>
   new Response(JSON.stringify(body), {
@@ -91,6 +93,9 @@ export async function bot(request, env, path) {
 }
 
 export class BotState extends DurableObject {
+  // Free plan: 5M rows read a day. So nothing here scans the runs table on a timer: a check-in only inserts runs newer
+  // than the newest one stored, the page reads one stored blob ('recent': the last RECENT_H hours of runs, rebuilt
+  // when new runs arrive), and old rows are pruned once a day by an index range. Each KV get/put is ~1 row.
   constructor(ctx, env) {
     super(ctx, env);
     this.sql = ctx.storage.sql;
@@ -101,16 +106,40 @@ export class BotState extends DurableObject {
 
   async checkin(snap) {
     const now = Date.now();
-    for (const r of Array.isArray(snap.runs) ? snap.runs : []) {
-      if (!r || !r.start || !r.task) continue;
-      this.sql.exec(
-        'INSERT OR IGNORE INTO runs (start, task, result, duration, chests, picked, error) VALUES (?, ?, ?, ?, ?, ?, ?)',
-        String(r.start).slice(0, 19), String(r.task).slice(0, 20), String(r.result ?? '').slice(0, 20),
-        Number(r.duration_s) || 0, Number(r.chests) || 0, String(r.picked ?? '').slice(0, 400),
-        String(r.error ?? '').slice(0, 300));
+    let meta = await this.ctx.storage.get('meta');
+    if (!meta) {  // first run of this version: carry on from the table (one index range read, once)
+      const top = this.sql.exec('SELECT max(start) AS m FROM runs').toArray()[0];
+      meta = { last: (top && top.m) || '', pruned: '' };
+      const rows = this.sql.exec('SELECT start, task, result, duration, chests, picked, error FROM runs WHERE start >= ? ORDER BY start DESC LIMIT ?',
+        hoursBefore(meta.last, RECENT_H), RECENT_MAX).toArray();
+      await this.ctx.storage.put('recent', rows.map(pack));
     }
-    this.sql.exec(`DELETE FROM runs WHERE rowid NOT IN (SELECT rowid FROM runs ORDER BY start DESC LIMIT ${KEEP_RUNS})`);
-    const { runs, ...rest } = snap;
+    const fresh = (Array.isArray(snap.runs) ? snap.runs : [])
+      .filter((r) => r && r.start && r.task && String(r.start).slice(0, 19) > meta.last)
+      .map((r) => ({
+        start: String(r.start).slice(0, 19), task: String(r.task).slice(0, 20), result: String(r.result ?? '').slice(0, 20),
+        duration: Math.round((Number(r.duration_s) || 0) * 10) / 10, chests: Number(r.chests) || 0,
+        picked: String(r.picked ?? '').slice(0, 400), error: String(r.error ?? '').slice(0, 300),
+      }))
+      .sort((x, y) => (x.start < y.start ? -1 : 1));
+    if (fresh.length) {
+      for (const r of fresh) {
+        this.sql.exec('INSERT OR IGNORE INTO runs (start, task, result, duration, chests, picked, error) VALUES (?, ?, ?, ?, ?, ?, ?)',
+          r.start, r.task, r.result, r.duration, r.chests, r.picked, r.error);
+      }
+      meta.last = fresh[fresh.length - 1].start;
+      const cutoff = hoursBefore(meta.last, RECENT_H);
+      const recent = [...fresh.reverse().map(pack), ...((await this.ctx.storage.get('recent')) || [])]
+        .filter((t) => t[0] >= cutoff).slice(0, RECENT_MAX);
+      await this.ctx.storage.put('recent', recent);
+    }
+    const today = new Date(now).toISOString().slice(0, 10);
+    if (meta.pruned !== today) {  // once a day; the PK index makes this read only the rows it deletes
+      if (meta.last) this.sql.exec('DELETE FROM runs WHERE start < ?', hoursBefore(meta.last, KEEP_DAYS * 24));
+      meta.pruned = today;
+    }
+    await this.ctx.storage.put('meta', meta);
+    const { runs, loot, ...rest } = snap;
     await this.ctx.storage.put('snapshot', { ...rest, received: now });
     const pending = (await this.ctx.storage.get('pending')) || null;
     if (!pending) return { ok: true };
@@ -128,17 +157,25 @@ export class BotState extends DurableObject {
   }
 
   async state() {
-    const since = new Date(Date.now() - 8 * 86400e3).toISOString().slice(0, 10);
-    const runs = this.sql.exec(
-      'SELECT start, task, result, duration, chests, picked, error FROM runs WHERE start >= ? ORDER BY start DESC LIMIT 3000',
-      since).toArray();
-    const [snapshot, pending, delivered] = await Promise.all(
-      ['snapshot', 'pending', 'delivered'].map((k) => this.ctx.storage.get(k)));
+    const got = await this.ctx.storage.get(['snapshot', 'pending', 'delivered', 'recent']);
+    const snapshot = got.get('snapshot') || null;
     if (snapshot) {  // pids are of no use to the page and needn't be public
       for (const k of ['supervisor', 'bot']) if (snapshot[k]) snapshot[k] = { ...snapshot[k], pid: snapshot[k].pid ? 1 : 0 };
       delete snapshot.loot;
     }
-    return { ok: true, now: Date.now(), snapshot: snapshot || null, pending: pending || null,
-             delivered: delivered || null, runs };
+    return { ok: true, now: Date.now(), snapshot, pending: got.get('pending') || null,
+             delivered: got.get('delivered') || null, runs: (got.get('recent') || []).map(unpack) };
   }
 }
+
+// 'recent' holds runs as arrays (no repeated keys), newest first.
+const FIELDS = ['start', 'task', 'result', 'duration', 'chests', 'picked', 'error'];
+const pack = (r) => FIELDS.map((f) => r[f]);
+const unpack = (t) => Object.fromEntries(FIELDS.map((f, i) => [f, t[i]]));
+
+// Run start times are the bot's local wall clock ("YYYY-MM-DD HH:MM:SS"), so cutoffs count back from the newest run in
+// that same clock (treated as UTC on both sides) instead of from the server's time.
+const hoursBefore = (start, h) => {
+  const ms = Date.parse(String(start || '').replace(' ', 'T') + 'Z');
+  return Number.isNaN(ms) ? '' : new Date(ms - h * 3600e3).toISOString().slice(0, 19).replace('T', ' ');
+};
