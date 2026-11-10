@@ -5,30 +5,33 @@
 // Ported from the claude.ai artifact by d2r-bot/armory/to_site.py; this file is now the template (GOALS, FARMS,
 // WANT, MOVES, DITCH live in the script). Data: /api/bot/armory, uploaded by GLaDOS (worker/bot.js).
 import Base from '../../layouts/Base.astro';
+import Spiral from '../../components/Spiral.astro';
 ---
 <Base title="Blizzaga's Armory" description="A Diablo II: Resurrected stash, Chronicle and cube planner, rebuilt from the save files, and the bot that farms it." noindex>
+<link slot="head" href="https://fonts.googleapis.com/css2?family=Cinzel:wght@600&display=swap" rel="stylesheet" />
 <style is:global>
 
 .armory {
   --panel: var(--surface); --raise: var(--code-bg); --line: var(--rule); --fg: var(--ink); --mute: var(--muted);
-  --line2: #cfcab9; --faint: #6b7282;
-  --unique: #7a5f22; --set: #23731f; --rare: #756500; --magic: #2f4fb5; --rw: #a1500b; --normal: #3d3a35;
-  --ok: #23722a; --bad: #b02a2a; --flash: #dfe2ff;
-  --display: var(--sans); --body: var(--sans);
+  /* Always dark: the site's navy band carries down the whole page, and the game's item colors only work on dark.
+     Gold (the game's unique-item tan) is structure: titles, rules, selection. The site's blue is action: links, Now. */
+  --gold: #c7b377; --gold-dim: #7d6f48; --gold-ink: #15120a;
+  --line2: #36415c; --faint: #8590a4;
+  --unique: #c7b377; --set: #5fe05c; --rare: #f6f06a; --magic: #9197ff; --rw: #f0a23c; --normal: #f1eee4;
+  --ok: #7fd08a; --bad: #ff8a80; --flash: #3d3620;
+  --display: 'Cinzel', var(--serif); --body: var(--sans);
   font: 1rem/1.5 var(--sans);
 }
-.armory .top h1 { color: var(--ink) !important; letter-spacing: -0.01em; }
-@media (prefers-color-scheme: dark) {
-  .armory {
-    --line2: #34405a; --faint: #8590a4;
-    --unique: #d2b77f; --set: #63d660; --rare: #eedd5c; --magic: #93a3ff; --rw: #eda352; --normal: #ddd8cd;
-    --ok: #7fd08a; --bad: #ff8a80; --flash: #26306a;
-  }
+:root:has(.armory) {
+  --bg: #0a0f1a; --surface: #111828; --ink: #ece8dc; --muted: #a3adbf; --rule: #232d43;
+  --brand: #a3abff; --accent-ink: #0b101b; --code-bg: #182135; --band: #060a12;
+  color-scheme: dark;
 }
+main:has(.armory) { background: radial-gradient(70rem 26rem at 50% -8rem, #1b2542 0%, transparent 72%) no-repeat; }
 
 .armory *{box-sizing:border-box}
 .armory{-webkit-text-size-adjust:100%}
-.armory{margin:0;background:var(--bg);color:var(--fg);font-family:var(--body);font-size:16px;line-height:1.5}
+.armory{background:var(--bg);color:var(--fg);font-family:var(--body);font-size:16px;line-height:1.5}
 .armory button,.armory input,.armory select{font:inherit;color:inherit}
 .armory .wrap{max-width:1120px;margin:0 auto;padding:0 max(16px,env(safe-area-inset-right,0px)) 64px max(16px,env(safe-area-inset-left,0px))}
 .armory .measure{max-width:880px}
@@ -38,7 +41,7 @@ import Base from '../../layouts/Base.astro';
 .armory .top{display:flex;flex-wrap:wrap;align-items:center;gap:10px 20px;padding:22px 0 6px}
 .armory .top h1{font-family:var(--display);font-weight:700;font-size:clamp(26px,4.4vw,34px);letter-spacing:.03em;line-height:1.1;margin:0;color:var(--accent)}
 .armory .top .sub{margin:2px 0 0;color:var(--mute);font-size:15px}
-.armory .brand{flex:1 1 280px;min-width:0}
+.armory .ahead{flex:1 1 280px;min-width:0}
 .armory .fresh{position:relative}
 .armory .freshbtn{display:inline-flex;align-items:center;gap:8px;border:1px solid var(--line2);background:var(--panel);border-radius:99px;padding:7px 14px;font-size:15px;cursor:pointer;min-height:40px}
 .armory .freshbtn .dot{width:10px;height:10px;border-radius:50%;background:var(--ok);flex:none}
@@ -77,7 +80,7 @@ import Base from '../../layouts/Base.astro';
 .armory .muted{color:var(--mute)}
 .armory .faint{color:var(--faint)}
 .armory .small{font-size:14px;color:var(--mute)}
-.armory .card{background:var(--panel);border:1px solid var(--line);border-radius:12px}
+.armory .pnl{background:var(--panel);border:1px solid var(--line);border-radius:12px}
 .armory .q-Unique{color:var(--unique)}
 .armory .q-Set{color:var(--set)}
 .armory .q-Rare{color:var(--rare)}
@@ -163,7 +166,7 @@ import Base from '../../layouts/Base.astro';
 .armory .plangrid{display:grid;grid-template-columns:minmax(0,1fr) 290px;gap:28px;align-items:start}
 .armory .planmain{min-width:0;max-width:820px}
 .armory .rail{position:sticky;top:76px;display:grid;gap:14px}
-.armory .rail .card{padding:14px 16px}
+.armory .rail .pnl{padding:14px 16px}
 .armory .rail h4{margin:0 0 8px;font-size:14px;letter-spacing:.06em;text-transform:uppercase;color:var(--mute)}
 .armory .rail ul{list-style:none;margin:0;padding:0;display:grid;gap:2px}
 .armory .rail li button{display:block;width:100%;text-align:left;border:0;background:none;padding:6px 8px;margin:0 -8px;border-radius:6px;cursor:pointer;width:calc(100% + 16px)}
@@ -341,10 +344,60 @@ import Base from '../../layouts/Base.astro';
 .bot .locked .seg, .bot .locked .btns { opacity: 0.45; }
 .bot .foot { margin-top: 2.5rem; color: var(--muted); font-size: 0.85rem; display: flex; gap: 1rem; flex-wrap: wrap; }
 .bot .bothead { display: flex; justify-content: flex-end; margin: 18px 0 12px; }
+/* ---------- theme layer: Sanctuary on navy ---------- */
+.armory{background:none}
+.armory .top{position:relative}
+.armory .top>*{position:relative;z-index:1}
+.armory .aspiral{position:absolute;aspect-ratio:155/110;z-index:0;right:-8px;top:-34px;width:270px;height:auto;color:var(--gold);opacity:.16;pointer-events:none}
+.armory .top h1{font-weight:600;font-size:clamp(28px,4.8vw,42px);letter-spacing:.05em;color:var(--gold);text-shadow:0 1px 0 #000,0 0 28px rgb(199 179 119/.18)}
+.armory .top .sub{margin-top:6px}
+.armory .bar{top:calc(1.4rem + 27px);border-bottom-color:var(--gold-dim)}
+.armory .rail{top:calc(1.4rem + 100px)}
+.armory .tabs a{font-family:var(--display);font-weight:600;letter-spacing:.09em;font-size:15px}
+.armory .tabs a small{font-family:var(--body);letter-spacing:0}
+.armory .tabs a[aria-current="page"]{color:var(--gold);border-color:var(--gold)}
+.armory h2{font-weight:600;font-size:18px;letter-spacing:.09em;color:var(--gold)}
+.armory h2::after{background:linear-gradient(90deg,var(--gold-dim),transparent)}
+.armory .pnl{border-radius:4px;border-color:#2a3550;box-shadow:inset 0 1px 0 rgb(255 255 255/.035),0 1px 0 #000}
+.armory .tbl,.armory .csec .tbl{border-radius:4px}
+.armory .csec .tbl{border-radius:0 0 4px 4px}
+.armory .chip,.armory .seg,.armory .seg button,.armory .freshbtn,.armory .find input,.armory .news .dismiss,.armory input.filter,.armory .results,.armory .pop{border-radius:4px}
+.armory .chip[aria-pressed="true"],.armory .seg button[aria-pressed="true"]{background:var(--gold);border-color:var(--gold);color:var(--gold-ink)}
+.armory .meter{border-radius:0;border-color:#2a3550}
+.armory .meter i{background:var(--gold)}
+.armory .mt .k,.armory .rail h4,.armory .matg h4,.armory .tbl th,.armory .results .rg{font-family:var(--display);font-weight:600;letter-spacing:.11em;color:var(--gold-dim);filter:brightness(1.45)}
+.armory .mt .v,.armory .rail .big{font-family:var(--display);font-weight:600;color:var(--gold)}
+.armory .nm,.armory .rn b,.armory .ig>summary b,.armory .grp>summary b{font-family:var(--display);font-weight:600;letter-spacing:.045em}
+.armory .ig>summary b,.armory .grp>summary b{color:var(--ink)}
+.armory .rn,.armory .rc,.armory .mi{border-radius:3px}
+.armory .rn{background:linear-gradient(#141c2e,#0e1422)}
+.armory .meta{font-family:var(--body)}
+.armory .goal>summary h3{font-weight:600;letter-spacing:.03em}
+.armory .lede{font-size:16px}
+.armory .star{font-family:var(--body);letter-spacing:0}
+@media (min-width:761px){.armory .rw>summary{grid-template-columns:minmax(150px,300px) 1fr auto}}
+.armory .rc small{font-size:13px;color:var(--mute)}
+.armory .hand{font-size:12px;font-weight:700;letter-spacing:.06em;text-transform:uppercase;color:var(--faint);border:1px solid var(--line2);border-radius:3px;padding:1px 6px;margin-right:6px;white-space:nowrap}
+.armory .rail ul{gap:0}
+.armory .rail li button{padding:5px 8px;font-size:15px;line-height:1.35}
+.armory .rail li span{display:inline;margin-left:8px;font-size:13px}
+.armory .afoot a{color:inherit}
+@media (max-width:700px){.armory .aspiral{width:190px;top:-20px;opacity:.11}}
+#aload.snapnote{margin:0 0 14px;border-radius:4px}
+/* Bot tab in the same dress */
+.bot{--ok:#7fd08a;--bad:#ff8a80}
+.bot .panel,.bot .tbl,.bot .btn,.bot .queued,.bot .login input{border-radius:4px}
+.bot .panel,.bot .tbl{border-color:#2a3550;box-shadow:inset 0 1px 0 rgb(255 255 255/.035),0 1px 0 #000}
+.bot .pill,.bot .seg,.bot .seg button,.bot .lc{border-radius:4px}
+.bot .seg button[aria-pressed="true"],.bot .btn.go{background:var(--gold);border-color:var(--gold);color:var(--gold-ink)}
+.bot .state{font-family:var(--display);font-weight:600;letter-spacing:.04em}
+.bot .mt .k,.bot .tbl th{font-family:var(--display);letter-spacing:.11em}
+.bot .mt .v{letter-spacing:0}
 </style>
 <div class="wide armory">
 <header class="top">
-  <div class="brand"><h1>Blizzaga's Armory</h1><p class="sub" id="sub"></p></div>
+  <Spiral class="aspiral" size={270} strokeWidth={2.5} construct />
+  <div class="ahead"><h1>Blizzaga's Armory</h1><p class="sub" id="sub"></p></div>
   <div class="fresh">
     <button class="freshbtn" id="freshbtn" aria-expanded="false" aria-controls="freshpop"><span class="dot"></span><span id="freshtxt"></span></button>
     <div class="pop" id="freshpop" hidden></div>
@@ -377,7 +430,7 @@ import Base from '../../layouts/Base.astro';
 <section id="v-chronicle" hidden>
   <div class="controls"><input class="filter" id="cq" type="search" autocomplete="off" placeholder="Search the Chronicle: unique, set, runeword, rune, stat" aria-label="Search the Chronicle"></div>
   <div class="meters" id="meters"></div>
-  <div id="recwrap" hidden><h2>Already recorded <small id="recsub"></small></h2><div class="card"><div class="list" id="reclist"></div></div></div>
+  <div id="recwrap" hidden><h2>Already recorded <small id="recsub"></small></h2><div class="pnl"><div class="list" id="reclist"></div></div></div>
   <h2>Runewords <small id="rwsub"></small></h2>
   <div class="controls"><div class="seg" id="rwmode" aria-label="Runeword list"></div></div>
   <p class="lede" id="rwlede"></p>
@@ -391,9 +444,8 @@ import Base from '../../layouts/Base.astro';
 <section id="v-stash" hidden>
   <h2 class="first">Runes <small>all characters and the shared stash</small></h2>
   <div class="runegrid" id="runegrid"></div>
-  <details class="card fold" id="matfold" style="margin-top:12px"><summary>Gems and endgame materials <span id="matsum"></span></summary><div class="ledger2" id="ledger2"></div></details>
+  <details class="pnl fold" id="matfold" style="margin-top:12px"><summary>Gems and endgame materials <span id="matsum"></span></summary><div class="ledger2" id="ledger2"></div></details>
   <h2>Items <small id="icount"></small></h2>
-  <div class="controls"><div class="chips" id="chS" aria-label="Where"></div></div>
   <div class="controls"><div class="hk" id="hk"></div><div class="seg" id="iqual" aria-label="Quality"></div><input class="filter" id="iq" type="search" placeholder="Filter by name, base or stat" aria-label="Filter items"></div>
   <div id="items"></div>
 </section>
@@ -401,13 +453,13 @@ import Base from '../../layouts/Base.astro';
 <section id="v-cube" hidden>
   <div class="cubetools"><button class="chip" id="cubeall">Open all</button><button class="chip" id="cubenone">Close all</button></div>
   <div class="cubegrid">
-    <details class="card fold csec" data-c="runes"><summary>Rune upgrades <span>uses your current stock</span></summary>
+    <details class="pnl fold csec" data-c="runes"><summary>Rune upgrades <span>uses your current stock</span></summary>
     <div class="tbl"><table><thead><tr><th>Put in</th><th>Get</th><th style="text-align:right">Have</th><th style="text-align:right">Can make</th></tr></thead><tbody id="runeup"></tbody></table></div></details>
-    <details class="card fold csec" data-c="socketsamp"><summary>Sockets &amp; upgrades <span></span></summary><div class="tbl"><table class="cube"><thead><tr><th>Put in</th><th>Get</th></tr></thead><tbody><tr data-find=""><td>3 Standard Gems + 1 Socketed Weapon</td><td><b>Socketed Magic Weapon</b></td></tr><tr data-find=""><td>3 Flawless Gems + 1 Magic Weapon</td><td><b>Socketed Magic Weapon</b></td></tr><tr data-find=""><td>1 Tal Rune + 1 Thul Rune + 1 Perfect Topaz + 1 Normal Torso Armor</td><td><b>Socketed Torso Armor</b></td></tr><tr data-find=""><td>1 Ral Rune + 1 Amn Rune + 1 Perfect Amethyst + 1 Normal Weapon</td><td><b>Socketed Weapon</b></td></tr><tr data-find=""><td>1 Ral Rune + 1 Thul Rune + 1 Perfect Sapphire + 1 Normal Helm</td><td><b>Socketed Helm</b></td></tr><tr data-find=""><td>1 Tal Rune + 1 Amn Rune + 1 Perfect Ruby + 1 Normal Shield</td><td><b>Socketed Shield</b></td></tr><tr data-find=""><td>1 Eld Rune + 1 Chipped Gem (Any) + 1 Low Quality Weapon</td><td><b>Normal Weapon</b></td></tr><tr data-find=""><td>1 El Rune + 1 Chipped Gem (Any) + 1 Low Quality Armor</td><td><b>Normal Armor</b></td></tr><tr data-find=""><td>1 Ral Rune + 1 Sol Rune + 1 Perfect Emerald + 1 Normal Unique Weapon</td><td><b>Exceptional Unique Weapon</b></td></tr><tr data-find=""><td>1 Tal Rune + 1 Shael Rune + 1 Perfect Diamond + 1 Normal Unique Armor</td><td><b>Exceptional Unique Armor</b></td></tr><tr data-find=""><td>1 Lum Rune + 1 Pul Rune + 1 Perfect Emerald + 1 Exceptional Unique Weapon</td><td><b>Elite Unique Weapon</b></td></tr><tr data-find=""><td>1 Ko Rune + 1 Lem Rune + 1 Perfect Diamond + 1 Exceptional Unique Armor</td><td><b>Elite Unique Armor</b></td></tr><tr data-find=""><td>1 Hel Rune + Scroll of Town Portal + 1 Socketed Item</td><td><b>Clear Sockets on Item</b></td></tr><tr data-find=""><td>3 Chipped Gems (Any) + 1 Magic Weapon</td><td><b>Socketed Magic Weapon</b></td></tr><tr data-find=""><td>1 Ral Rune + 1 Sol Rune + 1 Perfect Emerald + 1 Normal Set Weapon</td><td><b>Exceptional Set Weapon</b> <span class=chip>Ladder (works offline)</span></td></tr><tr data-find=""><td>1 Tal Rune + 1 Shael Rune + 1 Perfect Diamond + 1 Normal Set Armor</td><td><b>Exceptional Set Armor</b> <span class=chip>Ladder (works offline)</span></td></tr><tr data-find=""><td>1 Lum Rune + 1 Pul Rune + 1 Perfect Emerald + 1 Exceptional Set Weapon</td><td><b>Elite Set Weapon</b> <span class=chip>Ladder (works offline)</span></td></tr><tr data-find=""><td>1 Ko Rune + 1 Lem Rune + 1 Perfect Diamond + 1 Exceptional Set Armor</td><td><b>Elite Set Armor</b> <span class=chip>Ladder (works offline)</span></td></tr></tbody></table></div></details>
-    <details class="card fold csec" data-c="rerollsamp"><summary>Rerolls &amp; rares <span></span></summary><div class="tbl"><table class="cube"><thead><tr><th>Put in</th><th>Get</th></tr></thead><tbody><tr data-find=""><td>3 Perfect Gems (Any) + 1 Magic Item</td><td><b>Re-rolled Magic Item</b></td></tr><tr data-find=""><td>6 Perfect Skulls + 1 Rare Item</td><td><b>1 Low Quality Rare Item</b></td></tr><tr data-find=""><td>1 Perfect Skull + 1 Rare Item + 1 Stone of Jordan</td><td><b>1 High Quality Rare Item</b></td></tr><tr data-find=""><td>3 Perfect Skull + 1 Rare Item + 1 Stone of Jordan</td><td><b>Add 1 Socket to Rare Item</b></td></tr><tr data-find=""><td>1 Ort Rune + 1 Amn Rune + 1 Perfect Sapphire + 1 Normal Rare Weapon</td><td><b>Exceptional Rare Weapon</b></td></tr><tr data-find=""><td>1 Ral Rune + 1 Thul Rune + 1 Perfect Amethyst + 1 Normal Rare Armor</td><td><b>Exceptional Rare Armor</b></td></tr><tr data-find=""><td>1 Fal Rune + 1 Um Rune + 1 Perfect Sapphire + 1 Exceptional Rare Weapon</td><td><b>Elite Rare Weapon</b></td></tr><tr data-find=""><td>1 Ko Rune + 1 Pul Rune + 1 Perfect Amethyst + 1 Exceptional Rare Armor</td><td><b>Elite Rare Armor</b></td></tr></tbody></table></div></details>
-    <details class="card fold csec" data-c="repairampr"><summary>Repair &amp; recharge <span></span></summary><div class="tbl"><table class="cube"><thead><tr><th>Put in</th><th>Get</th></tr></thead><tbody><tr data-find=""><td>1 Ort Rune + 1 Weapon</td><td><b>Fully Repaired Weapon</b></td></tr><tr data-find=""><td>1 Ral Rune + 1 Armor</td><td><b>Fully Repaired Armor</b></td></tr><tr data-find=""><td>1 Ort Rune + 1 Chipped Gem (Any) + 1 Weapon</td><td><b>Fully Repaired and Recharged Weapon</b></td></tr><tr data-find=""><td>1 Ral Rune + 1 Flawed Gem (Any) + 1 Armor</td><td><b>Fully Repaired and Recharged Armor</b></td></tr></tbody></table></div></details>
-    <details class="card fold csec" data-c="reignofthe"><summary>Reign of the Warlock <span></span></summary><div class="tbl"><table class="cube"><thead><tr><th>Put in</th><th>Get</th></tr></thead><tbody><tr data-find=""><td>1 Twisted Essence of Suffering + 1 Charged Essence of Hatred + 1 Burning Essence of Terror + 1 Festering Essence of Destruction</td><td><b>Token of Absolution</b></td></tr><tr data-find=""><td>1 Latent Sunder charm (Herald drop only) + 1 Perfect gem + 1 Rune + 1 Worldstone Shard <span class="small">(gem/rune/shard depend on the charm, e.g. Flame Rift: Perfect Ruby + Fal + Southern Shard)</span></td><td><b>Renewed Sunder charm</b> <span class=chip>Patch 3.2</span></td></tr></tbody></table></div></details>
-    <details class="card fold csec" data-c="crafting"><summary>Crafting <span></span></summary><p class="lede">Each craft = magic base + jewel + rune + the column’s perfect gem.</p><div class="tbl"><table class="cube craft"><thead><tr><th>Slot</th><th>Hit Power<br><span class="small">Perfect Sapphire</span></th><th>Blood<br><span class="small">Perfect Ruby</span></th><th>Caster<br><span class="small">Perfect Amethyst</span></th><th>Safety<br><span class="small">Perfect Emerald</span></th></tr></thead><tbody><tr data-find="craft crafted Helm" data-t="Crafted helm"><td><b>Helm</b></td><td>Full Helm <span class="rw-runes">+ Ith</span></td><td>Helm <span class="rw-runes">+ Ral</span></td><td>Mask <span class="rw-runes">+ Nef</span></td><td>Crown <span class="rw-runes">+ Ith</span></td></tr><tr data-find="craft crafted Body" data-t="Crafted body"><td><b>Body</b></td><td>Field Plate <span class="rw-runes">+ Nef</span></td><td>Plate Mail <span class="rw-runes">+ Thul</span></td><td>Light Plate <span class="rw-runes">+ Tal</span></td><td>Breast Plate <span class="rw-runes">+ Eth</span></td></tr><tr data-find="craft crafted Shield" data-t="Crafted shield"><td><b>Shield</b></td><td>Gothic Shield <span class="rw-runes">+ Eth</span></td><td>Spiked Shield <span class="rw-runes">+ Ith</span></td><td>Small Shield <span class="rw-runes">+ Eth</span></td><td>Kite Shield <span class="rw-runes">+ Nef</span></td></tr><tr data-find="craft crafted Gloves" data-t="Crafted gloves"><td><b>Gloves</b></td><td>Chain Gloves <span class="rw-runes">+ Ort</span></td><td>Heavy Gloves <span class="rw-runes">+ Nef</span></td><td>Leather Gloves <span class="rw-runes">+ Ort</span></td><td>Gauntlets <span class="rw-runes">+ Ral</span></td></tr><tr data-find="craft crafted Boots" data-t="Crafted boots"><td><b>Boots</b></td><td>Chain Boots <span class="rw-runes">+ Ral</span></td><td>Light Plated Boots <span class="rw-runes">+ Eth</span></td><td>Boots <span class="rw-runes">+ Thul</span></td><td>Plated Boots <span class="rw-runes">+ Ort</span></td></tr><tr data-find="craft crafted Belt" data-t="Crafted belt"><td><b>Belt</b></td><td>Heavy Belt <span class="rw-runes">+ Tal</span></td><td>Belt <span class="rw-runes">+ Tal</span></td><td>Light Belt <span class="rw-runes">+ Ith</span></td><td>Sash <span class="rw-runes">+ Tal</span></td></tr><tr data-find="craft crafted Amulet" data-t="Crafted amulet"><td><b>Amulet</b></td><td>Amulet <span class="rw-runes">+ Thul</span></td><td>Amulet <span class="rw-runes">+ Amn</span></td><td>Amulet <span class="rw-runes">+ Ral</span></td><td>Amulet <span class="rw-runes">+ Thul</span></td></tr><tr data-find="craft crafted Ring" data-t="Crafted ring"><td><b>Ring</b></td><td>Ring <span class="rw-runes">+ Amn</span></td><td>Ring <span class="rw-runes">+ Sol</span></td><td>Ring <span class="rw-runes">+ Amn</span></td><td>Ring <span class="rw-runes">+ Amn</span></td></tr><tr data-find="craft crafted Weapon" data-t="Crafted weapon"><td><b>Weapon</b></td><td>Blunt Weapon <span class="rw-runes">+ Tir</span></td><td>Axe <span class="rw-runes">+ Ort</span></td><td>Rod <span class="rw-runes">+ Tir</span></td><td>Spear <span class="rw-runes">+ Sol</span></td></tr></tbody></table></div></details>
+    <details class="pnl fold csec" data-c="socketsamp"><summary>Sockets &amp; upgrades <span></span></summary><div class="tbl"><table class="cube"><thead><tr><th>Put in</th><th>Get</th></tr></thead><tbody><tr data-find=""><td>3 Standard Gems + 1 Socketed Weapon</td><td><b>Socketed Magic Weapon</b></td></tr><tr data-find=""><td>3 Flawless Gems + 1 Magic Weapon</td><td><b>Socketed Magic Weapon</b></td></tr><tr data-find=""><td>1 Tal Rune + 1 Thul Rune + 1 Perfect Topaz + 1 Normal Torso Armor</td><td><b>Socketed Torso Armor</b></td></tr><tr data-find=""><td>1 Ral Rune + 1 Amn Rune + 1 Perfect Amethyst + 1 Normal Weapon</td><td><b>Socketed Weapon</b></td></tr><tr data-find=""><td>1 Ral Rune + 1 Thul Rune + 1 Perfect Sapphire + 1 Normal Helm</td><td><b>Socketed Helm</b></td></tr><tr data-find=""><td>1 Tal Rune + 1 Amn Rune + 1 Perfect Ruby + 1 Normal Shield</td><td><b>Socketed Shield</b></td></tr><tr data-find=""><td>1 Eld Rune + 1 Chipped Gem (Any) + 1 Low Quality Weapon</td><td><b>Normal Weapon</b></td></tr><tr data-find=""><td>1 El Rune + 1 Chipped Gem (Any) + 1 Low Quality Armor</td><td><b>Normal Armor</b></td></tr><tr data-find=""><td>1 Ral Rune + 1 Sol Rune + 1 Perfect Emerald + 1 Normal Unique Weapon</td><td><b>Exceptional Unique Weapon</b></td></tr><tr data-find=""><td>1 Tal Rune + 1 Shael Rune + 1 Perfect Diamond + 1 Normal Unique Armor</td><td><b>Exceptional Unique Armor</b></td></tr><tr data-find=""><td>1 Lum Rune + 1 Pul Rune + 1 Perfect Emerald + 1 Exceptional Unique Weapon</td><td><b>Elite Unique Weapon</b></td></tr><tr data-find=""><td>1 Ko Rune + 1 Lem Rune + 1 Perfect Diamond + 1 Exceptional Unique Armor</td><td><b>Elite Unique Armor</b></td></tr><tr data-find=""><td>1 Hel Rune + Scroll of Town Portal + 1 Socketed Item</td><td><b>Clear Sockets on Item</b></td></tr><tr data-find=""><td>3 Chipped Gems (Any) + 1 Magic Weapon</td><td><b>Socketed Magic Weapon</b></td></tr><tr data-find=""><td>1 Ral Rune + 1 Sol Rune + 1 Perfect Emerald + 1 Normal Set Weapon</td><td><b>Exceptional Set Weapon</b> <span class=chip>Ladder (works offline)</span></td></tr><tr data-find=""><td>1 Tal Rune + 1 Shael Rune + 1 Perfect Diamond + 1 Normal Set Armor</td><td><b>Exceptional Set Armor</b> <span class=chip>Ladder (works offline)</span></td></tr><tr data-find=""><td>1 Lum Rune + 1 Pul Rune + 1 Perfect Emerald + 1 Exceptional Set Weapon</td><td><b>Elite Set Weapon</b> <span class=chip>Ladder (works offline)</span></td></tr><tr data-find=""><td>1 Ko Rune + 1 Lem Rune + 1 Perfect Diamond + 1 Exceptional Set Armor</td><td><b>Elite Set Armor</b> <span class=chip>Ladder (works offline)</span></td></tr></tbody></table></div></details>
+    <details class="pnl fold csec" data-c="rerollsamp"><summary>Rerolls &amp; rares <span></span></summary><div class="tbl"><table class="cube"><thead><tr><th>Put in</th><th>Get</th></tr></thead><tbody><tr data-find=""><td>3 Perfect Gems (Any) + 1 Magic Item</td><td><b>Re-rolled Magic Item</b></td></tr><tr data-find=""><td>6 Perfect Skulls + 1 Rare Item</td><td><b>1 Low Quality Rare Item</b></td></tr><tr data-find=""><td>1 Perfect Skull + 1 Rare Item + 1 Stone of Jordan</td><td><b>1 High Quality Rare Item</b></td></tr><tr data-find=""><td>3 Perfect Skull + 1 Rare Item + 1 Stone of Jordan</td><td><b>Add 1 Socket to Rare Item</b></td></tr><tr data-find=""><td>1 Ort Rune + 1 Amn Rune + 1 Perfect Sapphire + 1 Normal Rare Weapon</td><td><b>Exceptional Rare Weapon</b></td></tr><tr data-find=""><td>1 Ral Rune + 1 Thul Rune + 1 Perfect Amethyst + 1 Normal Rare Armor</td><td><b>Exceptional Rare Armor</b></td></tr><tr data-find=""><td>1 Fal Rune + 1 Um Rune + 1 Perfect Sapphire + 1 Exceptional Rare Weapon</td><td><b>Elite Rare Weapon</b></td></tr><tr data-find=""><td>1 Ko Rune + 1 Pul Rune + 1 Perfect Amethyst + 1 Exceptional Rare Armor</td><td><b>Elite Rare Armor</b></td></tr></tbody></table></div></details>
+    <details class="pnl fold csec" data-c="repairampr"><summary>Repair &amp; recharge <span></span></summary><div class="tbl"><table class="cube"><thead><tr><th>Put in</th><th>Get</th></tr></thead><tbody><tr data-find=""><td>1 Ort Rune + 1 Weapon</td><td><b>Fully Repaired Weapon</b></td></tr><tr data-find=""><td>1 Ral Rune + 1 Armor</td><td><b>Fully Repaired Armor</b></td></tr><tr data-find=""><td>1 Ort Rune + 1 Chipped Gem (Any) + 1 Weapon</td><td><b>Fully Repaired and Recharged Weapon</b></td></tr><tr data-find=""><td>1 Ral Rune + 1 Flawed Gem (Any) + 1 Armor</td><td><b>Fully Repaired and Recharged Armor</b></td></tr></tbody></table></div></details>
+    <details class="pnl fold csec" data-c="reignofthe"><summary>Reign of the Warlock <span></span></summary><div class="tbl"><table class="cube"><thead><tr><th>Put in</th><th>Get</th></tr></thead><tbody><tr data-find=""><td>1 Twisted Essence of Suffering + 1 Charged Essence of Hatred + 1 Burning Essence of Terror + 1 Festering Essence of Destruction</td><td><b>Token of Absolution</b></td></tr><tr data-find=""><td>1 Latent Sunder charm (Herald drop only) + 1 Perfect gem + 1 Rune + 1 Worldstone Shard <span class="small">(gem/rune/shard depend on the charm, e.g. Flame Rift: Perfect Ruby + Fal + Southern Shard)</span></td><td><b>Renewed Sunder charm</b> <span class=chip>Patch 3.2</span></td></tr></tbody></table></div></details>
+    <details class="pnl fold csec" data-c="crafting"><summary>Crafting <span></span></summary><p class="lede">Each craft = magic base + jewel + rune + the column’s perfect gem.</p><div class="tbl"><table class="cube craft"><thead><tr><th>Slot</th><th>Hit Power<br><span class="small">Perfect Sapphire</span></th><th>Blood<br><span class="small">Perfect Ruby</span></th><th>Caster<br><span class="small">Perfect Amethyst</span></th><th>Safety<br><span class="small">Perfect Emerald</span></th></tr></thead><tbody><tr data-find="craft crafted Helm" data-t="Crafted helm"><td><b>Helm</b></td><td>Full Helm <span class="rw-runes">+ Ith</span></td><td>Helm <span class="rw-runes">+ Ral</span></td><td>Mask <span class="rw-runes">+ Nef</span></td><td>Crown <span class="rw-runes">+ Ith</span></td></tr><tr data-find="craft crafted Body" data-t="Crafted body"><td><b>Body</b></td><td>Field Plate <span class="rw-runes">+ Nef</span></td><td>Plate Mail <span class="rw-runes">+ Thul</span></td><td>Light Plate <span class="rw-runes">+ Tal</span></td><td>Breast Plate <span class="rw-runes">+ Eth</span></td></tr><tr data-find="craft crafted Shield" data-t="Crafted shield"><td><b>Shield</b></td><td>Gothic Shield <span class="rw-runes">+ Eth</span></td><td>Spiked Shield <span class="rw-runes">+ Ith</span></td><td>Small Shield <span class="rw-runes">+ Eth</span></td><td>Kite Shield <span class="rw-runes">+ Nef</span></td></tr><tr data-find="craft crafted Gloves" data-t="Crafted gloves"><td><b>Gloves</b></td><td>Chain Gloves <span class="rw-runes">+ Ort</span></td><td>Heavy Gloves <span class="rw-runes">+ Nef</span></td><td>Leather Gloves <span class="rw-runes">+ Ort</span></td><td>Gauntlets <span class="rw-runes">+ Ral</span></td></tr><tr data-find="craft crafted Boots" data-t="Crafted boots"><td><b>Boots</b></td><td>Chain Boots <span class="rw-runes">+ Ral</span></td><td>Light Plated Boots <span class="rw-runes">+ Eth</span></td><td>Boots <span class="rw-runes">+ Thul</span></td><td>Plated Boots <span class="rw-runes">+ Ort</span></td></tr><tr data-find="craft crafted Belt" data-t="Crafted belt"><td><b>Belt</b></td><td>Heavy Belt <span class="rw-runes">+ Tal</span></td><td>Belt <span class="rw-runes">+ Tal</span></td><td>Light Belt <span class="rw-runes">+ Ith</span></td><td>Sash <span class="rw-runes">+ Tal</span></td></tr><tr data-find="craft crafted Amulet" data-t="Crafted amulet"><td><b>Amulet</b></td><td>Amulet <span class="rw-runes">+ Thul</span></td><td>Amulet <span class="rw-runes">+ Amn</span></td><td>Amulet <span class="rw-runes">+ Ral</span></td><td>Amulet <span class="rw-runes">+ Thul</span></td></tr><tr data-find="craft crafted Ring" data-t="Crafted ring"><td><b>Ring</b></td><td>Ring <span class="rw-runes">+ Amn</span></td><td>Ring <span class="rw-runes">+ Sol</span></td><td>Ring <span class="rw-runes">+ Amn</span></td><td>Ring <span class="rw-runes">+ Amn</span></td></tr><tr data-find="craft crafted Weapon" data-t="Crafted weapon"><td><b>Weapon</b></td><td>Blunt Weapon <span class="rw-runes">+ Tir</span></td><td>Axe <span class="rw-runes">+ Ort</span></td><td>Rod <span class="rw-runes">+ Tir</span></td><td>Spear <span class="rw-runes">+ Sol</span></td></tr></tbody></table></div></details>
   </div>
 </section>
 <section id="v-bot" hidden><div class="bot">
@@ -536,7 +588,7 @@ const topRune = n => Math.max(...D.rwdb[n].runes.split(' ').map(r => RUNES.index
 function runeChips(n) {
   const nd = need(n), seen = {};
   return '<div class="runes">' + D.rwdb[n].runes.split(' ').map(r => { seen[r] = (seen[r] || 0) + 1; const short = R(r) < seen[r];
-    return `<span class="rc${short ? ' short' : ''}" title="${esc(r)}: have ${R(r)}, need ${nd[r]}"><b>${esc(r)}</b>${R(r)}</span>`; }).join('') + '</div>';
+    return `<span class="rc${short ? ' short' : ''}" title="${esc(r)}: have ${R(r)}, need ${nd[r]}"><b>${esc(r)}</b><small>have ${R(r)}</small></span>`; }).join('') + '</div>';
 }
 function shortText(n) {
   const s = Object.entries(need(n)).filter(([r, c]) => R(r) < c).map(([r, c]) => `${r} ×${c - R(r)} (cube: ${upHow(r)})`);
@@ -570,9 +622,9 @@ const GOALS = [
   ]},
   { id: 'blizz', ch: ['Blizzaga'], title: 'Blizzaga: magic find, Terror Zones, cold immunes', who: 'Blizzard / Energy Shield Sorceress', ctx: 'FCR 106% (breakpoint 105): Oculus 30 + Spirit 26 + Vipermagi 30 + Magefist 20. Keep 105+ when swapping gear.', steps: [
     { id: 'bring', t: 'Swap the rare ring for Raven Frost (shared tab 4)', h: 'Cannot Be Frozen; Cold Rupture costs her 84 cold res.', st: () => has('Raven Frost', 'Blizzaga') ? 'done' : 'now' },
-    { id: 'bcharm', t: 'Replace the fire-damage and 7-mana small charms', h: 'Cold skill grand charms first (each is +1 Blizzard, Glacial Spike, Cold Mastery), then life and resist charms.', st: 'farm' },
+    { id: 'bcharm', t: 'Replace the fire-damage and 7-mana small charms', h: 'Cold skill grand charms first (each is +1 Blizzard, Glacial Spike, Cold Mastery), then life and resist charms.', st: 'farm', fl: 'Cold skill grand charms' },
     { id: 'bjewel', t: "Farm cold Rainbow Facets and Protector's Frost", h: "Full-strength −enemy cold res, even on sundered immunes. Protector's Frost: kill Korlic last in the Colossal Ancients.", st: 'farm', farm: 'statues' },
-    { id: 'bmon', t: 'Find a 4-socket Monarch for a second Spirit on her switch', h: '+2 skills to Battle Orders and a faster cast.', st: 'farm' },
+    { id: 'bmon', t: 'Find a 4-socket Monarch for a second Spirit on her switch', h: '+2 skills to Battle Orders and a faster cast.', st: 'farm', fl: '4-socket Monarch' },
     { id: 'barmor', t: 'Enigma (MF) or Chains of Honor (resists) in place of Vipermagi', h: "Enigma gives about 68% MF at her level plus +2 skills; CoH gives +65 all res. Both drop Vipermagi's 30 FCR, so pair with Arachnid Mesh and a 10% FCR ring to stay at 105%.", rw: 'Enigma', st: 'later', farm: 'runes' },
     { id: 'arach', t: 'Arachnid Mesh (then Chance Guards replace Magefist) and a Stone of Jordan', h: 'Arachnid keeps the FCR breakpoint; SoJ adds +1 skills and 25% max mana.', st: () => has('Arachnid Mesh', 'Blizzaga') ? 'done' : 'later', farm: 'caster' },
   ]},
@@ -639,7 +691,7 @@ function stepHTML(g, s, k) {
   const auto = val(s.st) === 'done';
   const rwx = s.rw && D.rwdb && D.rwdb[s.rw] && k !== 'done' ? runeChips(s.rw) + (gap(s.rw) ? `<div class="small">${esc(shortText(s.rw))}</div>` : '') : '';
   return `<li class="step s-${k}" id="st-${g.id}-${s.id}"><input type="checkbox" data-k="${g.id}:${s.id}" ${k === 'done' ? 'checked' : ''} ${auto ? 'disabled title="Confirmed by the save scan"' : ''} aria-label="Done: ${esc(s.t)}">
-    <div><div class="t">${esc(s.t)}</div><div class="h">${esc(val(s.h))}</div>${rwx}${s.farm && (k === 'farm' || k === 'now' && s.id === 'minis') ? farmBox(s.farm, state.mode === 'farm') : ''}</div>${tag(k)}</li>`;
+    <div><div class="t">${esc(s.t)}</div><div class="h">${esc(val(s.h))}</div>${rwx}${s.farm && (k === 'farm' || k === 'now' && s.id === 'minis') ? farmBox(s.farm, state.mode === 'farm') : ''}</div>${state.mode === 'all' ? tag(k) : ''}</li>`;
 }
 const goalChars = g => g.ch;
 function renderPlan() {
@@ -655,7 +707,7 @@ function renderPlan() {
     `<button class="chip" data-ch="${esc(k)}" aria-pressed="${ch === k}">${esc(l)}${n ? ` <small>${n}</small>` : ''}</button>`).join('');
   $('#mode').innerHTML = [['now', 'Now', counts.now], ['farm', 'Farm', counts.farm], ['all', 'Everything', '']].map(([k, l, n]) =>
     `<button data-mode="${k}" aria-pressed="${state.mode === k}">${l}${n !== '' ? ` <b>${n}</b>` : ''}</button>`).join('');
-  $('#tips').innerHTML = state.mode === 'farm' ? `<div class="card tips">Terror Zones: run them offline with <b>/players 8</b>, and use a Worldstone Shard to terrorize a whole act on demand. Heralds spawn as you kill elites in a Terror Zone and climb a tier with each kill until you leave the game.</div>` : '';
+  $('#tips').innerHTML = state.mode === 'farm' ? `<div class="pnl tips">Terror Zones: run them offline with <b>/players 8</b>, and use a Worldstone Shard to terrorize a whole act on demand. Heralds spawn as you kill elites in a Terror Zone and climb a tier with each kill until you leave the game.</div>` : '';
   let html = '', shownLong = false, hidden = 0; const doneGoals = [];
   for (const [g, S] of rows) {
     const open = S.filter(([, k]) => k !== 'done'), dn = S.filter(([, k]) => k === 'done');
@@ -665,22 +717,22 @@ function renderPlan() {
     if (g.term && !shownLong) { html += `<h2>Long-term <small>bigger projects; open when you get there</small></h2>`; shownLong = true; }
     const pct = Math.round(100 * dn.length / S.length), saved = store.get('open:' + g.id, null);
     const isOpen = saved === null ? !g.term || state.mode !== 'all' : saved;
-    html += `<details class="card goal" data-g="${g.id}" ${isOpen ? 'open' : ''}><summary><h3>${esc(g.title)}</h3><span class="who">${esc(g.who)}</span><span class="prog"><span class="meter"><i style="width:${pct}%"></i></span>${dn.length}/${S.length}</span></summary>
-      ${g.ctx ? `<p class="ctx">${esc(g.ctx)}</p>` : ''}<ol class="steps">${shown.map(([s, k]) => stepHTML(g, s, k)).join('')}</ol>
+    html += `<details class="pnl goal" data-g="${g.id}" ${isOpen ? 'open' : ''}><summary><h3>${esc(g.title)}</h3><span class="who">${esc(g.who)}</span><span class="prog"><span class="meter"><i style="width:${pct}%"></i></span>${dn.length}/${S.length}</span></summary>
+      ${g.ctx ? `<p class="ctx"><span class="hand" title="Typed in when the plan was written; the save scan does not update it">Hand-entered</span> ${esc(g.ctx)}</p>` : ''}<ol class="steps">${shown.map(([s, k]) => stepHTML(g, s, k)).join('')}</ol>
       ${dn.length && state.mode === 'all' ? `<details class="donefold"><summary>${tag('done')} ${dn.length} done · show</summary><ol class="steps">${dn.map(([s, k]) => stepHTML(g, s, k)).join('')}</ol></details>` : ''}</details>`;
   }
-  if (!html) html = `<div class="card empty">Nothing marked ${state.mode === 'now' ? 'Now' : 'Farm'} for ${ch === 'all' ? 'anyone' : esc(ch)}. Try <b>Everything</b>.</div>`;
+  if (!html) html = `<div class="pnl empty">Nothing marked ${state.mode === 'now' ? 'Now' : 'Farm'} for ${ch === 'all' ? 'anyone' : esc(ch)}. Try <b>Everything</b>.</div>`;
   else if (hidden && state.mode !== 'all') html += `<p class="small">${plural(hidden, 'more goal')} ${hidden === 1 ? 'has' : 'have'} nothing marked ${state.mode === 'now' ? 'Now' : 'Farm'}.</p>`;
-  if (doneGoals.length && state.mode === 'all') html += `<details class="card fold"><summary>${tag('done')} Completed goals <span>${doneGoals.map(g => esc(g.title)).join(' · ')}</span></summary></details>`;
+  if (doneGoals.length && state.mode === 'all') html += `<details class="pnl fold"><summary>${tag('done')} Completed goals <span>${doneGoals.map(g => esc(g.title)).join(' · ')}</span></summary></details>`;
   $('#goals').innerHTML = html;
   // rail: what you're farming for, and cheap Chronicle wins
   const farmFor = {};
-  for (const [g, S] of rows) for (const [s, k] of S) if (k === 'farm') { const key = s.farm || s.id, lab = s.farm ? FARMS[s.farm][0] : s.t;
+  for (const [g, S] of rows) for (const [s, k] of S) if (k === 'farm') { const key = s.farm || s.id, lab = s.farm ? FARMS[s.farm][0] : s.fl || s.t;
     (farmFor[key] = farmFor[key] || { lab, who: new Set(), g, s }).who.add(g.ch.join(' / ')); }
   const ready = RWN.filter(n => rwState(n) === 'ready').length;
-  $('#rail').innerHTML = `<div class="card"><h4>Farming for</h4>${Object.keys(farmFor).length ? `<ul>${Object.entries(farmFor).map(([k, f]) =>
+  $('#rail').innerHTML = `<div class="pnl"><h4>Farming for</h4>${Object.keys(farmFor).length ? `<ul>${Object.entries(farmFor).map(([k, f]) =>
       `<li><button data-farm="${esc(k)}">${esc(f.lab)}<span>${esc([...f.who].join(', '))}</span></button></li>`).join('')}</ul>` : '<p class="small" style="margin:0">Nothing to farm right now.</p>'}</div>
-    <div class="card"><h4>Chronicle quick wins</h4><div class="big">${ready}</div><p class="small" style="margin:2px 0 8px">runewords you have every rune for</p><a href="#chronicle" data-rwready>See them</a></div>`;
+    <div class="pnl"><h4>Chronicle quick wins</h4><div class="big">${ready}</div><p class="small" style="margin:2px 0 8px">runewords you have every rune for</p><a href="#chronicle" data-rwready>See them</a></div>`;
   RAILMAP = farmFor;
   const allNow = GOALS.reduce((a, g) => a + g.steps.filter(s => stepState(g, s, ticks) === 'now').length, 0);
   $('#tc-plan').textContent = allNow ? allNow + ' now' : '';
@@ -696,7 +748,7 @@ function renderNews() {
   const rs = Object.entries(DL.runes || {}).sort((a, b) => RUNES.indexOf(b[0]) - RUNES.indexOf(a[0]));
   if (rs.length) parts.push(`<div class="row"><b>Runes</b> ${rs.map(([r, n]) => `${n > 0 ? '+' : '−'}${Math.abs(n)} ${esc(r)}`).join(' · ')}</div>`);
   if (!parts.length) { el.innerHTML = ''; return; }
-  el.innerHTML = `<div class="card news"><h3><span class="tag t-new"><i></i></span>Since ${esc(fmtTime(DL.since))}</h3>${parts.join('')}<button class="dismiss" id="dismiss">Got it</button></div>`;
+  el.innerHTML = `<div class="pnl news"><h3><span class="tag t-new"><i></i></span>Since ${esc(fmtTime(DL.since))}</h3>${parts.join('')}<button class="dismiss" id="dismiss">Got it</button></div>`;
 }
 
 /* ---------- chronicle ---------- */
@@ -705,7 +757,7 @@ function renderChron() {
   const pct = (a, b) => Math.round(100 * a / b);
   const up = k => DL && DL[k] && DL[k].length ? ` <span class="up">+${DL[k].length}</span>` : '';
   $('#meters').innerHTML = [['Uniques', CH.u[0], CH.u[1], 'u'], ['Set items', CH.s[0], CH.s[1], 's'], ['Runewords', CH.rw.length, CH.rwn, 'rw']].map(([k, a, b, d]) =>
-    `<div class="card mt"><div class="k">${k}</div><div class="v">${pct(a, b)}%</div><div class="d">${a} of ${b} recorded${up(d)}</div><span class="meter"><i style="width:${pct(a, b)}%"></i></span></div>`).join('');
+    `<div class="pnl mt"><div class="k">${k}</div><div class="v">${pct(a, b)}%</div><div class="d">${a} of ${b} recorded${up(d)}</div><span class="meter"><i style="width:${pct(a, b)}%"></i></span></div>`).join('');
   $('#tc-chron').textContent = pct(CH.u[0] + CH.s[0] + CH.rw.length, CH.u[1] + CH.s[1] + CH.rwn) + '%';
   const st = Object.fromEntries(RWN.map(n => [n, rwState(n)]));
   const lists = { ready: RWN.filter(n => st[n] === 'ready'), wanted: RWN.filter(n => WANT[n]), close: RWN.filter(n => st[n] === 'short' && gap(n) <= 2),
@@ -720,19 +772,20 @@ function renderChron() {
   const L = (cq.length ? RWN.filter(n => hit(n + ' ' + D.rwdb[n].runes + ' ' + D.rwdb[n].mods.join(' ') + ' ' + D.rwdb[n].types.join(' '))) : lists[state.rwmode]).slice().sort((a, b) => (WANT[b] ? 1 : 0) - (WANT[a] ? 1 : 0) || gap(a) - gap(b) || topRune(a) - topRune(b) || a.localeCompare(b));
   $('#rwlist').innerHTML = L.map(n => { const w = D.rwdb[n], rs = w.runes.split(' '), s = st[n], g = gap(n);
     const lvl = Math.max(...rs.map(r => LVL[RUNES.indexOf(r)]));
-    const tg = s === 'made' ? tag('done').replace('Done', 'Recorded') : s === 'ready' ? `<span class="tag t-ready"><i></i>Ready</span>` : `<span class="tag t-short"><i></i>${plural(g, 'rune')} short</span>`;
-    return `<details class="card rw" id="rw-${esc(n.replace(/\W/g, ''))}"><summary><span class="nm">${esc(n)}${WANT[n] ? '<span class="star">★ wanted</span>' : ''}</span>${runeChips(n)}${tg}<span class="meta">${rs.length} sockets · ${esc(w.types.map(t => TY[t] || t).join(' / '))} · level ${lvl}${made(n) && s !== 'made' ? ' · you own one (made before it was recorded)' : ''}${s === 'ready' && conflict(n) ? ` · <b class="warn">${esc(conflict(n))}</b>` : ''}</span></summary>
-      <div class="body">${WANT[n] ? `<p><b>Why:</b> ${esc(WANT[n])}</p>` : ''}${g ? `<p>${esc(shortText(n))}</p>` : ''}<p class="mods">${esc(w.mods.join(' · '))}</p></div></details>`; }).join('') || '<div class="card empty">Nothing here.</div>';
+    // in the Ready and Recorded lists every row would carry the same tag, so it is left off there
+    const tg = !cq.length && (state.rwmode === 'ready' || state.rwmode === 'made') ? '' : s === 'made' ? tag('done').replace('Done', 'Recorded') : s === 'ready' ? `<span class="tag t-ready"><i></i>Ready</span>` : `<span class="tag t-short"><i></i>${plural(g, 'rune')} short</span>`;
+    return `<details class="pnl rw" id="rw-${esc(n.replace(/\W/g, ''))}"><summary><span class="nm">${esc(n)}${WANT[n] ? '<span class="star">★ wanted</span>' : ''}</span>${runeChips(n)}${tg}<span class="meta">${rs.length} sockets · ${esc(w.types.map(t => TY[t] || t).join(' / '))} · level ${lvl}${made(n) && s !== 'made' ? ' · you own one (made before it was recorded)' : ''}${s === 'ready' && conflict(n) ? ` · <b class="warn">${esc(conflict(n))}</b>` : ''}</span></summary>
+      <div class="body">${WANT[n] ? `<p><b>Why:</b> ${esc(WANT[n])}</p>` : ''}${g ? `<p>${esc(shortText(n))}</p>` : ''}<p class="mods">${esc(w.mods.join(' · '))}</p></div></details>`; }).join('') || '<div class="pnl empty">Nothing here.</div>';
   const grp = (list, keyIx, order) => { const m = {}; list.forEach(x => (m[x[keyIx]] = m[x[keyIx]] || []).push(x)); return Object.entries(m).sort((a, b) => order ? order.indexOf(a[0]) - order.indexOf(b[0]) : a[0].localeCompare(b[0])); };
   const SLOTS = ['Helms', 'Body armor', 'Shields', 'Gloves', 'Boots', 'Belts', 'Amulets', 'Rings', 'Charms', 'Jewels', 'Weapons', 'Other'];
   const mug = CH.mug || (CH.mu || []).map(n => [n, 'Other', '']);
   const mugF = cq.length ? mug.filter(([n, sl, b]) => hit(n + ' ' + sl + ' ' + b + ' unique')) : mug;
   $('#musub').textContent = cq.length ? `${mugF.length} of ${mug.length} left match` : `${mug.length} left · grouped by slot`;
-  $('#mulist').innerHTML = grp(mugF, 1, SLOTS).map(([k, xs]) => `<details class="card grp"${cq.length ? ' open' : ''}><summary><b>${esc(k)}</b><span class="small">${xs.length}</span></summary><div class="list">${xs.sort((a, b) => a[0].localeCompare(b[0])).map(([n, , b]) => `<span class="mi" id="mu-${esc(n.replace(/\W/g, ''))}">${esc(n)}${b ? ` <span>${esc(b)}</span>` : ''}</span>`).join('')}</div></details>`).join('');
+  $('#mulist').innerHTML = grp(mugF, 1, SLOTS).map(([k, xs]) => `<details class="pnl grp"${cq.length ? ' open' : ''}><summary><b>${esc(k)}</b><span class="small">${xs.length}</span></summary><div class="list">${xs.sort((a, b) => a[0].localeCompare(b[0])).map(([n, , b]) => `<span class="mi" id="mu-${esc(n.replace(/\W/g, ''))}">${esc(n)}${b ? ` <span>${esc(b)}</span>` : ''}</span>`).join('')}</div></details>`).join('');
   const msg = CH.msg || (CH.ms || []).map(n => [n, 'Set items']);
   const msgF = cq.length ? msg.filter(([n, set]) => hit(n + ' ' + set + ' set')) : msg;
   $('#mssub').textContent = cq.length ? `${msgF.length} of ${msg.length} left match` : `${msg.length} left · grouped by set`;
-  $('#mslist').innerHTML = grp(msgF, 1).map(([k, xs]) => `<details class="card grp"${cq.length ? ' open' : ''}><summary><b>${esc(k)}</b><span class="small">${xs.length} missing</span></summary><div class="list">${xs.map(([n]) => `<span class="mi" id="mu-${esc(n.replace(/\W/g, ''))}">${esc(n)}</span>`).join('')}</div></details>`).join('');
+  $('#mslist').innerHTML = grp(msgF, 1).map(([k, xs]) => `<details class="pnl grp"${cq.length ? ' open' : ''}><summary><b>${esc(k)}</b><span class="small">${xs.length} missing</span></summary><div class="list">${xs.map(([n]) => `<span class="mi" id="mu-${esc(n.replace(/\W/g, ''))}">${esc(n)}</span>`).join('')}</div></details>`).join('');
   renderRec();
 }
 
@@ -760,13 +813,12 @@ function renderLedger() {
   $('#ledger2').innerHTML = `<div><table><thead><tr><th>Gems</th>${GRD.map(([l]) => `<th>${l}</th>`).join('')}</tr></thead><tbody>${GEMT.map(([n, t]) => `<tr><td>${n}</td>${GRD.map(([, g]) => { const v = gc(t, g); return `<td class="${v ? '' : 'z'}">${v || '–'}</td>`; }).join('')}</tr>`).join('')}</tbody></table></div>
     <div class="matg">${MATG.map(([h, xs]) => `<div><h4>${h}</h4><div class="ml">${xs.map(([k, l]) => `<span class="${M(k) ? '' : 'faint'}">${l} <b>${M(k)}</b></span>`).join('')}</div></div>`).join('')}</div>`;
 }
-const OPENG = new Set(store.get('openg', []));
+const OPENG = new Set(store.get('openg', null) || (PLAYERS[0] ? [PLAYERS[0].n] : []));  // first visit: the top character is open
 const notable = rs => { const n = rs.filter(([i, ix]) => NEW.has(ix)).length, m = rs.filter(([i]) => ['move', 'ditch'].includes(status(i)[0])).length;
   return (n ? ` · <span class="tag t-new"><i></i>${n} new</span>` : '') + (m ? ` · ${m} to sort` : ''); };
 const ORDERQ = { Unique: 0, Set: 1, Rare: 2, Magic: 3, Superior: 4, Normal: 5 };
 function itemMatch(i, ix, ignore) {
   const s = status(i)[0], o = owner(i.l);
-  if (ignore !== 'ch' && state.ch !== 'all' && !(state.ch === 'Mules' ? MULES.includes(o) : o === state.ch)) return false;
   if (ignore !== 'q' && state.iqual !== 'all' && qkey(i) !== state.iqual) return false;
   if (ignore !== 'st' && state.ist && !(state.ist === 'new' ? NEW.has(ix) : s === state.ist)) return false;
   if (state.iq) { const h = (i.n + ' ' + i.b + ' ' + (i.set || '') + ' ' + i.st.join(' ') + ' ' + i.s.join(' ')).toLowerCase(); if (!state.iq.toLowerCase().split(/\s+/).every(w => h.includes(w))) return false; }
@@ -775,10 +827,6 @@ function itemMatch(i, ix, ignore) {
 function renderStash() {
   const all = D.items.map((i, ix) => [i, ix]);
   const cnt = ig => all.filter(([i, ix]) => itemMatch(i, ix, ig)).length;
-  const chs = [['all', 'Everywhere']].concat(PLAYERS.map(c => [c.n, c.n])).concat(MULES.length ? [['Mules', 'Mules']] : []).concat([['Shared', 'Shared stash']]);
-  if (!chs.some(([k]) => k === state.ch)) state.ch = 'all';
-  $('#chS').innerHTML = chs.map(([k, l]) => { const n = all.filter(([i, ix]) => { const o = owner(i.l); return k === 'all' || (k === 'Mules' ? MULES.includes(o) : o === k); }).length;
-    return `<button class="chip" data-ch="${esc(k)}" aria-pressed="${state.ch === k}">${esc(l)} <small>${n}</small></button>`; }).join('');
   const hkc = k => all.filter(([i, ix]) => k === 'new' ? NEW.has(ix) : status(i)[0] === k).length;
   $('#hk').innerHTML = [['new', 't-new', 'New'], ['move', 't-move', 'To move'], ['ditch', 't-ditch', 'To ditch'], ['worn', 't-worn', 'Worn']].filter(([k]) => hkc(k)).map(([k, c, l]) =>
     `<button class="chip" data-st="${k}" aria-pressed="${state.ist === k}"><span class="tag ${c}"><i></i></span>${l} <small>${hkc(k)}</small></button>`).join('');
@@ -786,19 +834,19 @@ function renderStash() {
     `<button data-q="${k}" aria-pressed="${state.iqual === k}">${l}</button>`).join('');
   const rows = all.filter(([i, ix]) => itemMatch(i, ix));
   $('#icount').textContent = rows.length === D.items.length ? `${D.items.length} items` : `${rows.length} of ${D.items.length} shown`;
-  const filtering = state.ch !== 'all' || state.iq || state.ist || state.iqual !== 'all';
+  const filtering = state.iq || state.ist || state.iqual !== 'all';
   const gorder = [...PLAYERS.flatMap(c => [c.n, c.n + "'s merc"]), ...MULES, 'Shared stash'];
   const groups = {}; rows.forEach(r => { const g = place(r[0]).grp; (groups[g] = groups[g] || []).push(r); });
   $('#items').innerHTML = Object.entries(groups).sort((a, b) => (gorder.indexOf(a[0]) + 1 || 99) - (gorder.indexOf(b[0]) + 1 || 99)).map(([g, rs]) => {
     rs.sort(([a], [b]) => (b.eq - a.eq) || place(a).where.localeCompare(place(b).where, undefined, { numeric: true }) || (b.rw - a.rw) || ORDERQ[a.q] - ORDERQ[b.q] || a.n.localeCompare(b.n));
     const c = CHARS.find(x => x.n === g);
     const op = filtering || OPENG.has(g);
-    return `<details class="card ig" data-grp="${esc(g)}"${op ? ' open' : ''}><summary><b>${esc(g)}</b><span class="small">${c ? `Level ${c.lv} ${esc(c.c)} · ` : ''}${plural(rs.length, 'item')}${notable(rs)}</span></summary>${rs.map(([i, ix]) => {
+    return `<details class="pnl ig" data-grp="${esc(g)}"${op ? ' open' : ''}><summary><b>${esc(g)}</b><span class="small">${c ? `Level ${c.lv} ${esc(c.c)} · ` : ''}${plural(rs.length, 'item')}${notable(rs)}</span></summary>${rs.map(([i, ix]) => {
       const [sk, sl, sn] = status(i), p = place(i);
       const meta = [qlabel(i), i.set && i.q === 'Set' ? i.set : '', i.n !== i.b ? i.b : '', TIER[i.t] || '', i.e ? 'ethereal' : '', i.il ? 'ilvl ' + i.il : '', !i.rw && i.s.length ? 'socketed: ' + i.s.join(', ') : ''].filter(Boolean).join(' · ');
       const tags = [NEW.has(ix) ? '<span class="tag t-new"><i></i>New</span>' : '', sk === 'move' ? `<span class="tag t-move"><i></i>Move ${esc(sn)}</span>` : '', sk === 'ditch' ? '<span class="tag t-ditch"><i></i>Ditch</span>' : ''].join('');
       return `<div class="it" id="it-${ix}" tabindex="0" role="button" aria-expanded="false"><div><div class="nm q-${qkey(i)}">${esc(i.n)}</div><div class="meta">${esc(meta)}</div></div><div class="ist">${esc(i.st.join(' · ')) || '<span class="faint">no magic properties</span>'}</div><div class="st"><span class="pl">${esc(p.where)}</span>${tags}</div></div>`; }).join('')}</details>`;
-  }).join('') || '<div class="card empty">No items match. <button class="chip" id="clearf">Clear filters</button></div>';
+  }).join('') || '<div class="pnl empty">No items match. <button class="chip" id="clearf">Clear filters</button></div>';
   const nn = NEW.size; $('#tc-stash').textContent = nn ? nn + ' new' : '';
 }
 
@@ -824,7 +872,7 @@ function renderFresh() {
   const snap = D.snap || D.built, stale = Date.now() - snap > 36e5 * 24;
   $('#freshbtn').classList.toggle('stale', stale);
   $('#freshtxt').innerHTML = `Saves from <b>${esc(ago(snap))}</b>`;
-  $('#sub').textContent = `${PLAYERS.length} characters, ${MULES.length} mules and the shared stash`;
+  $('#sub').textContent = `${plural(PLAYERS.length, "character")}, ${plural(MULES.length, "mule")} and the shared stash`;
   $('#freshpop').innerHTML = `<p><b>Snapshot:</b> saves as of ${esc(fmtTime(snap))}${D.built ? `, scanned ${esc(fmtTime(D.built))}` : ''}.</p>
     <p><b>Refreshes itself:</b> GLaDOS rescans a fresh backup of the saves each time the bot starts a session (every few hours) and sends the result here.</p>
     <p class="small">The game writes saves on exit, so items picked up in the current game show up after the next rescan.</p>`;
@@ -890,7 +938,6 @@ document.addEventListener('click', e => {
   const t = e.target.closest('button, a, .it, input');
   if (!t) return;
   if (t.matches('#chP .chip')) { state.ch = t.dataset.ch; saveState(); renderPlan(); }
-  else if (t.matches('#chS .chip')) { state.ch = t.dataset.ch; saveState(); renderStash(); }
   else if (t.matches('#mode button')) { state.mode = t.dataset.mode; saveState(); renderPlan(); }
   else if (t.matches('#rwmode button')) { state.rwmode = t.dataset.rw; saveState(); renderChron(); }
   else if (t.matches('#hk .chip')) { state.ist = state.ist === t.dataset.st ? null : t.dataset.st; renderStash(); }
