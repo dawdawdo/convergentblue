@@ -339,16 +339,21 @@ import Base from '../../layouts/Base.astro';
 <p id="aload">Loading the armory…</p>
 <script is:inline>
 (async () => {
-  let D;
+  let D, live = '';
+  const get = async u => { const r = await fetch(u); if (!r.ok) throw new Error(`HTTP ${r.status}`); return r.json(); };
   try {
-    const r = await fetch('/api/bot/armory');
-    if (!r.ok) throw new Error(`HTTP ${r.status}`);
-    D = await r.json();
+    D = await get('/api/bot/armory');
   } catch (e) {
-    document.getElementById('aload').textContent = `Couldn't load the armory data (${e.message}).`;
-    return;
+    live = e.message;
+    try {
+      D = await get('/armory/snapshot.json');  // committed with the site: the page still works when the API is down
+    } catch (e2) {
+      document.getElementById('aload').textContent = `Couldn't load the armory data (${e.message}).`;
+      return;
+    }
   }
-  document.getElementById('aload').remove();
+  if (live) document.getElementById('aload').textContent = `Live data is unavailable (${live}); showing the snapshot from ${new Date(D.snap || D.built).toLocaleString()}.`;
+  else document.getElementById('aload').remove();
 
 
 const $ = (s, r = document) => r.querySelector(s), $$ = (s, r = document) => [...r.querySelectorAll(s)];
