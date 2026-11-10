@@ -215,7 +215,7 @@ hr { border: 0; border-top: 1px solid var(--rule); margin: 2.5rem 0; }
 .card-badge { position: absolute; top: .6rem; left: .6rem; font: 700 .7rem/1 var(--sans); letter-spacing: .08em; text-transform: uppercase; background: var(--brand); color: var(--accent-ink); padding: .4rem .55rem; border-radius: 4px; }
 .card-body { padding: 1rem 1.1rem 1.2rem; }
 .card-body h3 { margin: .35rem 0 .4rem; font-size: 1.15rem; line-height: 1.3; width: fit-content; }
-.card-body p { margin: 0; color: var(--muted); font-size: 1rem; line-height: 1.5; display: -webkit-box; -webkit-line-clamp: 3; -webkit-box-orient: vertical; overflow: hidden; }
+.card-body p { margin: 0; color: var(--muted); font-size: 1rem; line-height: 1.5; display: -webkit-box; -webkit-line-clamp: 4; -webkit-box-orient: vertical; overflow: hidden; }
 .card:hover h3 { color: var(--brand); }
 /* dark mode: take the glare off white-background thumbnails until hovered */
 @media (prefers-color-scheme: dark) {

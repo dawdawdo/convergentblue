@@ -16,7 +16,10 @@ export async function getStaticPaths() {
 }
 const { tag } = Astro.params;
 const { posts } = Astro.props;
-const title = tag === 'project' ? 'Projects' : tag;
+// Headline for the page: 'machine-learning' -> 'Machine learning'; a few tags need their own spelling.
+const special: Record<string, string> = { project: 'Projects', ai: 'AI', sql: 'SQL', r: 'R' };
+const words = tag.replaceAll('-', ' ');
+const title = special[tag] ?? words[0].toUpperCase() + words.slice(1);
 ---
 <Base title={`Topic: ${title}`}>
   <div class="wide">

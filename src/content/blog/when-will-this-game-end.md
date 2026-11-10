@@ -5,7 +5,7 @@ pubDate: 2012-11-24
 tags: [probability, markov-chains, football]
 draft: false
 legacy: true
-cover: "/images/2012/11/transition_matrix.png"
+cover: "/images/2012/11/83568880.jpg"
 ---
 
 # Geez, This Is Taking Forever!
