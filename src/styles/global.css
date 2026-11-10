@@ -184,12 +184,10 @@ hr { border: 0; border-top: 1px solid var(--rule); margin: 2.5rem 0; }
   .hero-spiral { animation: none; }
 }
 
-/* header logo on posts: draws itself as you scroll (reading progress). Browsers without scroll timelines show it whole. */
+/* header logo. On posts it draws itself as you scroll (reading progress): those rules live in Base.astro as an
+   inline <style>, because the production CSS minifier folds animation-timeline into the animation shorthand,
+   which browsers reject. */
 .brand-spiral { flex: none; color: var(--band-brand); width: 38px; height: 27px; }
-@supports (animation-timeline: scroll()) {
-  .spiral-track { opacity: 0.3; }
-  .spiral-progress { stroke-dasharray: 1; stroke-dashoffset: 1; animation: spiral-draw linear both; animation-timeline: scroll(root); }
-}
 
 /* page-to-page transitions: a short cross-fade, and a card's title glides into the post headline */
 @view-transition { navigation: auto; }
