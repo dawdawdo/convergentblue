@@ -403,6 +403,13 @@ main:has(.armory) { background: radial-gradient(70rem 26rem at 50% -8rem, #1b254
 /* phones: all five tabs fit without sideways scrolling */
 @media (max-width:700px){.armory .tabs a{font-size:16px;padding:12px 8px 11px;letter-spacing:.06em}.armory .tabs a small{display:none}}
 @media (max-width:430px){.armory .tabs a{font-size:15px;padding:12px 6px 11px;letter-spacing:.04em}}
+/* tabs read as buttons: each sits in its own framed box; hover lifts it; the open one is filled and joined to the bar */
+.armory .tabs{gap:6px;padding-top:6px;align-items:flex-end}
+.armory .tabs a{cursor:pointer;background:var(--surface);border:1px solid var(--gold-dim);border-bottom:3px solid transparent;border-radius:6px 6px 0 0;color:var(--ink);transition:background .15s,color .15s,transform .15s}
+.armory .tabs a:hover{background:var(--raise);color:var(--gold);transform:translateY(-2px)}
+.armory .tabs a:focus-visible{outline:2px solid var(--gold);outline-offset:2px}
+.armory .tabs a[aria-current="page"]{background:var(--gold-ink);color:var(--gold);border-color:var(--gold);border-bottom-color:var(--gold);transform:none}
+@media (max-width:430px){.armory .tabs{gap:3px}}
 /* Bot tab in the same dress */
 .bot{--ok:#7fd08a;--bad:#ff8a80}
 .bot .panel,.bot .tbl,.bot .btn,.bot .queued,.bot .login input{border-radius:4px}
@@ -424,12 +431,21 @@ main:has(.armory) { background: radial-gradient(70rem 26rem at 50% -8rem, #1b254
 </header>
 <div class="bar"><div class="barin">
   <nav class="tabs" id="tabs" aria-label="Views">
+    <a href="#bot">Bot</a>
     <a href="#plan">Plan <small id="tc-plan"></small></a>
     <a href="#chronicle">Chronicle <small id="tc-chron"></small></a>
     <a href="#stash">Stash <small id="tc-stash"></small></a>
     <a href="#cube">Cube</a>
-    <a href="#bot">Bot</a>
   </nav>
+  <script is:inline>
+    // mark the open tab at once (the armory script's show() only runs after its data loads); Bot is the default
+    (() => { const al = { goals: 'plan', farm: 'plan', inventory: 'stash', ref: 'chronicle' };
+      let h = location.hash.slice(1).split('-')[0]; h = al[h] || h;
+      if (!['plan', 'chronicle', 'stash', 'cube'].includes(h)) h = 'bot';
+      document.querySelectorAll('#tabs a').forEach(a => a.hash === '#' + h && a.setAttribute('aria-current', 'page'));
+      document.addEventListener('DOMContentLoaded', () => ['plan', 'chronicle', 'stash', 'cube', 'bot'].forEach(x => {
+        const v = document.getElementById('v-' + x); if (v) v.hidden = x !== h; })); })();
+  </script>
   <div class="find" role="search">
     <input id="find" type="search" autocomplete="off" placeholder="Find an item, runeword, recipe…" aria-label="Find anything" aria-controls="results" aria-expanded="false">
     <kbd>/</kbd>
@@ -438,7 +454,7 @@ main:has(.armory) { background: radial-gradient(70rem 26rem at 50% -8rem, #1b254
 </div></div>
 
 <div class="amain">
-<section id="v-plan"><div class="plangrid"><div class="planmain">
+<section id="v-plan" hidden><div class="plangrid"><div class="planmain">
   <div id="news"></div>
   <div class="controls"><div class="chips" id="chP" aria-label="Character"></div><div class="seg" id="mode" aria-label="Show"></div></div>
   <div id="tips"></div>
@@ -481,7 +497,7 @@ main:has(.armory) { background: radial-gradient(70rem 26rem at 50% -8rem, #1b254
     <details class="pnl fold csec" data-c="crafting"><summary>Crafting <span></span></summary><p class="lede">Each craft = magic base + jewel + rune + the column’s perfect gem.</p><div class="tbl"><table class="cube craft"><thead><tr><th>Slot</th><th>Hit Power<br><span class="small">Perfect Sapphire</span></th><th>Blood<br><span class="small">Perfect Ruby</span></th><th>Caster<br><span class="small">Perfect Amethyst</span></th><th>Safety<br><span class="small">Perfect Emerald</span></th></tr></thead><tbody><tr data-find="craft crafted Helm" data-t="Crafted helm"><td><b>Helm</b></td><td>Full Helm <span class="rw-runes">+ Ith</span></td><td>Helm <span class="rw-runes">+ Ral</span></td><td>Mask <span class="rw-runes">+ Nef</span></td><td>Crown <span class="rw-runes">+ Ith</span></td></tr><tr data-find="craft crafted Body" data-t="Crafted body"><td><b>Body</b></td><td>Field Plate <span class="rw-runes">+ Nef</span></td><td>Plate Mail <span class="rw-runes">+ Thul</span></td><td>Light Plate <span class="rw-runes">+ Tal</span></td><td>Breast Plate <span class="rw-runes">+ Eth</span></td></tr><tr data-find="craft crafted Shield" data-t="Crafted shield"><td><b>Shield</b></td><td>Gothic Shield <span class="rw-runes">+ Eth</span></td><td>Spiked Shield <span class="rw-runes">+ Ith</span></td><td>Small Shield <span class="rw-runes">+ Eth</span></td><td>Kite Shield <span class="rw-runes">+ Nef</span></td></tr><tr data-find="craft crafted Gloves" data-t="Crafted gloves"><td><b>Gloves</b></td><td>Chain Gloves <span class="rw-runes">+ Ort</span></td><td>Heavy Gloves <span class="rw-runes">+ Nef</span></td><td>Leather Gloves <span class="rw-runes">+ Ort</span></td><td>Gauntlets <span class="rw-runes">+ Ral</span></td></tr><tr data-find="craft crafted Boots" data-t="Crafted boots"><td><b>Boots</b></td><td>Chain Boots <span class="rw-runes">+ Ral</span></td><td>Light Plated Boots <span class="rw-runes">+ Eth</span></td><td>Boots <span class="rw-runes">+ Thul</span></td><td>Plated Boots <span class="rw-runes">+ Ort</span></td></tr><tr data-find="craft crafted Belt" data-t="Crafted belt"><td><b>Belt</b></td><td>Heavy Belt <span class="rw-runes">+ Tal</span></td><td>Belt <span class="rw-runes">+ Tal</span></td><td>Light Belt <span class="rw-runes">+ Ith</span></td><td>Sash <span class="rw-runes">+ Tal</span></td></tr><tr data-find="craft crafted Amulet" data-t="Crafted amulet"><td><b>Amulet</b></td><td>Amulet <span class="rw-runes">+ Thul</span></td><td>Amulet <span class="rw-runes">+ Amn</span></td><td>Amulet <span class="rw-runes">+ Ral</span></td><td>Amulet <span class="rw-runes">+ Thul</span></td></tr><tr data-find="craft crafted Ring" data-t="Crafted ring"><td><b>Ring</b></td><td>Ring <span class="rw-runes">+ Amn</span></td><td>Ring <span class="rw-runes">+ Sol</span></td><td>Ring <span class="rw-runes">+ Amn</span></td><td>Ring <span class="rw-runes">+ Amn</span></td></tr><tr data-find="craft crafted Weapon" data-t="Crafted weapon"><td><b>Weapon</b></td><td>Blunt Weapon <span class="rw-runes">+ Tir</span></td><td>Axe <span class="rw-runes">+ Ort</span></td><td>Rod <span class="rw-runes">+ Tir</span></td><td>Spear <span class="rw-runes">+ Sol</span></td></tr></tbody></table></div></details>
   </div>
 </section>
-<section id="v-bot" hidden><div class="bot">
+<section id="v-bot"><div class="bot">
 <div class="bothead"><div class="pill" id="pill" hidden><span class="dot"></span><span id="pilltxt"></span></div></div>
 <div id="botmain">
   <section class="panel now">
@@ -533,8 +549,9 @@ main:has(.armory) { background: radial-gradient(70rem 26rem at 50% -8rem, #1b254
     } catch (e2) {
       document.getElementById('aload').textContent = `Couldn't load the armory data (${e.message}).`;
       // the Bot tab doesn't need it: keep the tabs working
-      const tab = () => { const h = location.hash.slice(1) === 'bot' ? 'bot' : 'plan';
-        ['plan', 'chronicle', 'stash', 'cube', 'bot'].forEach(x => document.getElementById('v-' + x).hidden = x !== h); };
+      const tab = () => { const h0 = location.hash.slice(1).split('-')[0]; const h = ['plan', 'chronicle', 'stash', 'cube'].includes(h0) ? h0 : 'bot';
+        ['plan', 'chronicle', 'stash', 'cube', 'bot'].forEach(x => document.getElementById('v-' + x).hidden = x !== h);
+        document.querySelectorAll('#tabs a').forEach(a => a.hash === '#' + h ? a.setAttribute('aria-current', 'page') : a.removeAttribute('aria-current')); };
       addEventListener('hashchange', tab); tab();
       return;
     }
@@ -563,7 +580,7 @@ const NEW = new Set(DL ? DL.items : []);
 const plural = (n, w) => n + ' ' + w + (n === 1 ? '' : 's');
 const fmtTime = ms => new Date(ms).toLocaleString(undefined, { month: 'short', day: 'numeric', hour: 'numeric', minute: '2-digit' });
 const ago = ms => { const m = Math.round((Date.now() - ms) / 60000); return m < 2 ? 'just now' : m < 60 ? m + ' min ago' : m < 1440 ? Math.round(m / 60) + ' h ago' : Math.round(m / 1440) + ' d ago'; };
-const state = { tab: 'plan', ch: store.get('ch', 'all'), mode: store.get('mode', 'now'), rwmode: store.get('rwmode', 'ready'), iqual: 'all', ist: null, iq: '' };
+const state = { tab: 'bot', ch: store.get('ch', 'all'), mode: store.get('mode', 'now'), rwmode: store.get('rwmode', 'ready'), iqual: 'all', ist: null, iq: '' };
 const saveState = () => { store.set('ch', state.ch); store.set('mode', state.mode); store.set('rwmode', state.rwmode); };
 
 /* ---------- item status ---------- */
@@ -939,8 +956,8 @@ function goStep(g, s) { state.ch = 'all'; state.mode = 'all'; store.set('open:' 
 /* ---------- routing ---------- */
 const ALIAS = { goals: 'plan', farm: 'plan', inventory: 'stash', ref: 'chronicle' };
 function show() {
-  let h = location.hash.slice(1).split('-')[0] || 'plan'; h = ALIAS[h] || h;
-  if (!['plan', 'chronicle', 'stash', 'cube', 'bot'].includes(h)) h = 'plan';
+  let h = location.hash.slice(1).split('-')[0] || 'bot'; h = ALIAS[h] || h;
+  if (!['plan', 'chronicle', 'stash', 'cube', 'bot'].includes(h)) h = 'bot';
   if (location.hash.startsWith('#farm') && state.mode !== 'farm') { state.mode = 'farm'; renderPlan(); }
   state.tab = h;
   ['plan', 'chronicle', 'stash', 'cube', 'bot'].forEach(x => $('#v-' + x).hidden = x !== h);
@@ -1168,7 +1185,9 @@ renderFresh(); renderNews(); renderLedger(); renderCube(); initCubeFolds(); rend
     }
   }
   // only while the Bot tab is open: each refresh reads the Durable Object (free plan: 5M rows read a day)
-  const onTab = () => location.hash.startsWith('#bot');
+  // Bot is the default tab: no hash (or an unknown one) counts as Bot, like show() in the armory script
+  const ARMORY = ['plan', 'chronicle', 'stash', 'cube', 'goals', 'farm', 'inventory', 'ref'];
+  const onTab = () => !ARMORY.includes(location.hash.slice(1).split('-')[0]);
   setOwner(false);
   if (onTab()) refresh();
   setInterval(() => { if (!document.hidden && onTab()) refresh(); }, 15000);
