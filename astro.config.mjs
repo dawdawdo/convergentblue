@@ -8,7 +8,7 @@ import remarkStripComments from './src/remark-strip-comments.mjs';
 
 export default defineConfig({
   site: 'https://convergentblue.com',
-  integrations: [sitemap({ filter: (page) => !/\/(bot|armory)\//.test(page) })],  // unlisted (noindex) pages
+  integrations: [sitemap({ filter: (page) => !/\/armory\//.test(page) })],  // /armory/ stays unlisted; /bot/ is public
   // `npm run dev` has no Worker, so the armory page reads its (public, read-only) data from the live site
   vite: { server: { proxy: { '/api/bot/armory': { target: 'https://convergentblue.com', changeOrigin: true } } } },
   markdown: {

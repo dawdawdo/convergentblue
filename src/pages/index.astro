@@ -29,6 +29,20 @@ const recent = posts.filter((p) => p !== featured).slice(0, 6);
       </section>
     )}
     <section class="home-section">
+      <div class="section-head"><h2>Running now</h2></div>
+      <div class="card-grid">
+        <article class="card">
+          <a class="card-link" href="/bot/" aria-label="Blizzaga's Armory"></a>
+          <div class="card-media"><div class="card-fallback"><Spiral size="70%" strokeWidth={5} /></div><span class="card-badge">Live</span></div>
+          <div class="card-body">
+            <span class="meta">Diablo II: Resurrected</span>
+            <h3>Blizzaga's Armory</h3>
+            <p>A pixel-only bot farming Mephisto and Lower Kurast around the clock, with its live console, loot log, current gear, and the stash, Chronicle and cube planner rebuilt from the save files.</p>
+          </div>
+        </article>
+      </div>
+    </section>
+    <section class="home-section">
       <div class="section-head"><h2>Recent writing</h2><a href="/blog/">All posts →</a></div>
       <PostGrid posts={recent} />
     </section>
