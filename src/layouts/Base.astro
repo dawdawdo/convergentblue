@@ -11,6 +11,7 @@ const fullTitle = title ? `${title} · ${SITE_TITLE}` : SITE_TITLE;
 const canonical = new URL(Astro.url.pathname, Astro.site);
 const path = Astro.url.pathname;
 const nav = [
+  { href: '/bot/', label: 'D2R Bot' },
   { href: '/blog/', label: 'Writing' },
   { href: '/about/', label: 'About' },
 ];
@@ -60,7 +61,7 @@ const nav = [
     <footer class="site-footer">
       <div class="wide">
         <span>{SITE_DESCRIPTION}<br />© {new Date().getFullYear()} {AUTHOR}</span>
-        <span><a href="/tags/project/">Projects</a> · <a href="/blog/">Writing</a> · <a href="/about/">About</a> · <a href="/rss.xml">RSS</a> · <a href="https://github.com/dawdawdo">GitHub</a></span>
+        <span><a href="/tags/project/">Projects</a> · <a href="/blog/">Writing</a> · <a href="/bot/">D2R Bot</a> · <a href="/about/">About</a> · <a href="/rss.xml">RSS</a> · <a href="https://github.com/dawdawdo">GitHub</a></span>
       </div>
     </footer>
   </body>
