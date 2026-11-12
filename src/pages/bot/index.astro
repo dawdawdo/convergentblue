@@ -317,6 +317,28 @@ main:has(.armory) { background: radial-gradient(70rem 26rem at 50% -8rem, #1b254
 .bot .mt .v { font-size: 1.9rem; font-weight: 700; line-height: 1.15; margin: 0.3rem 0 0.15rem; font-variant-numeric: tabular-nums; letter-spacing: -0.01em; }
 .bot .mt .d { color: var(--muted); font-size: 0.9rem; }
 /* loot */
+.bot .gstats { display: grid; gap: 0.75rem; grid-template-columns: repeat(auto-fit, minmax(16rem, 1fr)); }
+.bot .gcard { padding: 0.8rem 1rem; }
+.bot .gcard h3 { font: 700 0.8rem var(--sans); letter-spacing: 0.06em; text-transform: uppercase; color: var(--muted); margin: 0 0 0.4rem; }
+.bot .gcard table { width: 100%; border-collapse: collapse; font-size: 0.95rem; }
+.bot .gcard td { padding: 0.15rem 0; vertical-align: baseline; }
+.bot .gcard td.v { text-align: right; font-weight: 700; font-variant-numeric: tabular-nums; white-space: nowrap; padding-left: 0.75rem; }
+.bot .gcard .nt, .bot .gcard .cn { color: var(--muted); font-size: 0.8rem; line-height: 1.3; }
+.bot .gcard .cn { margin: 0.4rem 0 0; }
+.bot .gnote { color: var(--muted); font-size: 0.9rem; margin: 0.6rem 0 0; }
+.bot .gitems { margin-top: 0.75rem; }
+.bot .gitems h3 { font: 700 0.8rem var(--sans); letter-spacing: 0.06em; text-transform: uppercase; color: var(--muted); margin: 0; padding: 0.7rem 1rem 0.3rem; }
+.bot .gitems details { border-top: 1px solid var(--rule); }
+.bot .gitems h3 + details { border-top: 0; }
+.bot .gitems summary { display: grid; grid-template-columns: 7.5rem 1fr; gap: 0.2rem 1rem; padding: 0.55rem 1rem; cursor: pointer; list-style: none; }
+.bot .gitems summary::-webkit-details-marker { display: none; }
+.bot .gitems summary:hover { background: var(--code-bg); }
+.bot .gitems .sl { color: var(--muted); font-size: 0.9rem; }
+.bot .gitems .gb { color: var(--muted); font-size: 0.85rem; }
+.bot .gitems ul { margin: 0; padding: 0.2rem 1rem 0.7rem 9.5rem; list-style: none; font-size: 0.9rem; color: var(--muted); }
+.bot .q-Unique { color: var(--unique); } .bot .q-Set { color: var(--set); } .bot .q-Rare { color: var(--rare); }
+.bot .q-Magic { color: var(--magic); } .bot .q-rw { color: var(--rw); }
+@media (max-width: 560px) { .bot .gitems summary { grid-template-columns: 1fr; } .bot .gitems ul { padding-left: 1rem; } }
 .bot .loot { padding: 0.9rem 1rem; display: flex; flex-wrap: wrap; gap: 0.4rem; }
 .bot .lc { display: inline-flex; align-items: baseline; gap: 0.35rem; border: 1px solid var(--rule); border-radius: 999px; padding: 0.2rem 0.65rem; font: 0.8rem/1.4 var(--mono); color: var(--muted); }
 .bot .lc.rare { border-color: var(--ink); color: var(--ink); font-weight: 600; }
@@ -530,6 +552,9 @@ main:has(.armory) { background: radial-gradient(70rem 26rem at 50% -8rem, #1b254
 
   <h2>Recent runs</h2>
   <div class="tbl"><table><thead><tr><th>Started</th><th>Task</th><th>Result</th><th style="text-align:right">Time</th><th style="text-align:right">Chests</th><th>Picked up</th></tr></thead><tbody id="runs"></tbody></table></div>
+
+  <h2>Current gear <small id="gearsub"></small></h2>
+  <div id="gear"><p class="gnote">Loading the save scan…</p></div>
 </div>
 <div class="foot" id="botfoot" hidden><span id="foottxt"></span><button id="logout" hidden>Sign out on this device</button></div>
 </div></section>
@@ -727,12 +752,14 @@ function farmBox(k, open) {
 function stepHTML(g, s, k) {
   const auto = val(s.st) === 'done';
   const rwx = s.rw && D.rwdb && D.rwdb[s.rw] && k !== 'done' ? runeChips(s.rw) + (gap(s.rw) ? `<div class="small">${esc(shortText(s.rw))}</div>` : '') : '';
-  return `<li class="step s-${k}" id="st-${g.id}-${s.id}"><input type="checkbox" data-k="${g.id}:${s.id}" ${k === 'done' ? 'checked' : ''} ${auto ? 'disabled title="Confirmed by the save scan"' : ''} aria-label="Done: ${esc(s.t)}">
+  return `<li class="step s-${k}" id="st-${g.id}-${s.id}"><input type="checkbox" data-k="${g.id}:${s.id}" ${k === 'done' ? 'checked' : ''} ${auto ? 'disabled title="Confirmed by the save scan"' : !isOwner() ? 'disabled title="Log in on the Bot tab to tick steps"' : ''} aria-label="Done: ${esc(s.t)}">
     <div><div class="t">${esc(s.t)}</div><div class="h">${esc(val(s.h))}</div>${rwx}${s.farm && (k === 'farm' || k === 'now' && s.id === 'minis') ? farmBox(s.farm, state.mode === 'farm') : ''}</div>${state.mode === 'all' ? tag(k) : ''}</li>`;
 }
 const goalChars = g => g.ch;
+// Plan ticks are per browser and only for the owner (logged in on the Bot tab); visitors see what the save scan proves.
+const isOwner = () => window.botOwner === true;  // set by the Bot console once the server accepts the password
 function renderPlan() {
-  const ticks = store.get('ticks', {});
+  const ticks = isOwner() ? store.get('ticks', {}) : {};
   const who0 = [...new Set(GOALS.flatMap(goalChars))], ch = who0.includes(state.ch) ? state.ch : 'all';
   const vis = GOALS.filter(g => ch === 'all' || goalChars(g).includes(ch));
   const counts = { now: 0, farm: 0, later: 0 };
@@ -913,7 +940,7 @@ function renderFresh() {
   $('#freshpop').innerHTML = `<p><b>Snapshot:</b> saves as of ${esc(fmtTime(snap))}${D.built ? `, scanned ${esc(fmtTime(D.built))}` : ''}.</p>
     <p><b>Refreshes itself:</b> GLaDOS rescans a fresh backup of the saves each time the bot starts a session (every few hours) and sends the result here.</p>
     <p class="small">The game writes saves on exit, so items picked up in the current game show up after the next rescan.</p>`;
-  $('#foot').textContent = `Snapshot ${fmtTime(snap)} · ticks and filters are remembered in this browser`;
+  $('#foot').textContent = `Snapshot ${fmtTime(snap)} · filters are remembered in this browser${isOwner() ? ', and your ticks' : ''}`;
 }
 
 /* ---------- global find ---------- */
@@ -989,9 +1016,40 @@ document.addEventListener('click', e => {
   else if (t.matches('.it') && !getSelection().toString()) { t.classList.toggle('open'); t.setAttribute('aria-expanded', t.classList.contains('open')); }
 });
 document.addEventListener('change', e => {
-  const cb = e.target.closest('.step input[data-k]'); if (!cb) return;
+  const cb = e.target.closest('.step input[data-k]'); if (!cb || !isOwner()) return;
   const t = store.get('ticks', {}); t[cb.dataset.k] = cb.checked; store.set('ticks', t); renderPlan(); IDX = null;
 });
+
+// Bot tab "Current gear": the bot character's worn items (pagedata items with a slot, from the armory scan) and
+// the stat totals d2r-bot's bot/gear.py adds as D.gear. Updates when a bot session starts (it backs up the save).
+const SLOTS = [['Head', 'Helm'], ['Neck', 'Amulet'], ['Torso', 'Armor'], ['RightArm', 'Right hand'], ['LeftArm', 'Left hand'],
+  ['Gloves', 'Gloves'], ['Belt', 'Belt'], ['Feet', 'Boots'], ['RightRing', 'Ring'], ['LeftRing', 'Ring'],
+  ['RightHand', 'Swap right'], ['LeftHand', 'Swap left']];
+function renderGear() {
+  const box = document.getElementById('gear'); if (!box) return;
+  const G = D.gear, who = (G && G.char) || 'Blizzaga';
+  const at = D.snap ? new Date(D.snap).toLocaleString([], { month: 'short', day: 'numeric', hour: '2-digit', minute: '2-digit' }) : '';
+  document.getElementById('gearsub').textContent = `${who}${G ? `, level ${G.level}` : ''}${at ? ` · save of ${at}` : ''}`;
+  const qc = i => i.rw ? 'q-rw' : 'q-' + i.q;
+  const row = (label, i, sub) => `<details><summary><span class="sl">${esc(label)}</span><span><b class="${qc(i)}">${esc(i.n)}</b>` +
+    ` <span class="gb">${esc(sub ?? (i.b + (i.e ? ' · ethereal' : '') + (i.s && i.s.length ? ' · ' + i.s.join(' ') : '')))}</span></span></summary>` +
+    `<ul>${(i.st || []).map(x => `<li>${esc(x)}</li>`).join('')}</ul></details>`;
+  const list = (title, loc) => {
+    const worn = D.items.filter(i => i.l === loc && i.eq);
+    const rows = SLOTS.map(([k, label]) => worn.filter(i => i.sl === k).map(i => row(label, i)).join('')).join('') +
+      worn.filter(i => !SLOTS.some(([k]) => k === i.sl)).map(i => row(i.sl || 'Worn', i)).join('');
+    return rows ? `<div class="panel gitems"><h3>${esc(title)}</h3>${rows}</div>` : '';
+  };
+  const charms = D.items.filter(i => i.l === who + ':inventory' && /cha$/.test(i.ty));
+  const charmBox = charms.length ? `<div class="panel gitems"><h3>Charms in the inventory</h3>${charms.map(i => row(i.b.replace(' Charm', ''), i, (i.st || []).slice(0, 2).join(' · '))).join('')}</div>` : '';
+  const stats = G ? `<div class="gstats">${G.groups.filter(g => g.rows.length).map(g => `<div class="panel gcard"><h3>${esc(g.name)}</h3><table>` +
+    g.rows.map(([k, v, n]) => `<tr><td>${esc(k)}${n ? `<div class="nt">${esc(n)}</div>` : ''}</td><td class="v">${esc(v)}</td></tr>`).join('') +
+    `</table>${g.note ? `<p class="cn">${esc(g.note)}</p>` : ''}</div>`).join('')}</div><p class="gnote">${esc(G.note)} ` +
+    `Updates when a bot session starts (that's when the save is backed up and scanned).</p>` : '<p class="gnote">No stat totals in this scan yet.</p>';
+  box.innerHTML = stats + list(who, who + ':equipped') + charmBox + list('Mercenary', who + ' merc:equipped');
+}
+
+window.addEventListener('bot-owner', () => { try { renderPlan(); IDX = null; } catch (e) { /* armory data not loaded yet */ } });
 
 document.addEventListener('keydown', e => {
   const f = $('#find');
@@ -1011,7 +1069,7 @@ let tc; $('#cq').addEventListener('input', e => { clearTimeout(tc); tc = setTime
 let tq; $('#iq').addEventListener('input', e => { clearTimeout(tq); tq = setTimeout(() => { state.iq = e.target.value.trim(); renderStash(); }, 120); });
 addEventListener('hashchange', show); addEventListener('popstate', show);
 
-renderFresh(); renderNews(); renderLedger(); renderCube(); initCubeFolds(); renderChron(); renderPlan(); renderStash(); show();
+renderFresh(); renderNews(); renderLedger(); renderCube(); initCubeFolds(); renderChron(); renderPlan(); renderStash(); renderGear(); show();
 
 })();
 </script>
@@ -1064,6 +1122,8 @@ renderFresh(); renderNews(); renderLedger(); renderCube(); initCubeFolds(); rend
     for (const b of document.querySelectorAll('#tasks button, .btns button')) b.disabled = !on;
     $('ownernote').hidden = on; $('logout').hidden = !on;
     if (on) { $('loginform').hidden = true; $('loginmsg').hidden = true; }
+    const was = window.botOwner === true; window.botOwner = on;
+    if (was !== on) window.dispatchEvent(new Event('bot-owner'));  // the Plan tab's checkboxes unlock / lock
   }
   $('signin').addEventListener('click', () => showLogin());
 
