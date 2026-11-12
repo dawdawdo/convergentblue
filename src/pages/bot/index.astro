@@ -289,6 +289,7 @@ main:has(.armory) { background: radial-gradient(70rem 26rem at 50% -8rem, #1b254
 .bot .state { font: 700 1.75rem/1.15 var(--sans); letter-spacing: -0.01em; display: flex; align-items: center; gap: 0.75rem; }
 .bot .state i { width: 0.85rem; height: 0.85rem; border-radius: 50%; flex: none; display: inline-block; }
 .bot .s-run { color: var(--ok); } .bot .s-run i { background: var(--ok); }
+.bot .mf-low { color: var(--bad); }
 .bot .s-stop i { border: 2.5px solid var(--ink); border-radius: 2px; }
 .bot .s-wait i { border: 2.5px dashed var(--ink); }
 .bot .s-off { color: var(--bad); }
@@ -1103,11 +1104,17 @@ renderFresh(); renderNews(); renderLedger(); renderCube(); initCubeFolds(); rend
     if (age > 120e3) return { cls: 's-off', word: 'Offline', facts: `Last heard from ${esc(s.machine)} ${ago(age)} ago.` };
     const running = bot.state === 'running' && sup.pid;
     const bits = [];
+    // magic find read from the save at session start (bot/mf.py); a boss task below its minimum runs as LK
+    const mf = bot.mf, low = (mf && mf.low) || [];
+    const mfWarn = low.length ? `<br><b class="mf-low">${low.map(n => esc(TASK_NAME[n] || n)).join(', ')} skipped:</b> ` +
+      `magic find ${esc(mf.mf)}% is below ${low.map(n => `${esc(mf.min[n])}%`).join(', ')}. Running LK until the MF gear is on ` +
+      `(checked when the next session starts).` : '';
     if (running) {
       bits.push(`Run <b>${esc(bot.run)}</b> of ${esc(bot.runs)}`, `task <b>${esc(TASK_NAME[bot.task] || bot.task)}</b>`);
+      if (mf) bits.push(`magic find <b>${esc(mf.mf)}%</b>`);
       if (bot.started) bits.push(`session ${ago(now - bot.started * 1000)}`);
-      if (!want.run) return { cls: 's-wait', word: 'Stopping after this run', facts: bits.join(' · ') };
-      return { cls: 's-run', word: 'Running', facts: bits.join(' · ') };
+      if (!want.run) return { cls: 's-wait', word: 'Stopping after this run', facts: bits.join(' · ') + mfWarn };
+      return { cls: 's-run', word: 'Running', facts: bits.join(' · ') + mfWarn };
     }
     if (sup.state === 'backoff') {
       return { cls: 's-wait', word: 'Waiting to retry',
