@@ -675,6 +675,10 @@ const GOALS = [
     { id: 'dracul', t: "Farm Dracul's Grasp", h: 'More leech plus Life Tap. Wear for Ubers, Vampirebone (+3 Martial Arts) for farming.', st: () => has("Dracul's Grasp") ? 'done' : 'farm', farm: 'dracul' },
     { id: 'minis', t: 'Run the mini-Ubers, then Uber Tristram', h: () => `Key sets: ${Math.min(M('pk1'), M('pk2'), M('pk3'))} · organ sets: ${Math.min(M('mbr'), M('dhn'), M('bey'))} · full rejuvs: ${M('rvl')}.`, st: 'now', farm: 'torch', after: ['res'] },
     { id: 'ring', t: "Bul-Kathos' Wedding Band or Stone of Jordan in place of Dwarf Star", h: 'Keep Dwarf Star as the Uber Diablo / Clone swap (fire absorb). Raven Frost stays.', st: () => has('The Stone of Jordan', 'ThroatCutter') ? 'done' : 'later', farm: 'soj' },
+    { id: 'bishelm', t: "Best in slot helm: Andariel's Visage in place of the rare Diadem", h: '+2 skills, 20 IAS, 8-10% life leech, Strength. Harlequin Crest (shared tab 2, Blizzaga\'s stash) is the safer alternative: life, mana and damage reduction instead of leech. Its −30 fire res needs covering for Uber Diablo.', st: () => has("Andariel's Visage", 'ThroatCutter') || has('Harlequin Crest', 'ThroatCutter') ? 'done' : 'farm', farm: 'tcbis' },
+    { id: 'bisboots', t: 'Best in slot boots: Gore Rider or Shadow Dancer in place of the rare Light Plated Boots', h: 'Gore Rider: crushing blow, deadly strike, open wounds (more Uber damage). Shadow Dancer: +2 Assassin skills, FHR and Dexterity. Both still show in the loot filter (missing from the Chronicle).', st: () => has('Gore Rider', 'ThroatCutter') || has('Shadow Dancer', 'ThroatCutter') ? 'done' : 'farm', farm: 'tcbis' },
+    { id: 'bisbelt', t: "Best in slot belt: Verdungo's Hearty Cord in place of String of Ears", h: "Damage reduction, FHR, Vitality. One sits in shared tab 2 (marked for Blizzaga): decide who gets it. Nosferatu's Coil (slows Ubers) is the other option.", st: () => has("Verdugo's Hearty Cord", 'ThroatCutter') || has("Nosferatu's Coil", 'ThroatCutter') ? 'done' : 'now' },
+    { id: 'bischarm', t: 'Martial Arts skill grand charms in place of the plain grand charms', h: '+1 Martial Arts each, ideally with life. With Annihilus and an Assassin Hellfire Torch, that completes the charm inventory.', st: 'farm', fl: 'Martial Arts grand charms' },
   ]},
   { id: 'tcmerc', ch: ['ThroatCutter'], title: "ThroatCutter's merc", who: "Act 2 · Tal Rasha's helm, Griswold's Heart, Hustle", steps: [
     { id: 'minf', t: 'Give him Infinity from shared tab 5; replaces Hustle', h: 'Conviction lowers Uber fire, cold and lightning resist for Mosaic.', st: () => D.items.some(i => i.n === 'Infinity' && i.l.startsWith('ThroatCutter merc')) ? 'done' : 'now' },
@@ -730,11 +734,12 @@ const FARMS = {
   soj: ['Stone of Jordan', ['Hell Mephisto', 'Terror Zones with /players 8', 'LK super chests (your bot): low odds, but unattended volume', 'Any Hell monster can drop one']],
   anni: ['Annihilus', ['Sell a Stone of Jordan to a vendor in Hell', 'The Clone replaces a superunique in that game; kill him for Annihilus']],
   statues: ['Colossal Ancient statues', ["Use that act's Worldstone Shard to terrorize the act, then kill the act boss in Hell", 'Drops are not guaranteed; expect repeats', () => `Shards: Western ${M('xa1')} · Eastern ${M('xa2')} · Southern ${M('xa3')} · Deep ${M('xa4')} · Northern ${M('xa5')}`, 'Shards drop about 1 in 500 elite kills; magic find does not help']],
+  tcbis: ["ThroatCutter's best in slot uniques", ['Hell Mephisto (your bot, with magic find), Baal, Chaos Sanctuary', 'Level 85 areas: Ancient Tunnels (your bot), Pit, Chaos Sanctuary', "Andariel's Visage, Gore Rider and Shadow Dancer all show in the loot filter"]],
   sets: ['Set pieces', ['Any Hell area; set items are slow random drops', 'Terror Zones with /players 8 maximize rolls', 'Shamelock with the magic-find kit is your best farmer']],
   caster: ["Caster gear: Shako, Arachnid Mesh, Death's Fathom", ['Hell Mephisto, Baal, Chaos Sanctuary', "Death's Fathom also drops from Hell Andariel and in Ancient Tunnels"]],
   runes: ['High runes', ['Travincal council, Chaos Sanctuary, Hell Cows', 'Hell Countess (up to Ist) for the cube chain', 'LK super chests (your bot)', () => `Have: Vex ${R('Vex')} · Ohm ${R('Ohm')} · Lo ${R('Lo')} · Sur ${R('Sur')} · Ber ${R('Ber')} · Jah ${R('Jah')}`]],
 };
-const FARM_ITEMS = { dracul: ["Dracul's Grasp"], torch: ['Hellfire Torch'], soj: ['Stone of Jordan'], anni: ['Annihilus'], caster: ['Harlequin Crest', 'Arachnid Mesh', "Death's Fathom"], sets: ["Horazon's Dominion"] };
+const FARM_ITEMS = { tcbis: ["Andariel's Visage", 'Gore Rider', 'Shadow Dancer'], dracul: ["Dracul's Grasp"], torch: ['Hellfire Torch'], soj: ['Stone of Jordan'], anni: ['Annihilus'], caster: ['Harlequin Crest', 'Arachnid Mesh', "Death's Fathom"], sets: ["Horazon's Dominion"] };
 const val = x => typeof x === 'function' ? x() : x;
 function stepState(g, s, ticks) {
   const a = val(s.st);
