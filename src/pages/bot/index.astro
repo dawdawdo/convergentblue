@@ -610,7 +610,7 @@ const state = { tab: 'bot', ch: store.get('ch', 'all'), mode: store.get('mode', 
 const saveState = () => { store.set('ch', state.ch); store.set('mode', state.mode); store.set('rwmode', state.rwmode); };
 
 /* ---------- item status ---------- */
-const MOVES = { "Highlord's Wrath": ['Damon', 'ThroatCutter'], 'Raven Frost': ['Shared', 'Blizzaga'], "Verdugo's Hearty Cord": ['Shared', 'Blizzaga'],
+const MOVES = { "Highlord's Wrath": ['Damon', 'ThroatCutter'], 'Raven Frost': ['Shared', 'Blizzaga'], "Verdugo's Hearty Cord": ['Shared', 'ThroatCutter'],
   "Aldur's Advance": ['Shared', 'Blizzaga'], 'The Mahim-Oak Curio': ['Shared', 'Damon'], 'Spirit': ['Shared', 'Smoked'], 'Giant Thresher': ['Shared', "ThroatCutter's merc"] };
 const DITCH = { 'Woestave':1, 'Frostburn':1, 'Venom Grip':1, 'Rockstopper':1, 'Spiritual Custodian':1, 'Credendum':1, "Heaven's Taebaek":1, 'Light Gauntlets':1 };
 const DITCH_IF_SHARED = { 'Goblin Toe':1, 'Great Helm':1, "Griswold's Heart":1, "Immortal King's Forge":1, "Immortal King's Pillar":1, "Immortal King's Detail":1 };
@@ -677,7 +677,7 @@ const GOALS = [
     { id: 'ring', t: "Bul-Kathos' Wedding Band or Stone of Jordan in place of Dwarf Star", h: 'Keep Dwarf Star as the Uber Diablo / Clone swap (fire absorb). Raven Frost stays.', st: () => has('The Stone of Jordan', 'ThroatCutter') ? 'done' : 'later', farm: 'soj' },
     { id: 'bishelm', t: "Best in slot helm: Andariel's Visage in place of the rare Diadem", h: '+2 skills, 20 IAS, 8-10% life leech, Strength. Harlequin Crest (shared tab 2, Blizzaga\'s stash) is the safer alternative: life, mana and damage reduction instead of leech. Its −30 fire res needs covering for Uber Diablo.', st: () => has("Andariel's Visage", 'ThroatCutter') || has('Harlequin Crest', 'ThroatCutter') ? 'done' : 'farm', farm: 'tcbis' },
     { id: 'bisboots', t: 'Best in slot boots: Gore Rider or Shadow Dancer in place of the rare Light Plated Boots', h: 'Gore Rider: crushing blow, deadly strike, open wounds (more Uber damage). Shadow Dancer: +2 Assassin skills, FHR and Dexterity. Both still show in the loot filter (missing from the Chronicle).', st: () => has('Gore Rider', 'ThroatCutter') || has('Shadow Dancer', 'ThroatCutter') ? 'done' : 'farm', farm: 'tcbis' },
-    { id: 'bisbelt', t: "Best in slot belt: Verdungo's Hearty Cord in place of String of Ears", h: "Damage reduction, FHR, Vitality. One sits in shared tab 2 (marked for Blizzaga): decide who gets it. Nosferatu's Coil (slows Ubers) is the other option.", st: () => has("Verdugo's Hearty Cord", 'ThroatCutter') || has("Nosferatu's Coil", 'ThroatCutter') ? 'done' : 'now' },
+    { id: 'bisbelt', t: "Best in slot belt: Verdungo's Hearty Cord in place of String of Ears", h: "Damage reduction, FHR, Vitality. Move the one in shared tab 2 to her (she has priority). Nosferatu's Coil (slows Ubers) is the other option.", st: () => has("Verdugo's Hearty Cord", 'ThroatCutter') || has("Nosferatu's Coil", 'ThroatCutter') ? 'done' : 'now' },
     { id: 'bischarm', t: 'Martial Arts skill grand charms in place of the plain grand charms', h: '+1 Martial Arts each, ideally with life. With Annihilus and an Assassin Hellfire Torch, that completes the charm inventory.', st: 'farm', fl: 'Martial Arts grand charms' },
   ]},
   { id: 'tcmerc', ch: ['ThroatCutter'], title: "ThroatCutter's merc", who: "Act 2 · Tal Rasha's helm, Griswold's Heart, Hustle", steps: [
