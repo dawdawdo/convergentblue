@@ -531,7 +531,7 @@ main:has(.armory) { background: radial-gradient(70rem 26rem at 50% -8rem, #1b254
     </div>
     <div class="ctl">
       <div class="seg" id="tasks" aria-label="What to run">
-        <button data-t="lk">Lower Kurast</button><button data-t="meph">Mephisto</button><button data-t="tunnels">Ancient Tunnels</button>
+        <button data-t="lk">Lower Kurast</button><button data-t="meph">Mephisto</button><button data-t="tunnels">Ancient Tunnels</button><button data-t="pit" title="Route still being built: runs Lower Kurast until it's ready">The Pit</button>
       </div>
       <div class="btns">
         <button class="btn go" id="start">Start</button>
@@ -1092,7 +1092,7 @@ renderFresh(); renderNews(); renderLedger(); renderCube(); initCubeFolds(); rend
   let last = null;
   let owner = false;
   const esc = (s) => String(s ?? '').replace(/[&<>"]/g, (c) => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;' }[c]));
-  const TASK_NAME = { meph: 'Mephisto', lk: 'Lower Kurast', tunnels: 'Ancient Tunnels', 'lk,meph': 'LK + Meph', 'lk+meph': 'LK + Meph' };  // the combo: old runs only
+  const TASK_NAME = { meph: 'Mephisto', lk: 'Lower Kurast', tunnels: 'Ancient Tunnels', pit: 'The Pit', 'lk,meph': 'LK + Meph', 'lk+meph': 'LK + Meph' };  // the combo: old runs only
   const ago = (ms) => {
     const s = Math.max(0, Math.round(ms / 1000));
     if (s < 90) return `${s} s`;

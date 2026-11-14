@@ -16,7 +16,7 @@
 
 import { DurableObject } from 'cloudflare:workers';
 
-const TASKS = ['lk', 'meph', 'tunnels'];  // one task at a time (Stephen 2026-11-13: modular, no LK + Meph)
+const TASKS = ['lk', 'meph', 'tunnels', 'pit'];  // one task at a time (Stephen 2026-11-13: modular, no LK + Meph)
 const COMMANDS = ['stop_now', 'stop_after_run'];
 const MAX_BODY = 256_000;
 const MAX_ARMORY_GZ = 1_000_000;
