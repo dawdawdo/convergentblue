@@ -316,6 +316,21 @@ main:has(.armory) { background: radial-gradient(70rem 26rem at 50% -8rem, #1b254
 .bot .mt .k { font: 600 0.75rem/1.3 var(--sans); letter-spacing: 0.12em; text-transform: uppercase; color: var(--muted); }
 .bot .mt .v { font-size: 1.9rem; font-weight: 700; line-height: 1.15; margin: 0.3rem 0 0.15rem; font-variant-numeric: tabular-nums; letter-spacing: -0.01em; }
 .bot .mt .d { color: var(--muted); font-size: 0.9rem; }
+/* last 24 hours, one row per task */
+.bot .tbl th.n { text-align: right; }
+.bot .tasks24 td.task { font-weight: 600; white-space: nowrap; }
+.bot .tasks24 td.z { color: var(--muted); }
+.bot .tasks24 td.clean { font-weight: 700; }
+.bot .tasks24 .low { color: var(--bad); font: 700 0.7rem var(--sans); letter-spacing: 0.08em; text-transform: uppercase; margin-left: 0.35rem; }
+@media (max-width: 600px) {
+  .bot .tasks24 thead { display: none; }
+  .bot .tasks24 table, .bot .tasks24 tbody, .bot .tasks24 tr { display: block; }
+  .bot .tasks24 tr { display: flex; flex-wrap: wrap; gap: 0.15rem 1rem; padding: 0.7rem 0.9rem; border-bottom: 1px solid var(--rule); }
+  .bot .tasks24 tr:last-child { border-bottom: 0; }
+  .bot .tasks24 td { display: block; padding: 0; border: 0; text-align: left !important; }
+  .bot .tasks24 td.task { flex-basis: 100%; }
+  .bot .tasks24 td[data-l]::before { content: attr(data-l) " "; color: var(--muted); font-weight: 400; font-size: 0.85rem; }
+}
 /* loot */
 .bot .gstats { display: grid; gap: 0.75rem; grid-template-columns: repeat(auto-fit, minmax(16rem, 1fr)); }
 .bot .gcard { padding: 0.8rem 1rem; }
@@ -545,7 +560,8 @@ main:has(.armory) { background: radial-gradient(70rem 26rem at 50% -8rem, #1b254
   </section>
 
   <h2>Last 24 hours <small id="statsub"></small></h2>
-  <div class="meters" id="botmeters"></div>
+  <div class="tbl tasks24"><table><thead><tr><th>Task</th><th class="n">Runs</th><th class="n">Ok</th><th class="n">Chicken</th><th class="n">Died</th><th class="n">Fail</th><th class="n">Clean</th><th class="n">Avg time</th><th class="n">Chests/run</th></tr></thead><tbody id="tasks24"></tbody></table></div>
+  <p class="gnote">Clean = ok runs ÷ all runs; under 50 % is marked <b>low</b>. Chicken = saved out on low life. Fail includes timeouts. Runs stopped by hand (F12) aren't counted.</p>
 
   <h2>Loot <small>last 24 hours</small></h2>
   <div class="panel loot" id="loot"></div>
@@ -1214,20 +1230,28 @@ renderFresh(); renderNews(); renderLedger(); renderCube(); initCubeFolds(); rend
     const runs = st.runs || [];
     const day = runs.filter((r) => now - runTime(r) < 86400e3);
     const recent = runs.filter((r) => now - runTime(r) < 3 * 3600e3);
-    const by = (rs, t) => rs.filter((r) => r.task === t);
-    const pct = (a, b) => (b ? `${Math.round((100 * a) / b)}%` : '–');
-    const meph = by(day, 'meph'), lk = by(day, 'lk');
-    const okM = meph.filter((r) => r.result === 'ok').length;
-    const chickens = day.filter((r) => r.result === 'chicken').length, fails = day.filter((r) => r.result === 'fail').length;
     const hours = recent.length ? Math.max(0.25, (now - Math.min(...recent.map(runTime))) / 3600e3) : 0;
-    const chestsLk = lk.reduce((a, r) => a + (r.chests || 0), 0);
-    $('statsub').textContent = `${day.length} runs`;
-    $('botmeters').innerHTML = [
-      ['Runs per hour', recent.length ? (recent.length / hours).toFixed(1) : '–', 'last 3 hours'],
-      ['Mephisto ok', pct(okM, meph.length), `${okM} of ${meph.length} runs`],
-      ['Chickens · fails', `${chickens} · ${fails}`, 'chicken = saved out on low life'],
-      ['LK chests a run', lk.length ? (chestsLk / lk.length).toFixed(1) : '–', `${lk.length} LK runs`],
-    ].map(([k, v, dd]) => `<div class="panel mt"><div class="k">${k}</div><div class="v">${v}</div><div class="d">${dd}</div></div>`).join('');
+    // one row per task that ran; every number belongs to its task (F12-stopped runs left out)
+    const counted = day.filter((r) => r.result !== 'stopped');
+    const rows = {};
+    for (const r of counted) {
+      const t = rows[r.task || '?'] ||= { task: r.task || '?', runs: 0, ok: 0, chicken: 0, died: 0, fail: 0, secs: 0, chests: 0 };
+      t.runs++; t.secs += Number(r.duration) || 0; t.chests += Number(r.chests) || 0;
+      const res = r.result;
+      if (res === 'ok' || res === 'chicken' || res === 'died') t[res]++; else t.fail++;
+    }
+    const mmss = (s) => { const x = Math.round(s); return `${Math.floor(x / 60)}:${String(x % 60).padStart(2, "0")}`; };
+    const num = (n, label) => `<td class="n${n ? '' : ' z'}" data-l="${label}">${n}</td>`;
+    const perHour = recent.length ? `${(recent.length / hours).toFixed(1)} runs/h (last 3 h)` : '';
+    $('statsub').textContent = [`${counted.length} runs`, perHour].filter(Boolean).join(' · ');
+    $('tasks24').innerHTML = Object.values(rows).sort((a, b) => b.runs - a.runs).map((t) => {
+      const clean = Math.round((100 * t.ok) / t.runs);
+      return `<tr><td class="task">${esc(TASK_NAME[t.task] || t.task)}</td>${num(t.runs, 'Runs')}${num(t.ok, 'Ok')}`
+        + `${num(t.chicken, 'Chicken')}${num(t.died, 'Died')}${num(t.fail, 'Fail')}`
+        + `<td class="n clean" data-l="Clean">${clean}%${clean < 50 ? '<span class="low">low</span>' : ''}</td>`
+        + `<td class="n" data-l="Avg">${mmss(t.secs / t.runs)}</td>`
+        + `<td class="n${t.chests ? '' : ' z'}" data-l="Chests/run">${t.chests ? (t.chests / t.runs).toFixed(1) : '–'}</td></tr>`;
+    }).join('') || '<tr><td colspan="9" class="muted">No runs in the last 24 hours.</td></tr>';
 
     const counts = {};
     for (const r of day) for (const w of String(r.picked || '').split(/\s+/).filter(Boolean)) counts[w] = (counts[w] || 0) + 1;
